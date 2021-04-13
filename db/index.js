@@ -13,4 +13,6 @@ pool.on('error', (err, client) => {
   process.exit(-1);
 });
 
-module.exports = pool;
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+};
