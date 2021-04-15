@@ -9,3 +9,4 @@ handler.getOne(router, 'tags');
 handler.createOne(router, 'tags');
 handler.updateOne(router, 'tags');
 handler.deleteOne(router, 'tags');
+handler.deleteAll(router, 'tags');

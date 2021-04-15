@@ -172,3 +172,19 @@ exports.deleteOne = (router, table) => {
     }
   );
 };
+
+exports.deleteAll = (router, table) => {
+  router.delete('/', async (req, res) => {
+    const { rowCount } = await db.query(`DELETE FROM ${table}`);
+
+    if (rowCount) {
+      return res.sendStatus(200);
+    }
+
+    if (rowCount === 0) {
+      return res.sendStatus(404);
+    }
+
+    res.sendStatus(500);
+  });
+};
