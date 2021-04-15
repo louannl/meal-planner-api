@@ -43,21 +43,21 @@ exports.getOne = (router, table) => {
           toInt: true,
         },
       })
-    )
-  ),
+    ),
     async (req, res) => {
       const { id } = req.params;
       const {
         rows,
         rowCount,
-      } = await db.query('SELECT * FROM ($1) WHERE id = ($2)', [table, id]);
+      } = await db.query(`SELECT * FROM ${table} WHERE id = ($1)`, [id]);
 
       if (rowCount === 0) {
         return res.sendStatus(404);
       }
 
       res.send(rows[0]);
-    };
+    }
+  );
 };
 
 exports.createOne = (router, table) => {
@@ -84,6 +84,53 @@ exports.createOne = (router, table) => {
 
       if (rowCount === 1) {
         return res.sendStatus(201);
+      }
+
+      res.sendStatus(500);
+    }
+  );
+};
+
+exports.updateOne = (router, table) => {
+  router.put(
+    '/:id',
+    validate(
+      checkSchema({
+        name: {
+          errorMessage: 'Name is not valid',
+          notEmpty: true,
+          in: 'body',
+        },
+        id: {
+          errorMessage: 'ID is not valid',
+          notEmpty: true,
+          in: 'params',
+          isInt: true,
+          toInt: true,
+        },
+      })
+    ),
+    async (req, res) => {
+      const { id } = req.params;
+      const { name } = req.body;
+
+      if (!(await tagIdExists(id, table))) {
+        return res.sendStatus(200);
+      }
+
+      if (await tagNameExists(name, table)) {
+        return res.sendStatus(200);
+      }
+
+      const {
+        rowCount,
+      } = await db.query(`UPDATE ${table} SET name = ($1) WHERE id = ($2)`, [
+        name,
+        id,
+      ]);
+
+      if (rowCount === 1) {
+        return res.sendStatus(200);
       }
 
       res.sendStatus(500);
