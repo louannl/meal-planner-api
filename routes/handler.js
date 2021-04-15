@@ -2,7 +2,7 @@ const { checkSchema } = require('express-validator');
 const validate = require('../validation');
 const db = require('../db');
 
-const tagNameExists = async (name, table) => {
+const nameExists = async (name, table) => {
   const { rowCount } = await db.query(
     `SELECT id FROM ${table} WHERE name = $1`,
     [name]
@@ -10,7 +10,7 @@ const tagNameExists = async (name, table) => {
   return rowCount > 0;
 };
 
-const tagIdExists = async (id, table) => {
+const idExists = async (id, table) => {
   const { rowCount } = await db.query(`SELECT id FROM ${table} WHERE id = $1`, [
     id,
   ]);
@@ -74,7 +74,7 @@ exports.createOne = (router, table) => {
     ),
     async (req, res) => {
       const { name } = req.body;
-      if (await tagNameExists(name, table)) {
+      if (await nameExists(name, table)) {
         return res.sendStatus(200);
       }
 
@@ -114,11 +114,11 @@ exports.updateOne = (router, table) => {
       const { id } = req.params;
       const { name } = req.body;
 
-      if (!(await tagIdExists(id, table))) {
+      if (!(await idExists(id, table))) {
         return res.sendStatus(200);
       }
 
-      if (await tagNameExists(name, table)) {
+      if (await nameExists(name, table)) {
         return res.sendStatus(200);
       }
 
@@ -156,7 +156,7 @@ exports.deleteOne = (router, table) => {
     async (req, res) => {
       const { id } = req.params;
 
-      if (!(await tagIdExists(id, table))) {
+      if (!(await idExists(id, table))) {
         return res.sendStatus(200);
       }
 
