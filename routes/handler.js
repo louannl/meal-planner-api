@@ -1,21 +1,7 @@
 const { checkSchema } = require('express-validator');
 const validate = require('../validation');
+const checks = require('./checks');
 const db = require('../db');
-
-const nameExists = async (name, table) => {
-  const { rowCount } = await db.query(
-    `SELECT id FROM ${table} WHERE name = $1`,
-    [name]
-  );
-  return rowCount > 0;
-};
-
-const idExists = async (id, table) => {
-  const { rowCount } = await db.query(`SELECT id FROM ${table} WHERE id = $1`, [
-    id,
-  ]);
-  return rowCount > 0;
-};
 
 exports.getAll = (router, table) => {
   router.get('/', async (req, res) => {
@@ -74,7 +60,7 @@ exports.createOne = (router, table) => {
     ),
     async (req, res) => {
       const { name } = req.body;
-      if (await nameExists(name, table)) {
+      if (await checks.nameExists(name, table)) {
         return res.sendStatus(200);
       }
 
@@ -114,11 +100,11 @@ exports.updateOne = (router, table) => {
       const { id } = req.params;
       const { name } = req.body;
 
-      if (!(await idExists(id, table))) {
+      if (!(await checks.idExists(id, table))) {
         return res.sendStatus(200);
       }
 
-      if (await nameExists(name, table)) {
+      if (await checks.nameExists(name, table)) {
         return res.sendStatus(200);
       }
 
@@ -156,7 +142,7 @@ exports.deleteOne = (router, table) => {
     async (req, res) => {
       const { id } = req.params;
 
-      if (!(await idExists(id, table))) {
+      if (!(await checks.idExists(id, table))) {
         return res.sendStatus(200);
       }
 
