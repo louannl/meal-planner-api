@@ -21,6 +21,15 @@ const router = new Router();
 module.exports = router;
 
 router
+  .get('/', async (req, res) => {
+    const { rows, rowCount } = await db.query('SELECT * FROM tags');
+
+    if (rowCount === 0) {
+      return res.sendStatus(404);
+    }
+
+    res.send(rows);
+  })
   .get(
     '/:id',
     validate(
