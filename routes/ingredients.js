@@ -22,26 +22,28 @@ router.post(
         notEmpty: true,
         in: 'body',
       },
-      unit_type_id: {
-        errorMessage: 'Ingredient must have a unit type',
+      unitTypeId: {
+        errorMessage: 'Unit ID is not valid',
         notEmpty: true,
         in: 'body',
+        isInt: true,
+        //sanitizer
+        toInt: true,
       },
     })
   ),
   async (req, res) => {
-    const { name } = req.body.name;
-    const { unitType } = req.body.unit_type_id;
+    const { name, unitTypeId } = req.body;
 
-    if (checks.nameExists(name)) {
-      return res.sendStatus(400);
+    if (await checks.nameExists(name, 'ingredients')) {
+      return res.sendStatus(200);
     }
 
     const {
       rowCount,
     } = await db.query(
       'INSERT INTO ingredients (name, unit_type_id) VALUES ($1, $2)',
-      [name, unitType]
+      [name, unitTypeId]
     );
 
     if (rowCount === 1) {
