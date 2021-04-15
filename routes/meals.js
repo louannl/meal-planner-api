@@ -1,16 +1,12 @@
 const Router = require('express-promise-router');
-const db = require('../db');
+const handler = require('./handler');
 
 const router = new Router();
-
 module.exports = router;
 
 //GET MEAL/:id
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { rows } = await db.query('SELECT * FROM meals WHERE id = $1', [id]);
-  res.send(rows[0]);
-});
+handler.getOne(router, 'meals');
+handler.getAll(router, 'meals');
 
 //GET UNITS
 //POST MEAL

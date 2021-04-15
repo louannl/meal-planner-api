@@ -7,6 +7,6 @@ module.exports = router;
 handler.getAll(router, 'ingredients');
 handler.getOne(router, 'ingredients');
 handler.deleteOne(router, 'ingredients');
+handler.deleteAll(router, 'ingredients');
 //ADD INGREDIENT
-//DELETE INGREDIENT
 //EDIT INGREDIENT
