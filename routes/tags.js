@@ -4,9 +4,11 @@ const handler = require('./handler');
 const router = new Router();
 module.exports = router;
 
-handler.getAll(router, 'tags');
-handler.getOne(router, 'tags');
-handler.createOne(router, 'tags');
-handler.updateOne(router, 'tags');
-handler.deleteOne(router, 'tags');
-handler.deleteAll(router, 'tags');
+const name = 'tags';
+
+handler.getAll(router, name);
+handler.getOne(router, name);
+handler.createOne(router, name);
+handler.updateOne(router, name);
+handler.deleteOne(router, name);
+handler.deleteAll(router, name);
