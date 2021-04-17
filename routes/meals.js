@@ -18,6 +18,25 @@ router.post('/', async (req, res) => {
   const { dayId, mealName, mealTag, ingredients } = req.body;
   //create meal with id
   //check ingredients to db if exists
+  //map
+  const names = ingredients.map((ingredient) => ingredient.name);
+
+  let placeholders = [];
+  for (let i = 0; i < names.length; i++) {
+    placeholders.push(`$${i + 1}`);
+  }
+  const placeholder = placeholders.join(', ');
+  const { rows, rowCount } = await db.query(
+    `SELECT name from ingredients WHERE name IN (${placeholder})`,
+    names
+  );
+
+  const existingIngredients = rows.map((ingredient) => ingredient.name);
+  const missingIngredients = names.filter(
+    (ingredient) => !existingIngredients.includes(ingredient)
+  );
+
+  return console.log(missingIngredients);
   //create ingredients if they do not exist
   //post to ingredients
   //then insert meal_ingredient for each ingredient
