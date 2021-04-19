@@ -1,9 +1,9 @@
 const Router = require('express-promise-router');
 const { checkSchema } = require('express-validator');
 const validate = require('../validation');
-const db = require('../db');
 const handler = require('./handler');
-const checks = require('./checks');
+const dbHandlers = require('../db/dbHandlers');
+const dbIngredients = require('../db/dbIngredients');
 
 const router = new Router();
 module.exports = router;
@@ -36,16 +36,11 @@ router
     async (req, res) => {
       const { name, unitTypeId } = req.body;
 
-      if (await checks.nameExists(name, 'ingredients')) {
+      if (await dbHandlers.nameExists(name, 'ingredients')) {
         return res.sendStatus(200);
       }
 
-      const {
-        rowCount,
-      } = await db.query(
-        'INSERT INTO ingredients (name, unit_type_id) VALUES ($1, $2)',
-        [name, unitTypeId]
-      );
+      const rowCount = await dbIngredients.insertIngredient(name, unitTypeId);
 
       if (rowCount === 1) {
         return res.sendStatus(201);
@@ -84,19 +79,18 @@ router
       const { id } = req.params;
       const { name, unitTypeId } = req.body;
 
-      if (!(await checks.idExists(id, 'ingredients'))) {
+      if (!(await dbHandlers.idExists(id, 'ingredients'))) {
         return res.sendStatus(200);
       }
 
-      if (await checks.nameExists(name, 'ingredients')) {
+      if (await dbHandlers.nameExists(name, 'ingredients')) {
         return res.sendStatus(200);
       }
 
-      const {
-        rowCount,
-      } = await db.query(
-        `UPDATE ingredients SET name = ($1), unit_type_id = ($2) WHERE id = ($3)`,
-        [name, unitTypeId, id]
+      const rowCount = await dbIngredients.updateIngredient(
+        name,
+        unitTypeId,
+        id
       );
 
       if (rowCount === 1) {
