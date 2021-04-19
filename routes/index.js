@@ -1,8 +1,8 @@
-const meals = require('./meals');
-const tags = require('./tags');
-const days = require('./days');
-const ingredients = require('./ingredients');
-const unit_types = require('./unit_types');
+const meals = require('./mealRoutes');
+const tags = require('./tagRoutes');
+const days = require('./dayRoutes');
+const ingredients = require('./ingredientRoutes');
+const unit_types = require('./unit_typeRoutes');
 
 module.exports = (app) => {
   app.use('/meals', meals);

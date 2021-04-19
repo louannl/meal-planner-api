@@ -21,15 +21,17 @@ router.post('/', async (req, res) => {
   //map
   const names = ingredients.map((ingredient) => ingredient.name);
 
+  //database function(names) =>
   let placeholders = [];
   for (let i = 0; i < names.length; i++) {
     placeholders.push(`$${i + 1}`);
   }
   const placeholder = placeholders.join(', ');
-  const { rows, rowCount } = await db.query(
+  const { rows } = await db.query(
     `SELECT name from ingredients WHERE name IN (${placeholder})`,
     names
   );
+  //returns list to domain
 
   const existingIngredients = rows.map((ingredient) => ingredient.name);
   const missingIngredients = names.filter(
