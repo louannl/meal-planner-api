@@ -34,10 +34,3 @@ exports.createMealDay = async (mealId, dayId) => {
     dayId,
   ]);
 };
-
-exports.createMealTags = async (mealId, tagId) => {
-  await db.query('INSERT INTO meal_tags (meal_id, tag_id) VALUES ($1, $2)', [
-    mealId,
-    tagId,
-  ]);
-};

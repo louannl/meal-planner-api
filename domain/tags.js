@@ -2,7 +2,7 @@ const dbMeals = require('../db/dbMeals');
 const dbHandler = require('../db/dbHandlers');
 const dbTags = require('../db/dbTags');
 
-exports.createTags = async (mealId, mealTags) => {
+exports.createMealTags = async (mealId, mealTags) => {
   const tagNames = mealTags.map((tags) => tags.names);
   const tagExists = await dbMeals.existingNames('tags', tagNames);
 
@@ -12,9 +12,11 @@ exports.createTags = async (mealId, mealTags) => {
   );
   //create all missing tags
   await dbHandler.insertAll('tags', missingTags);
-  //select all meal_tags where tagname = tagNames
-
-  //createmealtags for each id
+  //Get all tag ids
+  const tagIds = await dbMeals.existingNames('tags', tagNames);
+  const allTagIds = tagIds.map((tag) => tag.id);
+  //create a meal_tag for each mealTag
+  await this.createMealTags(mealId, allTagIds);
 };
 
 exports.createMealTags = async (mealId, tagIds) => {
@@ -30,5 +32,5 @@ exports.createMealTags = async (mealId, tagIds) => {
     params.push(mealId, tagId);
   });
 
-  await dbTags.createAllMealTags(placeholder, params);
+  await dbTags.insertAllMealTags(placeholder, params);
 };
