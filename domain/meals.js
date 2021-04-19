@@ -1,6 +1,7 @@
 const dbMeals = require('../db/dbMeals');
 const dbIngredients = require('../db/dbIngredients');
 const dbHandler = require('../db/dbHandlers');
+const { createTags } = require('./tags');
 
 exports.createMeal = async (dayId, mealName, mealTags, ingredients) => {
   //MEAL
@@ -9,14 +10,7 @@ exports.createMeal = async (dayId, mealName, mealTags, ingredients) => {
   //DAY
   await dbMeals.createMealDay(mealId, dayId);
   //TAGS
-  const tagNames = mealTags.map((tags) => tags.names);
-  const tagExists = await dbMeals.existingNames('tags', tagNames);
-
-  const existingTags = tagExists.map((tag) => tag.name);
-  const missingTags = mealTags.filter(
-    (tag) => !existingTags.includes(tag.name)
-  );
-  await dbHandler.insertAll('tags', missingTags);
+  createTags(mealId, mealTags);
 
   //INGREDIENTS
   //map to get ingreient names only
