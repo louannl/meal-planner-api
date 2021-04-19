@@ -15,6 +15,6 @@ router.get('/');
 //('SELECT * from meals_days WHERE day_id = ($1)'), [dayId] )
 
 router.post('/', async (req, res) => {
-  const { dayId, mealName, mealTag, ingredients } = req.body;
-  return await meals.createMeal(dayId, mealName, mealTag, ingredients);
+  const { dayId, mealName, mealTags, ingredients } = req.body;
+  return await meals.createMeal(dayId, mealName, mealTags, ingredients);
 });

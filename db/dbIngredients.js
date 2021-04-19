@@ -14,7 +14,7 @@ exports.updateIngredient = async (name, unitTypeId, id) => {
   const {
     rowCount,
   } = await db.query(
-    `UPDATE ingredients SET name = ($1), unit_type_id = ($2) WHERE id = ($3)`,
+    `UPDATE ingredients SET name = $1, unit_type_id = $2 WHERE id = $3`,
     [name, unitTypeId, id]
   );
   return rowCount;
