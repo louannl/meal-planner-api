@@ -1,11 +1,12 @@
 const { checkSchema } = require('express-validator');
 const validate = require('../validation');
-const checks = require('./checks');
-const db = require('../db');
+const dbHandlers = require('../db/dbHandlers');
 
 exports.getAll = (router, table) => {
   router.get('/', async (req, res) => {
-    const { rows, rowCount } = await db.query(`SELECT * FROM ${table}`);
+    const selects = await dbHandlers.selectAll(table);
+    rows = selects[0];
+    rowCount = selects[1];
 
     if (rowCount === 0) {
       return res.sendStatus(404);
@@ -32,10 +33,9 @@ exports.getOne = (router, table) => {
     ),
     async (req, res) => {
       const { id } = req.params;
-      const {
-        rows,
-        rowCount,
-      } = await db.query(`SELECT * FROM ${table} WHERE id = ($1)`, [id]);
+      const selects = await dbHandlers.selectOne(table, id);
+      rows = selects[0];
+      rowCount = selects[1];
 
       if (rowCount === 0) {
         return res.sendStatus(404);
@@ -60,13 +60,11 @@ exports.createOne = (router, table) => {
     ),
     async (req, res) => {
       const { name } = req.body;
-      if (await checks.nameExists(name, table)) {
+      if (await dbHandlers.nameExists(name, table)) {
         return res.sendStatus(200);
       }
 
-      const {
-        rowCount,
-      } = await db.query(`INSERT INTO ${table} (name) VALUES ($1)`, [name]);
+      const rowCount = await dbHandlers.insertOne(table, name);
 
       if (rowCount === 1) {
         return res.sendStatus(201);
@@ -100,20 +98,15 @@ exports.updateOne = (router, table) => {
       const { id } = req.params;
       const { name } = req.body;
 
-      if (!(await checks.idExists(id, table))) {
+      if (!(await dbHandlers.idExists(id, table))) {
         return res.sendStatus(200);
       }
 
-      if (await checks.nameExists(name, table)) {
+      if (await dbHandlers.nameExists(name, table)) {
         return res.sendStatus(200);
       }
 
-      const {
-        rowCount,
-      } = await db.query(`UPDATE ${table} SET name = ($1) WHERE id = ($2)`, [
-        name,
-        id,
-      ]);
+      const rowCount = await dbHandlers.updateOne(table, id, name);
 
       if (rowCount === 1) {
         return res.sendStatus(200);
@@ -142,13 +135,11 @@ exports.deleteOne = (router, table) => {
     async (req, res) => {
       const { id } = req.params;
 
-      if (!(await checks.idExists(id, table))) {
+      if (!(await dbHandlers.idExists(id, table))) {
         return res.sendStatus(200);
       }
 
-      const {
-        rowCount,
-      } = await db.query(`DELETE FROM ${table} WHERE id = ($1)`, [id]);
+      const rowCount = await dbHandlers.deleteOne(table, id);
 
       if (rowCount === 1) {
         return res.sendStatus(200);
@@ -161,7 +152,7 @@ exports.deleteOne = (router, table) => {
 
 exports.deleteAll = (router, table) => {
   router.delete('/', async (req, res) => {
-    const { rowCount } = await db.query(`DELETE FROM ${table}`);
+    const rowCount = await dbHandlers.deleteAll(table);
 
     if (rowCount) {
       return res.sendStatus(200);
