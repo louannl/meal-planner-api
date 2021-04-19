@@ -1,5 +1,13 @@
 const db = require('../db');
 
+exports.parameterise = (values) => {
+  let placeholders = [];
+  for (let i = 0; i < values.length; i++) {
+    placeholders.push(`$${i + 1}`);
+  }
+  return placeholders.join(', ');
+};
+
 exports.nameExists = async (name, table) => {
   const { rowCount } = await db.query(
     `SELECT id FROM ${table} WHERE name = $1`,
@@ -17,7 +25,7 @@ exports.idExists = async (id, table) => {
 
 exports.selectAll = async (table) => {
   const { rows, rowCount } = await db.query(`SELECT * FROM ${table}`);
-  return [rows, rowCount];
+  return { rows, rowCount };
 };
 
 exports.selectOne = async (table, id) => {
@@ -25,7 +33,7 @@ exports.selectOne = async (table, id) => {
     rows,
     rowCount,
   } = await db.query(`SELECT * FROM ${table} WHERE id = ($1)`, [id]);
-  return [rows, rowCount];
+  return { rows, rowCount };
 };
 
 exports.insertOne = async (table, name) => {
@@ -34,6 +42,16 @@ exports.insertOne = async (table, name) => {
     [name]
   );
   return rowCount;
+};
+
+exports.insertAndReturnId = async (table, name) => {
+  const {
+    rowCount,
+    rows,
+  } = await db.query(`INSERT INTO ${table} (name) VALUES ($1) RETURNING id`, [
+    name,
+  ]);
+  return { rowCount, id: rows[0]['id'] };
 };
 
 exports.updateOne = async (table, id, name) => {

@@ -4,9 +4,7 @@ const dbHandlers = require('../db/dbHandlers');
 
 exports.getAll = (router, table) => {
   router.get('/', async (req, res) => {
-    const selects = await dbHandlers.selectAll(table);
-    rows = selects[0];
-    rowCount = selects[1];
+    const { rows, rowCount } = await dbHandlers.selectAll(table);
 
     if (rowCount === 0) {
       return res.sendStatus(404);
@@ -33,9 +31,7 @@ exports.getOne = (router, table) => {
     ),
     async (req, res) => {
       const { id } = req.params;
-      const selects = await dbHandlers.selectOne(table, id);
-      rows = selects[0];
-      rowCount = selects[1];
+      const { rows, rowCount } = await dbHandlers.selectOne(table, id);
 
       if (rowCount === 0) {
         return res.sendStatus(404);

@@ -1,7 +1,13 @@
 const dbMeals = require('../db/dbMeals');
 const dbIngredients = require('../db/dbIngredients');
+const dbHandler = require('../db/dbHandlers');
 
 exports.createMeal = async (dayId, mealName, mealTag, ingredients) => {
+  //MEAL
+  //create meal and return id
+  const { id: mealId } = await dbHandler.insertAndReturnId('meals', mealName);
+  //DAY
+
   //INGREDIENTS
   //map to get ingreient names only
   const names = ingredients.map((ingredient) => ingredient.name);
@@ -17,12 +23,6 @@ exports.createMeal = async (dayId, mealName, mealTag, ingredients) => {
     dbIngredients.insertIngredient(ingredient.name, ingredient.unitType);
   });
   //create meal ingredients for all ingredients
-  /*
-  db.query(
-    'INSERT INTO meal_ingredients (mealId, ingredientId, amount, unitType) VALUES ($1, $2, $3, $4)',
-    [mealId, ingredientId, amount, unitType]
-  );
-  */
 };
 
 //INPUT SELECT DAY
