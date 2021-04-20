@@ -12,9 +12,6 @@ CREATE TABLE IF NOT EXISTS unit_types (
 CREATE TABLE IF NOT EXISTS ingredients (
 	id serial PRIMARY KEY,
 	name VARCHAR(50) UNIQUE NOT NULL,
-	unit_type_id INT NOT NULL,
-	FOREIGN KEY (unit_type_id)
-    	REFERENCES unit_types (id),
 );
 
 CREATE TABLE IF NOT EXISTS days (

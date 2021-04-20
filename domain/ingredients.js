@@ -1,9 +1,9 @@
-const dbMeals = require('../db/dbMeals');
-const dbIngredients = require('../db/dbIngredients');
+const { insert, getExistingItems } = require('../db/dbHandlers');
 
 exports.createMealIngredients = async (mealId, ingredients) => {
+  //TODO: Replace this code with create missingItems code in meals.js
   const ingredientNames = ingredients.map((ingredient) => ingredient.name);
-  const IngredientExists = await dbMeals.existingNames(
+  const IngredientExists = await getExistingItems(
     'ingredients',
     ingredientNames
   );
@@ -13,13 +13,16 @@ exports.createMealIngredients = async (mealId, ingredients) => {
   const missingIngredients = ingredients.filter(
     (ingredient) => !existingIngredients.includes(ingredient.name)
   );
-  missingIngredients.forEach((ingredient) => {
-    dbIngredients.insertIngredient(ingredient.name, ingredient.unitType);
-  });
-  //create meal_ingredients for all ingredients
+
+  insert(
+    'ingredients',
+    missingIngredients.map((ingredient) => {
+      return { name: ingredient.name };
+    })
+  );
+
+  //TODO: create meal_ingredients for all ingredients
   //ADD INGREDIENTS ---
-  //INPUT INGREDIENT NAME
   //INPUT INGREDIENT AMOUNT
   //INPUT INGREDIENT UNITTYPE
-  //ADD MULTIPLE
 };
