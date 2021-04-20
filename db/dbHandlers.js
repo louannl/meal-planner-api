@@ -8,24 +8,6 @@ const parameterise = (values, offset = 0) => {
   return placeholders.join(', ');
 };
 
-exports.parameteriseBrackets = (values) => {
-  let placeholders = [];
-  for (let i = 0; i < values.length; i++) {
-    placeholders.push(`($${i + 1})`);
-  }
-  return placeholders.join(', ');
-};
-
-//fix this so I don't have multiple parametise functions
-exports.parameteriseAll = (values) => {
-  let placeholders = [];
-  for (let i = 0; i < values.length; i + 2) {
-    placeholders.push(`($${i + 1}, ${i + 2} )`);
-  }
-  console.log('Parametise is running');
-  return placeholders.join(', ');
-};
-
 exports.getExistingItems = async (table, names) => {
   const { rows } = await db.query(
     `SELECT name, id from ${table} WHERE name IN (${parameterise(names)})`,
