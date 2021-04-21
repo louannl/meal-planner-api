@@ -1,4 +1,5 @@
 import db from './index.js';
+//TODO: sort routes and remove logic
 
 export const insertIngredient = async (name, unitTypeId) => {
   const {

@@ -22,7 +22,7 @@ export const getExistingItems = async (table, names) => {
 };
 
 export const getExistingIds = async (table, names) => {
-  const rows = await this.getExistingItems(table, names);
+  const rows = await getExistingItems(table, names);
   return rows.map((row) => row.id);
 };
 

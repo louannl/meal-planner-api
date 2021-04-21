@@ -6,20 +6,13 @@ import { createMealIngredients } from './ingredients.js';
 export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
   //MEALNAME
   const { id: mealId } = await insertAndReturnId('meals', [{ name: mealName }]);
-  //TODO: reaplce createMealDay with insert maybe
+  //TODO: replace createMealDay with insert maybe
   await createMealDay(mealId, dayId);
   //TAGS
   if (mealTags) {
-    createMissingItems(
-      'tags',
-      mealTags.map((tag) => {
-        return { name: tag };
-      })
-    );
     await processMealTags(mealId, mealTags);
   }
   //TODO: INGREDIENTS
-
   await createMealIngredients(mealId, ingredients);
 };
 
