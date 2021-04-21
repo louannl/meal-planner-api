@@ -1,8 +1,8 @@
-const Router = require('express-promise-router');
-const handler = require('./handler');
+import Router from 'express-promise-router';
+import { getAll, getOne } from './handler.js';
 
 const router = new Router();
-module.exports = router;
+export default router;
 
-handler.getAll(router, 'days');
-handler.getOne(router, 'days');
+getAll(router, 'days');
+getOne(router, 'days');

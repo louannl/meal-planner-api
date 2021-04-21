@@ -1,13 +1,11 @@
-const dotenv = require('dotenv');
-dotenv.config();
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const mountRoutes = require('./routes');
+import mountRoutes from './routes/index.js';
 const port = 5000;
 
 mountRoutes(app);

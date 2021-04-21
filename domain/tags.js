@@ -1,6 +1,6 @@
-const { insert, getExistingIds } = require('../db/dbHandlers');
+import { insert, getExistingIds } from '../db/dbHandlers.js';
 
-exports.processMealTags = async (mealId, tags) => {
+export const processMealTags = async (mealId, tags) => {
   const tagIds = await getExistingIds('tags', tags);
   const mealTags = tagIds.map((tagId) => {
     return { meal_id: mealId, tag_id: tagId };

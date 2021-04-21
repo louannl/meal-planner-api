@@ -1,8 +1,8 @@
-const { checkSchema } = require('express-validator');
-const validate = require('../validation');
-const dbHandlers = require('../db/dbHandlers');
+import { checkSchema } from 'express-validator';
+import validate from '../validation/index.js';
+import * as dbHandlers from '../db/dbHandlers.js';
 
-exports.getAll = (router, table) => {
+export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
     const { rows, rowCount } = await dbHandlers.selectAll(table);
 
@@ -14,7 +14,7 @@ exports.getAll = (router, table) => {
   });
 };
 
-exports.getOne = (router, table) => {
+export const getOne = (router, table) => {
   router.get(
     '/:id',
     validate(
@@ -42,7 +42,7 @@ exports.getOne = (router, table) => {
   );
 };
 
-exports.createOne = (router, table) => {
+export const createOne = (router, table) => {
   router.post(
     '/',
     validate(
@@ -71,7 +71,7 @@ exports.createOne = (router, table) => {
   );
 };
 
-exports.updateOne = (router, table) => {
+export const updateOne = (router, table) => {
   router.put(
     '/:id',
     validate(
@@ -113,7 +113,7 @@ exports.updateOne = (router, table) => {
   );
 };
 
-exports.deleteOne = (router, table) => {
+export const deleteOne = (router, table) => {
   router.delete(
     '/:id',
     validate(
@@ -146,7 +146,7 @@ exports.deleteOne = (router, table) => {
   );
 };
 
-exports.deleteAll = (router, table) => {
+export const deleteAll = (router, table) => {
   router.delete('/', async (req, res) => {
     const rowCount = await dbHandlers.deleteAll(table);
 

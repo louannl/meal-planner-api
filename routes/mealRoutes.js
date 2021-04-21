@@ -1,13 +1,13 @@
-const Router = require('express-promise-router');
-const handler = require('./handler');
-const meals = require('../domain/meals');
+import Router from 'express-promise-router';
+import { getOne, getAll } from './handler.js';
+import { createMeal } from '../domain/meals.js';
 
 const router = new Router();
-module.exports = router;
+export default router;
 
 //GET MEAL/:id
-handler.getOne(router, 'meals');
-handler.getAll(router, 'meals');
+getOne(router, 'meals');
+getAll(router, 'meals');
 
 //GET MEALS BY DAYS
 router.get('/');
@@ -16,5 +16,5 @@ router.get('/');
 
 router.post('/', async (req, res) => {
   const { dayId, mealName, mealTags, ingredients } = req.body;
-  return await meals.createMeal(dayId, mealName, mealTags, ingredients);
+  return await createMeal(dayId, mealName, mealTags, ingredients);
 });

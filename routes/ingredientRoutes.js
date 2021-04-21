@@ -1,12 +1,12 @@
-const Router = require('express-promise-router');
-const { checkSchema } = require('express-validator');
-const validate = require('../validation');
-const handler = require('./handler');
-const dbHandlers = require('../db/dbHandlers');
-const dbIngredients = require('../db/dbIngredients');
+import Router from 'express-promise-router';
+import { checkSchema } from 'express-validator';
+import validate from '../validation/index.js';
+import * as handler from './handler.js';
+import * as dbHandlers from '../db/dbHandlers.js';
+import * as dbIngredients from '../db/dbIngredients.js';
 
 const router = new Router();
-module.exports = router;
+export default router;
 
 handler.getAll(router, 'ingredients');
 handler.getOne(router, 'ingredients');

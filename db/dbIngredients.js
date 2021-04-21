@@ -1,6 +1,6 @@
-const db = require('../db');
+import db from './index.js';
 
-exports.insertIngredient = async (name, unitTypeId) => {
+export const insertIngredient = async (name, unitTypeId) => {
   const {
     rowCount,
   } = await db.query(
@@ -10,7 +10,7 @@ exports.insertIngredient = async (name, unitTypeId) => {
   return rowCount;
 };
 
-exports.updateIngredient = async (name, unitTypeId, id) => {
+export const updateIngredient = async (name, unitTypeId, id) => {
   const {
     rowCount,
   } = await db.query(
@@ -20,7 +20,7 @@ exports.updateIngredient = async (name, unitTypeId, id) => {
   return rowCount;
 };
 
-exports.insertMealIngredient = async (mealId, ingredient) => {
+export const insertMealIngredient = async (mealId, ingredient) => {
   const { ingredientId, amount, unitTypeId } = ingredient;
   console.log(ingredient, ingredientId, amount, unitTypeId);
   await db.query(

@@ -1,8 +1,8 @@
-const Router = require('express-promise-router');
-const handler = require('./handler');
+import Router from 'express-promise-router';
+import * as handler from './handler.js';
 
 const router = new Router();
-module.exports = router;
+export default router;
 
 const name = 'tags';
 

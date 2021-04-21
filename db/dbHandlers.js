@@ -1,4 +1,4 @@
-const db = require('../db');
+import db from './index.js';
 
 const parameterise = (values, offset = 0) => {
   let placeholders = [];
@@ -8,7 +8,7 @@ const parameterise = (values, offset = 0) => {
   return placeholders.join(', ');
 };
 
-exports.getExistingItems = async (table, names) => {
+export const getExistingItems = async (table, names) => {
   const { rows } = await db.query(
     `SELECT name, id from ${table} WHERE name IN (${parameterise(names)})`,
     names
@@ -21,12 +21,12 @@ exports.getExistingItems = async (table, names) => {
   return rows;
 };
 
-exports.getExistingIds = async (table, names) => {
+export const getExistingIds = async (table, names) => {
   const rows = await this.getExistingItems(table, names);
   return rows.map((row) => row.id);
 };
 
-exports.nameExists = async (name, table) => {
+export const nameExists = async (name, table) => {
   const { rowCount } = await db.query(
     `SELECT id FROM ${table} WHERE name = $1`,
     [name]
@@ -34,19 +34,19 @@ exports.nameExists = async (name, table) => {
   return rowCount > 0;
 };
 
-exports.idExists = async (id, table) => {
+export const idExists = async (id, table) => {
   const { rowCount } = await db.query(`SELECT id FROM ${table} WHERE id = $1`, [
     id,
   ]);
   return rowCount > 0;
 };
 
-exports.selectAll = async (table) => {
+export const selectAll = async (table) => {
   const { rows, rowCount } = await db.query(`SELECT * FROM ${table}`);
   return { rows, rowCount };
 };
 
-exports.selectOne = async (table, id) => {
+export const selectOne = async (table, id) => {
   const {
     rows,
     rowCount,
@@ -54,7 +54,7 @@ exports.selectOne = async (table, id) => {
   return { rows, rowCount };
 };
 
-exports.insertOne = async (table, name) => {
+export const insertOne = async (table, name) => {
   const { rowCount } = await db.query(
     `INSERT INTO ${table} (name) VALUES ($1)`,
     [name]
@@ -80,7 +80,7 @@ const getPlaceholders = (rows) => {
   return queryValues.join(',');
 };
 
-exports.insert = async (table, values) => {
+export const insert = async (table, values) => {
   //need to ensure columns are validated before passed here
   const columns = getColumns(values);
   const placeholderRows = getValueRows(values);
@@ -92,8 +92,8 @@ exports.insert = async (table, values) => {
   );
 };
 
-exports.insertAndReturnId = async (table, values) => {
-  //won't work if inserting more than one.
+export const insertAndReturnId = async (table, values) => {
+  //TODO: won't work if inserting more than one.
   const columns = getColumns(values);
   const placeholderRows = getValueRows(values);
   const placeholders = getPlaceholders(placeholderRows);
@@ -105,7 +105,7 @@ exports.insertAndReturnId = async (table, values) => {
   return { rowCount, id: rows[0]['id'] };
 };
 
-exports.updateOne = async (table, id, name) => {
+export const updateOne = async (table, id, name) => {
   const {
     rowCount,
   } = await db.query(`UPDATE ${table} SET name = ($1) WHERE id = ($2)`, [
@@ -115,14 +115,15 @@ exports.updateOne = async (table, id, name) => {
   return rowCount;
 };
 
-exports.deleteOne = async (table, id) => {
+export const deleteOne = async (table, id) => {
   const { rowCount } = await db.query(`DELETE FROM ${table} WHERE id = ($1)`, [
     id,
   ]);
   return rowCount;
 };
 
-exports.deleteAll = async (table) => {
+//TODO: delete all with same id?
+export const deleteAll = async (table) => {
   const { rowCount } = await db.query(`DELETE FROM ${table}`);
   return rowCount;
 };

@@ -1,6 +1,6 @@
-const db = require('.');
+import db from './index.js';
 
-exports.insertAllMealTags = async (placeholder, params) => {
+export const insertAllMealTags = async (placeholder, params) => {
   const { rowCount } = await db.query(
     `INSERT INTO meal_tags (meal_id, tag_id) VALUES ${placeholder}`,
     params
@@ -8,7 +8,7 @@ exports.insertAllMealTags = async (placeholder, params) => {
   return rowCount;
 };
 
-exports.insertMealTags = async (mealId, tagId) => {
+export const insertMealTags = async (mealId, tagId) => {
   await db.query('INSERT INTO meal_tags (meal_id, tag_id) VALUES ($1, $2)', [
     mealId,
     tagId,
