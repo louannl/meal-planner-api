@@ -1,5 +1,4 @@
-import { insertAndReturnId } from '../db/dbHandlers.js';
-import { createMealDay } from '../db/dbMeals.js';
+import { insert, insertAndReturnId } from '../db/dbHandlers.js';
 import { processMealTags } from './tags.js';
 import { createMealIngredients } from './ingredients.js';
 
@@ -7,7 +6,7 @@ export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
   //MEALNAME
   const { id: mealId } = await insertAndReturnId('meals', [{ name: mealName }]);
   //TODO: replace createMealDay with insert maybe
-  await createMealDay(mealId, dayId);
+  await insert('meal_days', [{ meal_id: mealId, day_id: dayId }]);
   //TAGS
   if (mealTags) {
     await processMealTags(mealId, mealTags);

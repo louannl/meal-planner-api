@@ -1,5 +1,5 @@
 import { checkSchema } from 'express-validator';
-import validate from '../validation/index.js';
+import validate from '../utils/validate.js';
 import * as dbHandlers from '../db/dbHandlers.js';
 
 export const getAll = (router, table) => {
@@ -56,7 +56,7 @@ export const createOne = (router, table) => {
     ),
     async (req, res) => {
       const { name } = req.body;
-      if (await dbHandlers.nameExists(name, table)) {
+      if (await dbHandlers.getExistingNames(name, table)) {
         return res.sendStatus(200);
       }
 
@@ -98,14 +98,19 @@ export const updateOne = (router, table) => {
         return res.sendStatus(200);
       }
 
-      if (await dbHandlers.nameExists(name, table)) {
+      if (await dbHandlers.getExistingNames(name, table)) {
         return res.sendStatus(200);
       }
 
       const rowCount = await dbHandlers.updateOne(table, id, name);
 
       if (rowCount === 1) {
-        return res.sendStatus(200);
+        return res.status(200).json({
+          status: 'success',
+          data: {
+            //TODO: Add data
+          },
+        });
       }
 
       res.sendStatus(500);
@@ -138,7 +143,10 @@ export const deleteOne = (router, table) => {
       const rowCount = await dbHandlers.deleteOne(table, id);
 
       if (rowCount === 1) {
-        return res.sendStatus(200);
+        res.status(204).json({
+          status: 'success',
+          data: null,
+        });
       }
 
       res.sendStatus(500);

@@ -1,7 +1,7 @@
 import Router from 'express-promise-router';
 import { getOne, getAll } from './handler.js';
 import { createMeal } from '../domain/meals.js';
-import validate from '../validation/index.js';
+import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 
 const router = new Router();
@@ -38,7 +38,8 @@ router.post(
         in: 'body',
       },
       ingredients: {
-        isObject: true,
+        errorMessage: 'ingredients must be an array',
+        isArray: true,
       },
       'ingredients.*.name': {
         notEmpty: true,
@@ -49,6 +50,7 @@ router.post(
         toInt: true,
       },
       'ingredients.*.unitType': {
+        errorMessage: 'unitType must exist',
         notEmpty: true,
         isInt: true,
         toInt: true,
@@ -57,6 +59,16 @@ router.post(
   ),
   async (req, res) => {
     const { dayId, mealName, mealTags, ingredients } = req.body;
-    return await createMeal(dayId, mealName, mealTags, ingredients);
+    try {
+      await createMeal(dayId, mealName, mealTags, ingredients);
+      res.status(201).json({
+        status: 'success',
+      });
+    } catch (error) {
+      res.status(error.statusCode).json({
+        status: error.status,
+        message: error.message,
+      });
+    }
   }
 );

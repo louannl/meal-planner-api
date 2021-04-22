@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import { checkSchema } from 'express-validator';
-import validate from '../validation/index.js';
+import validate from '../utils/validate.js';
 import * as handler from './handler.js';
 import * as dbHandlers from '../db/dbHandlers.js';
 import * as dbIngredients from '../db/dbIngredients.js';
@@ -36,7 +36,7 @@ router
     async (req, res) => {
       const { name, unitTypeId } = req.body;
 
-      if (await dbHandlers.nameExists(name, 'ingredients')) {
+      if (await dbHandlers.getExistingNames(name, 'ingredients')) {
         return res.sendStatus(200);
       }
 
@@ -83,7 +83,7 @@ router
         return res.sendStatus(200);
       }
 
-      if (await dbHandlers.nameExists(name, 'ingredients')) {
+      if (await dbHandlers.getExistingNames(name, 'ingredients')) {
         return res.sendStatus(200);
       }
 

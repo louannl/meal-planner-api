@@ -1,3 +1,4 @@
+import AppError from '../utils/appError.js.js';
 import db from './index.js';
 
 const parameterise = (values, offset = 0) => {
@@ -26,7 +27,7 @@ export const getExistingIds = async (table, names) => {
   return rows.map((row) => row.id);
 };
 
-export const nameExists = async (name, table) => {
+export const getExistingNames = async (name, table) => {
   const { rowCount } = await db.query(
     `SELECT id FROM ${table} WHERE name = $1`,
     [name]
@@ -43,6 +44,9 @@ export const idExists = async (id, table) => {
 
 export const selectAll = async (table) => {
   const { rows, rowCount } = await db.query(`SELECT * FROM ${table}`);
+  if (!rows) {
+    throw new AppError('No data found', 404);
+  }
   return { rows, rowCount };
 };
 
@@ -86,10 +90,13 @@ export const insert = async (table, values) => {
   const placeholderRows = getValueRows(values);
   const placeholders = getPlaceholders(placeholderRows);
   const params = placeholderRows.flat();
-  await db.query(
+  const { rows } = await db.query(
     `INSERT INTO ${table} (${columns}) VALUES ${placeholders}`,
     params
   );
+  if (!rows) {
+    throw new AppError('Failed to create data', 400);
+  }
 };
 
 export const insertAndReturnId = async (table, values) => {
@@ -98,11 +105,14 @@ export const insertAndReturnId = async (table, values) => {
   const placeholderRows = getValueRows(values);
   const placeholders = getPlaceholders(placeholderRows);
   const params = placeholderRows.flat();
-  const { rowCount, rows } = await db.query(
+  const { rows } = await db.query(
     `INSERT INTO ${table} (${columns}) VALUES ${placeholders} RETURNING id`,
     params
   );
-  return { rowCount, id: rows[0]['id'] };
+  if (!rows) {
+    throw new AppError('Failed to create data', 400);
+  }
+  return { id: rows[0]['id'] };
 };
 
 export const updateOne = async (table, id, name) => {
@@ -119,11 +129,17 @@ export const deleteOne = async (table, id) => {
   const { rowCount } = await db.query(`DELETE FROM ${table} WHERE id = ($1)`, [
     id,
   ]);
+  if (!rowCount) {
+    throw new AppError('No data to delete', 404);
+  }
   return rowCount;
 };
 
-//TODO: delete all with same id?
+//TODO: delete all with same mealid?
 export const deleteAll = async (table) => {
   const { rowCount } = await db.query(`DELETE FROM ${table}`);
+  if (!rowCount) {
+    throw new AppError('No data to delete', 404);
+  }
   return rowCount;
 };
