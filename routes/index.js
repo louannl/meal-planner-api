@@ -11,7 +11,6 @@ const routes = (app) => {
   app.use('/days', days);
   app.use('/ingredients', ingredients);
   app.use('/unit_types', unit_types);
-  //TODO: add 'can't find' route
   app.all('*', (req, res, next) => {
     next(
       new AppError(`Route, ${req.originalUrl} not found on this server`, 404)

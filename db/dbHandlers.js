@@ -28,6 +28,7 @@ export const getExistingIds = async (table, names) => {
 };
 
 export const getExistingNames = async (name, table) => {
+  //TODO: remove this duplicate code?
   const { rowCount } = await db.query(
     `SELECT id FROM ${table} WHERE name = $1`,
     [name]
@@ -36,6 +37,7 @@ export const getExistingNames = async (name, table) => {
 };
 
 export const idExists = async (id, table) => {
+  //TODO: remove this duplicate code?
   const { rowCount } = await db.query(`SELECT id FROM ${table} WHERE id = $1`, [
     id,
   ]);
@@ -56,6 +58,13 @@ export const selectOne = async (table, id) => {
     rowCount,
   } = await db.query(`SELECT * FROM ${table} WHERE id = ($1)`, [id]);
   return { rows, rowCount };
+};
+
+export const selectBy = async (table, outputs, by, values) => {
+  return await db.query(
+    `SELECT ${outputs} from ${table} WHERE ${by} IN (${parameterise(values)})`,
+    values
+  );
 };
 
 export const insertOne = async (table, name) => {

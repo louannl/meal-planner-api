@@ -30,8 +30,14 @@ export const getOne = (router, table) => {
       })
     ),
     async (req, res) => {
+      //TODO: update
       const { id } = req.params;
-      const { rows, rowCount } = await dbHandlers.selectOne(table, id);
+      const { rows, rowCount } = await dbHandlers.selectBy(
+        table,
+        '*',
+        'id',
+        id
+      );
 
       if (rowCount === 0) {
         return res.sendStatus(404);
@@ -55,6 +61,7 @@ export const createOne = (router, table) => {
       })
     ),
     async (req, res) => {
+      //TODO: update
       const { name } = req.body;
       if (await dbHandlers.getExistingNames(name, table)) {
         return res.sendStatus(200);
@@ -91,6 +98,7 @@ export const updateOne = (router, table) => {
       })
     ),
     async (req, res) => {
+      //TODO: update
       const { id } = req.params;
       const { name } = req.body;
 
@@ -134,6 +142,7 @@ export const deleteOne = (router, table) => {
       })
     ),
     async (req, res) => {
+      //TODO: update
       const { id } = req.params;
 
       if (!(await dbHandlers.idExists(id, table))) {
@@ -156,6 +165,7 @@ export const deleteOne = (router, table) => {
 
 export const deleteAll = (router, table) => {
   router.delete('/', async (req, res) => {
+    //TODO: update
     const rowCount = await dbHandlers.deleteAll(table);
 
     if (rowCount) {
