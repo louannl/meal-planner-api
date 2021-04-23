@@ -9,7 +9,24 @@ const parameterise = (values, offset = 0) => {
   return placeholders.join(', ');
 };
 
+export const selectBy = async (table, outputs, by, values) => {
+  const { rows } = await db.query(
+    `SELECT ${outputs} from ${table} WHERE ${by} IN (${parameterise(values)})`,
+    values
+  );
+  return rows;
+};
+
+export const selectAll = async (table) => {
+  const { rows, rowCount } = await db.query(`SELECT * FROM ${table}`);
+  if (!rows) {
+    throw new AppError('No data found', 404);
+  }
+  return { rows, rowCount };
+};
+
 export const getExistingItems = async (table, names) => {
+  //TODO: REMOVE after fully implementing selectAll
   const { rows } = await db.query(
     `SELECT name, id from ${table} WHERE name IN (${parameterise(names)})`,
     names
@@ -44,27 +61,12 @@ export const idExists = async (id, table) => {
   return rowCount > 0;
 };
 
-export const selectAll = async (table) => {
-  const { rows, rowCount } = await db.query(`SELECT * FROM ${table}`);
-  if (!rows) {
-    throw new AppError('No data found', 404);
-  }
-  return { rows, rowCount };
-};
-
 export const selectOne = async (table, id) => {
   const {
     rows,
     rowCount,
   } = await db.query(`SELECT * FROM ${table} WHERE id = ($1)`, [id]);
   return { rows, rowCount };
-};
-
-export const selectBy = async (table, outputs, by, values) => {
-  return await db.query(
-    `SELECT ${outputs} from ${table} WHERE ${by} IN (${parameterise(values)})`,
-    values
-  );
 };
 
 export const insertOne = async (table, name) => {
@@ -99,13 +101,10 @@ export const insert = async (table, values) => {
   const placeholderRows = getValueRows(values);
   const placeholders = getPlaceholders(placeholderRows);
   const params = placeholderRows.flat();
-  const { rows } = await db.query(
+  await db.query(
     `INSERT INTO ${table} (${columns}) VALUES ${placeholders}`,
     params
   );
-  if (!rows) {
-    new AppError('Failed to create data', 400);
-  }
 };
 
 export const insertAndReturnId = async (table, values) => {
