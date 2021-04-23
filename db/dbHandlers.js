@@ -1,4 +1,4 @@
-import AppError from '../utils/appError.js.js';
+import AppError from '../utils/appError.js';
 import db from './index.js';
 
 const parameterise = (values, offset = 0) => {
@@ -95,7 +95,7 @@ export const insert = async (table, values) => {
     params
   );
   if (!rows) {
-    throw new AppError('Failed to create data', 400);
+    new AppError('Failed to create data', 400);
   }
 };
 
@@ -109,9 +109,6 @@ export const insertAndReturnId = async (table, values) => {
     `INSERT INTO ${table} (${columns}) VALUES ${placeholders} RETURNING id`,
     params
   );
-  if (!rows) {
-    throw new AppError('Failed to create data', 400);
-  }
   return { id: rows[0]['id'] };
 };
 

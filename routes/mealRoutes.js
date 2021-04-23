@@ -3,6 +3,7 @@ import { getOne, getAll } from './handler.js';
 import { createMeal } from '../domain/meals.js';
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
+import { getErrorType } from '../utils/appError.js';
 
 const router = new Router();
 export default router;
@@ -65,10 +66,8 @@ router.post(
         status: 'success',
       });
     } catch (error) {
-      res.status(error.statusCode).json({
-        status: error.status,
-        message: error.message,
-      });
+      //TODO: check this actually works for other errors
+      getErrorType(error);
     }
   }
 );

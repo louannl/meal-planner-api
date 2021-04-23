@@ -2,7 +2,8 @@ import meals from './mealRoutes.js';
 import tags from './tagRoutes.js';
 import days from './dayRoutes.js';
 import ingredients from './ingredientRoutes.js';
-import unit_types from './unit_typeRoutes.js';
+import unit_types from './unitTypeRoutes.js';
+import AppError from '../utils/appError.js';
 
 const routes = (app) => {
   app.use('/meals', meals);
@@ -10,6 +11,12 @@ const routes = (app) => {
   app.use('/days', days);
   app.use('/ingredients', ingredients);
   app.use('/unit_types', unit_types);
+  //TODO: add 'can't find' route
+  app.all('*', (req, res, next) => {
+    next(
+      new AppError(`Route, ${req.originalUrl} not found on this server`, 404)
+    );
+  });
 };
 
 export default routes;
