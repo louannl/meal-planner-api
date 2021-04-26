@@ -62,11 +62,13 @@ router.post(
     const { dayId, mealName, mealTags, ingredients } = req.body;
     try {
       await createMeal(dayId, mealName, mealTags, ingredients);
+
       res.status(201).json({
         status: 'success',
       });
     } catch (error) {
-      //TODO: check this actually works for other errors
+      //TODO: remove console log
+      console.log(error);
       getErrorType(error);
     }
   }
