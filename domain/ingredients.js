@@ -42,3 +42,5 @@ const mergeNestedObjectsByName = (array1, array2) => {
     };
   });
 };
+
+//TODO: get list of all meal ingredients

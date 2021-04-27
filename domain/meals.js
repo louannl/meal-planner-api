@@ -16,7 +16,11 @@ export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
 };
 
 //TODO: GET MEALS (WITH COMMENTS) BY DAY
-//TODO: PUT MEAL/:id
+//TODO: PUT MEAL/:id (edit)
 //TODO: DELETE MEAL/:id
+export const deleteMeal = async (mealId) => {
+  //
+};
+
 //TODO: GET ALL INGREDIENTS
 //TODO: GET ALL MEALS by day
