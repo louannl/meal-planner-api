@@ -1,5 +1,14 @@
 import { createMissingItems } from './domainHandler.js';
-import { insert, selectBy } from '../db/dbHandlers.js';
+import { deleteBy, insert, selectBy } from '../db/dbHandlers.js';
+
+const mergeNestedObjectsByName = (array1, array2) => {
+  return array1.map((item) => {
+    return {
+      ...item,
+      ...array2.find((item2) => item.name === item2.name),
+    };
+  });
+};
 
 export const createMealIngredients = async (mealId, ingredients) => {
   const ingredientNames = ingredients.map((ingredient) => ingredient.name);
@@ -34,13 +43,7 @@ export const createMealIngredients = async (mealId, ingredients) => {
   await insert('meal_ingredients', mealIngredientData);
 };
 
-const mergeNestedObjectsByName = (array1, array2) => {
-  return array1.map((item) => {
-    return {
-      ...item,
-      ...array2.find((item2) => item.name === item2.name),
-    };
-  });
+export const updateMealIngredients = async (mealId, ingredients) => {
+  await deleteBy('meal_ingredients', mealId, 'meal_id');
+  await createMealIngredients(mealId, ingredients);
 };
-
-//TODO: get list of all meal ingredients

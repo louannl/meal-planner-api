@@ -1,4 +1,4 @@
-import { insert, selectBy } from '../db/dbHandlers.js';
+import { deleteBy, insert, selectBy } from '../db/dbHandlers.js';
 import { createMissingItems } from './domainHandler.js';
 
 export const processMealTags = async (mealId, tags) => {
@@ -15,4 +15,11 @@ export const processMealTags = async (mealId, tags) => {
   });
 
   await insert('meal_tags', mealTags);
+};
+
+export const updateMealTags = async (mealId, tags) => {
+  await deleteBy('meal_tags', mealId, 'meal_id');
+  if (tags) {
+    await processMealTags(mealId, tags);
+  }
 };

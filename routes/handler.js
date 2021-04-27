@@ -149,7 +149,7 @@ export const deleteOne = (router, table) => {
         return res.sendStatus(200);
       }
 
-      const rowCount = await dbHandlers.deleteOne(table, id);
+      const rowCount = await dbHandlers.deleteBy(table, id);
 
       if (rowCount === 1) {
         res.status(204).json({

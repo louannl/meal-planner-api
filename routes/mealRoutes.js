@@ -103,7 +103,7 @@ router.put(
     const { id } = req.params;
     const { dayId, mealName, mealTags, ingredients } = req.body;
     try {
-      await updateMeal(id, mealName, dayId);
+      await updateMeal(id, mealName, dayId, mealTags, ingredients);
       res.status(200).json({
         status: 'success',
       });
