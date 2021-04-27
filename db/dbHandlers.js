@@ -130,10 +130,10 @@ export const updateOne = async (table, id, name) => {
   return rowCount;
 };
 
-export const deleteOne = async (table, id) => {
-  const { rowCount } = await db.query(`DELETE FROM ${table} WHERE id = ($1)`, [
-    id,
-  ]);
+export const deleteOne = async (table, id, type_id = 'id') => {
+  const {
+    rowCount,
+  } = await db.query(`DELETE FROM ${table} WHERE ${type_id} = ($1)`, [id]);
   if (!rowCount) {
     throw new AppError('No data to delete', 404);
   }

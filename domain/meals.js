@@ -1,6 +1,9 @@
-import { insert, insertAndReturnId } from '../db/dbHandlers.js';
+import { deleteOne, insert, insertAndReturnId } from '../db/dbHandlers.js';
 import { processMealTags } from './tags.js';
 import { createMealIngredients } from './ingredients.js';
+
+//TODO: GET ALL INGREDIENTS
+//TODO: GET ALL MEALS by day
 
 export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
   //MEALNAME
@@ -15,12 +18,14 @@ export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
   await createMealIngredients(mealId, ingredients);
 };
 
-//TODO: GET MEALS (WITH COMMENTS) BY DAY
-//TODO: PUT MEAL/:id (edit)
-//TODO: DELETE MEAL/:id
-export const deleteMeal = async (mealId) => {
-  //
-};
+//TODO: PUT MEAL/:id (update)
 
-//TODO: GET ALL INGREDIENTS
-//TODO: GET ALL MEALS by day
+export const deleteMeal = async (mealId) => {
+  await Promise.all([
+    deleteOne('meal_days', mealId, 'meal_id'),
+    deleteOne('meal_tags', mealId, 'meal_id'),
+    deleteOne('meal_ingredients', mealId, 'meal_id'),
+  ]);
+
+  await deleteOne('meals', mealId);
+};

@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import { getOne, getAll } from './handler.js';
-import { createMeal } from '../domain/meals.js';
+import { createMeal, deleteMeal } from '../domain/meals.js';
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
@@ -64,6 +64,36 @@ router.post(
       await createMeal(dayId, mealName, mealTags, ingredients);
 
       res.status(201).json({
+        status: 'success',
+      });
+    } catch (error) {
+      //TODO: remove console log
+      console.log(error);
+      getErrorType(error);
+    }
+  }
+);
+
+router.delete(
+  '/:id',
+  validate(
+    checkSchema({
+      id: {
+        errorMessage: 'ID is not valid',
+        notEmpty: true,
+        in: 'params',
+        isInt: true,
+        //sanitizer
+        toInt: true,
+      },
+    })
+  ),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      await deleteMeal(id);
+
+      res.status(204).json({
         status: 'success',
       });
     } catch (error) {
