@@ -84,7 +84,7 @@ router.put(
   '/:id',
   validate(
     checkSchema({
-      name: {
+      mealName: {
         errorMessage: 'Name is not valid',
         notEmpty: true,
         in: 'body',
@@ -101,9 +101,9 @@ router.put(
   async (req, res) => {
     //TODO: change later
     const { id } = req.params;
-    const { name } = req.body;
+    const { dayId, mealName, mealTags, ingredients } = req.body;
     try {
-      await updateMeal(id, name);
+      await updateMeal(id, mealName, dayId);
       res.status(200).json({
         status: 'success',
       });

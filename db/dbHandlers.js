@@ -121,7 +121,7 @@ export const insertAndReturnId = async (table, values) => {
   return { id: rows[0]['id'] };
 };
 
-export const update = async (table, id, values) => {
+export const update = async (table, id, values, type_id = 'id') => {
   const objectValues = getObjectValues(values);
   let params = objectValues.flat();
   params.push(id);
@@ -133,7 +133,7 @@ export const update = async (table, id, values) => {
   }
 
   await db.query(
-    `UPDATE ${table} SET ${columnPlaceholder} WHERE id = ($${
+    `UPDATE ${table} SET ${columnPlaceholder} WHERE ${type_id} = ($${
       columnPlaceholder.length + 1
     })`,
     params

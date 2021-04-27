@@ -26,9 +26,20 @@ export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
 
 //TODO: PUT MEAL/:id (update)
 //change name/ingredients, tags, day?
-export const updateMeal = async (mealId, mealName) => {
+export const updateMeal = async (
+  mealId,
+  mealName,
+  dayId,
+  mealTags,
+  ingredients
+) => {
   //universal update db function?
+  //update mealName
   await update('meals', mealId, [{ name: mealName }]);
+  //update meal_days
+  await update('meal_days', mealId, [{ day_id: dayId }], 'meal_id');
+  //update meal_tags
+  //update meal_ingredients
 };
 
 export const deleteMeal = async (mealId) => {
