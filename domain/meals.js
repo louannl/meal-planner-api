@@ -3,11 +3,12 @@ import {
   deleteOne,
   insert,
   insertAndReturnId,
+  update,
 } from '../db/dbHandlers.js';
 import { processMealTags } from './tags.js';
 import { createMealIngredients } from './ingredients.js';
 
-//TODO: GET ALL INGREDIENTS
+//TODO: GET ALL MEALINGREDIENTS
 //TODO: GET ALL MEALS by day
 
 export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
@@ -24,6 +25,11 @@ export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
 };
 
 //TODO: PUT MEAL/:id (update)
+//change name/ingredients, tags, day?
+export const updateMeal = async (mealId, mealName) => {
+  //universal update db function?
+  await update('meals', mealId, [{ name: mealName }]);
+};
 
 export const deleteMeal = async (mealId) => {
   await Promise.all([

@@ -81,7 +81,7 @@ const getColumns = (values) => {
   return Object.keys(values[0]).join(', ');
 };
 
-const getValueRows = (values) => {
+const getObjectValues = (values) => {
   return values.map((item) => Object.values(item));
 };
 
@@ -98,9 +98,9 @@ const getPlaceholders = (rows) => {
 export const insert = async (table, values) => {
   //need to ensure columns are validated before passed here
   const columns = getColumns(values);
-  const placeholderRows = getValueRows(values);
-  const placeholders = getPlaceholders(placeholderRows);
-  const params = placeholderRows.flat();
+  const objectValues = getObjectValues(values);
+  const placeholders = getPlaceholders(objectValues);
+  const params = objectValues.flat();
   await db.query(
     `INSERT INTO ${table} (${columns}) VALUES ${placeholders}`,
     params
@@ -110,14 +110,34 @@ export const insert = async (table, values) => {
 export const insertAndReturnId = async (table, values) => {
   //TODO: won't work if inserting more than one.
   const columns = getColumns(values);
-  const placeholderRows = getValueRows(values);
-  const placeholders = getPlaceholders(placeholderRows);
-  const params = placeholderRows.flat();
+  const objectValues = getObjectValues(values);
+  const placeholders = getPlaceholders(objectValues);
+  const params = objectValues.flat();
+  //TODO: repetitive code above, could be seperate
   const { rows } = await db.query(
     `INSERT INTO ${table} (${columns}) VALUES ${placeholders} RETURNING id`,
     params
   );
   return { id: rows[0]['id'] };
+};
+
+export const update = async (table, id, values) => {
+  const objectValues = getObjectValues(values);
+  let params = objectValues.flat();
+  params.push(id);
+
+  const columns = Object.keys(values[0]);
+  let columnPlaceholder = [];
+  for (let i = 0; i < columns.length; i++) {
+    columnPlaceholder.push(`${columns[i]} = $${i + 1}`);
+  }
+
+  await db.query(
+    `UPDATE ${table} SET ${columnPlaceholder} WHERE id = ($${
+      columnPlaceholder.length + 1
+    })`,
+    params
+  );
 };
 
 export const updateOne = async (table, id, name) => {

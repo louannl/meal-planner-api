@@ -1,9 +1,15 @@
 import Router from 'express-promise-router';
 import { getOne, getAll } from './handler.js';
-import { createMeal, deleteAllMeals, deleteMeal } from '../domain/meals.js';
+import {
+  createMeal,
+  deleteAllMeals,
+  deleteMeal,
+  updateMeal,
+} from '../domain/meals.js';
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
+import { update } from '../db/dbHandlers.js';
 
 const router = new Router();
 export default router;
@@ -64,6 +70,41 @@ router.post(
       await createMeal(dayId, mealName, mealTags, ingredients);
 
       res.status(201).json({
+        status: 'success',
+      });
+    } catch (error) {
+      //TODO: remove console log
+      console.log(error);
+      getErrorType(error);
+    }
+  }
+);
+
+router.put(
+  '/:id',
+  validate(
+    checkSchema({
+      name: {
+        errorMessage: 'Name is not valid',
+        notEmpty: true,
+        in: 'body',
+      },
+      id: {
+        errorMessage: 'ID is not valid',
+        notEmpty: true,
+        in: 'params',
+        isInt: true,
+        toInt: true,
+      },
+    })
+  ),
+  async (req, res) => {
+    //TODO: change later
+    const { id } = req.params;
+    const { name } = req.body;
+    try {
+      await updateMeal(id, name);
+      res.status(200).json({
         status: 'success',
       });
     } catch (error) {
