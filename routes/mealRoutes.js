@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import { getOne, getAll } from './handler.js';
-import { createMeal, deleteMeal } from '../domain/meals.js';
+import { createMeal, deleteAllMeals, deleteMeal } from '../domain/meals.js';
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
@@ -103,3 +103,17 @@ router.delete(
     }
   }
 );
+
+router.delete('/', async (req, res) => {
+  try {
+    await deleteAllMeals();
+
+    res.status(204).json({
+      status: 'success',
+    });
+  } catch (error) {
+    //TODO: remove console log
+    console.log(error);
+    getErrorType(error);
+  }
+});

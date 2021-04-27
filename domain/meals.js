@@ -1,4 +1,9 @@
-import { deleteOne, insert, insertAndReturnId } from '../db/dbHandlers.js';
+import {
+  deleteAll,
+  deleteOne,
+  insert,
+  insertAndReturnId,
+} from '../db/dbHandlers.js';
 import { processMealTags } from './tags.js';
 import { createMealIngredients } from './ingredients.js';
 
@@ -28,4 +33,13 @@ export const deleteMeal = async (mealId) => {
   ]);
 
   await deleteOne('meals', mealId);
+};
+export const deleteAllMeals = async () => {
+  await Promise.all([
+    deleteAll('meal_days'),
+    deleteAll('meal_tags'),
+    deleteAll('meal_ingredients'),
+  ]);
+
+  await deleteAll('meals');
 };

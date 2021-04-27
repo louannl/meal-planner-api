@@ -140,7 +140,6 @@ export const deleteOne = async (table, id, type_id = 'id') => {
   return rowCount;
 };
 
-//TODO: delete all with same mealid?
 export const deleteAll = async (table) => {
   const { rowCount } = await db.query(`DELETE FROM ${table}`);
   if (!rowCount) {
