@@ -9,7 +9,7 @@ export const getAll = (router, table) => {
       const { rows, rowCount } = await selectAll(table);
 
       if (rowCount === 0) {
-        return new AppError('No information found', 404);
+        throw new AppError(`No records found in ${table}`, 404);
       }
 
       res.status(200).json({
@@ -42,8 +42,11 @@ export const getOne = (router, table) => {
 
       const rows = await selectBy(table, '*', 'id', id);
 
-      if (rows === 0) {
-        return new AppError('No information found', 404);
+      if (rows == 0) {
+        throw new AppError(
+          `No record found with id of ${id} from ${table}`,
+          404
+        );
       }
 
       res.status(200).json({
