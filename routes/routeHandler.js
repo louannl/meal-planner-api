@@ -1,16 +1,24 @@
 import { checkSchema } from 'express-validator';
+import { selectAll, selectBy } from '../db/dbHandlers.js';
 import validate from '../utils/validate.js';
-import * as dbHandlers from '../db/dbHandlers.js';
+import AppError from '../utils/appError.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
-    const { rows, rowCount } = await dbHandlers.selectAll(table);
+    try {
+      const { rows, rowCount } = await selectAll(table);
 
-    if (rowCount === 0) {
-      return res.sendStatus(404);
+      if (rowCount === 0) {
+        return new AppError('No information found', 404);
+      }
+
+      res.status(200).json({
+        status: 'success',
+        data: rows,
+      });
+    } catch (error) {
+      getErrorType(error);
     }
-
-    res.send(rows);
   });
 };
 
@@ -24,7 +32,6 @@ export const getOne = (router, table) => {
           notEmpty: true,
           in: 'params',
           isInt: true,
-          //sanitizer
           toInt: true,
         },
       })
@@ -32,18 +39,17 @@ export const getOne = (router, table) => {
     async (req, res) => {
       //TODO: update
       const { id } = req.params;
-      const { rows, rowCount } = await dbHandlers.selectBy(
-        table,
-        '*',
-        'id',
-        id
-      );
 
-      if (rowCount === 0) {
-        return res.sendStatus(404);
+      const rows = await selectBy(table, '*', 'id', id);
+
+      if (rows === 0) {
+        return new AppError('No information found', 404);
       }
 
-      res.send(rows[0]);
+      res.status(200).json({
+        status: 'success',
+        data: rows,
+      });
     }
   );
 };

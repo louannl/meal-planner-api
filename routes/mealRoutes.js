@@ -1,5 +1,5 @@
 import Router from 'express-promise-router';
-import { getOne, getAll } from './handler.js';
+import { getOne, getAll } from './routeHandler.js';
 import {
   createMeal,
   deleteAllMeals,
@@ -13,12 +13,6 @@ import { returnMealIngredients } from '../db/dbMeals.js';
 
 const router = new Router();
 export default router;
-
-//GET MEAL/:id
-getAll(router, 'meals');
-
-//GET MEALS BY DAYS
-router.get('/');
 
 router.get('/ingredients', async (req, res) => {
   try {
@@ -36,6 +30,10 @@ router.get('/ingredients', async (req, res) => {
 });
 
 getOne(router, 'meals');
+//GET MEAL/:id
+getAll(router, 'meals');
+
+//GET MEALS BY DAYS
 
 //('SELECT * from meals_days WHERE day_id = ($1)'), [dayId] )
 

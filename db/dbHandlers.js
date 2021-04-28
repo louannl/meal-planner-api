@@ -10,6 +10,9 @@ const parameterise = (values, offset = 0) => {
 };
 
 export const selectBy = async (table, outputs, by, values) => {
+  if (!Array.isArray(values)) {
+    values = [values];
+  }
   const { rows } = await db.query(
     `SELECT ${outputs} from ${table} WHERE ${by} IN (${parameterise(values)})`,
     values

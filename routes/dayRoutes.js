@@ -1,5 +1,5 @@
 import Router from 'express-promise-router';
-import { getAll, getOne } from './handler.js';
+import { getAll, getOne } from './routeHandler.js';
 
 const router = new Router();
 export default router;
