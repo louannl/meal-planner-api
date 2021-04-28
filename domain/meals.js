@@ -3,6 +3,7 @@ import {
   deleteBy,
   insert,
   insertAndReturnId,
+  selectBy,
   update,
 } from '../db/dbHandlers.js';
 import { processMealTags, updateMealTags } from './tags.js';
@@ -13,13 +14,10 @@ import { createMealIngredients, updateMealIngredients } from './ingredients.js';
 
 export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
   const { id: mealId } = await insertAndReturnId('meals', [{ name: mealName }]);
-
   await insert('meal_days', [{ meal_id: mealId, day_id: dayId }]);
-
   if (mealTags) {
     await processMealTags(mealId, mealTags);
   }
-
   await createMealIngredients(mealId, ingredients);
 };
 

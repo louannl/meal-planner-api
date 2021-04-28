@@ -9,17 +9,33 @@ import {
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
-import { update } from '../db/dbHandlers.js';
+import { returnMealIngredients } from '../db/dbMeals.js';
 
 const router = new Router();
 export default router;
 
 //GET MEAL/:id
-getOne(router, 'meals');
 getAll(router, 'meals');
 
 //GET MEALS BY DAYS
 router.get('/');
+
+router.get('/ingredients', async (req, res) => {
+  try {
+    const { rows } = await returnMealIngredients();
+
+    res.status(200).json({
+      status: 'success',
+      data: rows,
+    });
+  } catch (error) {
+    //TODO: remove console log
+    console.log(error);
+    getErrorType(error);
+  }
+});
+
+getOne(router, 'meals');
 
 //('SELECT * from meals_days WHERE day_id = ($1)'), [dayId] )
 
