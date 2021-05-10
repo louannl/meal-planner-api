@@ -4,6 +4,7 @@ import {
   createMeal,
   deleteAllMeals,
   deleteMeal,
+  getMealswithDay,
   updateMeal,
 } from '../domain/meals.js';
 import validate from '../utils/validate.js';
@@ -14,9 +15,24 @@ import { returnMealIngredients } from '../db/dbMeals.js';
 const router = new Router();
 export default router;
 
-router.get('/ingredients', async (req, res) => {
+router.get('/mealingredients', async (req, res) => {
   try {
     const { rows } = await returnMealIngredients();
+
+    res.status(200).json({
+      status: 'success',
+      data: rows,
+    });
+  } catch (error) {
+    //TODO: remove console log
+    console.log(error);
+    getErrorType(error);
+  }
+});
+
+router.get('/mealswithdays', async (req, res) => {
+  try {
+    const rows = await getMealswithDay();
 
     res.status(200).json({
       status: 'success',
