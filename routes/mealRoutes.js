@@ -4,6 +4,7 @@ import {
   createMeal,
   deleteAllMeals,
   deleteMeal,
+  getMealsByDay,
   getMealswithDay,
   updateMeal,
 } from '../domain/meals.js';
@@ -44,6 +45,36 @@ router.get('/mealswithdays', async (req, res) => {
     getErrorType(error);
   }
 });
+
+router.get(
+  '/mealsbyday/:id',
+  validate(
+    checkSchema({
+      id: {
+        errorMessage: 'ID is not valid',
+        notEmpty: true,
+        in: 'params',
+        isInt: true,
+        toInt: true,
+      },
+    })
+  ),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const rows = await getMealsByDay(id);
+
+      res.status(200).json({
+        status: 'success',
+        data: rows,
+      });
+    } catch (error) {
+      //TODO: remove console log
+      console.log(error);
+      getErrorType(error);
+    }
+  }
+);
 
 getOne(router, 'meals');
 //GET MEAL/:id

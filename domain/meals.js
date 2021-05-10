@@ -9,10 +9,8 @@ import { processMealTags, updateMealTags } from './tags.js';
 import { createMealIngredients, updateMealIngredients } from './ingredients.js';
 import { returnMealByDayId, returnMealsByDay } from '../db/dbMeals.js';
 
-//TODO: GET all meals with days and tag
 export const getMealswithDay = async () => {
   const { rows } = await returnMealsByDay();
-  //if no data?
   //TODO: Probably a cleaner way of doing this?
   let data = [];
   for (const row of rows) {
@@ -33,7 +31,27 @@ export const getMealswithDay = async () => {
 
 //TODO: GET ALL MEALS by day
 export const getMealsByDay = async (dayId) => {
-  const { rows } = returnMealByDayId(dayId);
+  const { rows } = await returnMealByDayId(dayId);
+  //TODO: Can be cleared up to remove repetitive code
+  let data = [];
+  for (const row of rows) {
+    if (!data.some((e) => e.meal_id === row.meal_id)) {
+      data.push({
+        meal_id: row.meal_id,
+        meal: row.meal,
+        tags: [row.tags],
+      });
+      continue;
+    }
+    let index = data.findIndex((e) => e.meal_id === row.meal_id);
+    data[index].tags.push(row.tags);
+  }
+
+  if (!Array.isArray(data) || !data.length) {
+    return;
+  }
+
+  return data;
 };
 
 //TODO: GET ALL meal info
