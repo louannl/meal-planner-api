@@ -29,7 +29,6 @@ export const getMealswithDay = async () => {
   return data;
 };
 
-//TODO: GET ALL MEALS by day
 export const getMealsByDay = async (dayId) => {
   const { rows } = await returnMealByDayId(dayId);
   //TODO: Can be cleared up to remove repetitive code
