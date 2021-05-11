@@ -8,7 +8,29 @@ export const createMealDay = async (mealId, dayId) => {
   ]);
 };
 
-export const returnMealIngredients = async () => {
+export const returnMealDays = async (mealId) => {
+  return await db.query(
+    `
+    SELECT d.name AS day
+    FROM days AS d
+    JOIN meal_days AS md ON d.id = md.day_id
+    WHERE md.meal_id = $1`,
+    [mealId]
+  );
+};
+
+export const returnMealTags = async (mealId) => {
+  return await db.query(
+    `
+    SELECT t.name AS tag
+    FROM tags AS t
+    JOIN meal_tags AS mt ON t.id = mt.tag_id
+    WHERE mt.meal_id = $1`,
+    [mealId]
+  );
+};
+
+export const returnAllMealIngredients = async () => {
   const queryText = `SELECT i.name AS ingredient, SUM(amount) AS total, ut.name AS unit 
     FROM meal_ingredients AS mi 
     INNER JOIN ingredients AS i ON mi.ingredient_id = i.id 

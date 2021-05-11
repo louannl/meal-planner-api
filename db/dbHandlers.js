@@ -65,10 +65,10 @@ export const idExists = async (id, table) => {
 };
 
 export const selectOne = async (table, id) => {
-  const {
-    rows,
-    rowCount,
-  } = await db.query(`SELECT * FROM ${table} WHERE id = ($1)`, [id]);
+  const { rows, rowCount } = await db.query(
+    `SELECT * FROM ${table} WHERE id = ($1)`,
+    [id]
+  );
   return { rows, rowCount };
 };
 
@@ -144,19 +144,18 @@ export const update = async (table, id, values, type_id = 'id') => {
 };
 
 export const updateOne = async (table, id, name) => {
-  const {
-    rowCount,
-  } = await db.query(`UPDATE ${table} SET name = ($1) WHERE id = ($2)`, [
-    name,
-    id,
-  ]);
+  const { rowCount } = await db.query(
+    `UPDATE ${table} SET name = ($1) WHERE id = ($2)`,
+    [name, id]
+  );
   return rowCount;
 };
 
 export const deleteBy = async (table, id, type_id = 'id') => {
-  const {
-    rowCount,
-  } = await db.query(`DELETE FROM ${table} WHERE ${type_id} = ($1)`, [id]);
+  const { rowCount } = await db.query(
+    `DELETE FROM ${table} WHERE ${type_id} = ($1)`,
+    [id]
+  );
   return rowCount;
 };
 

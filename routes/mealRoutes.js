@@ -4,29 +4,29 @@ import {
   createMeal,
   deleteAllMeals,
   deleteMeal,
+  getMealInfo,
   getMealsByDay,
   getMealswithDay,
   updateMeal,
 } from '../domain/meals.js';
+//TODO: change this to domainMeals or something
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
-import { returnMealIngredients } from '../db/dbMeals.js';
+import { returnAllMealIngredients } from '../db/dbMeals.js';
 
 const router = new Router();
 export default router;
 
 router.get('/mealingredients', async (req, res) => {
   try {
-    const { rows } = await returnMealIngredients();
+    const { rows } = await returnAllMealIngredients();
 
     res.status(200).json({
       status: 'success',
       data: rows,
     });
   } catch (error) {
-    //TODO: remove console log
-    console.log(error);
     getErrorType(error);
   }
 });
@@ -40,8 +40,6 @@ router.get('/mealswithdays', async (req, res) => {
       data: rows,
     });
   } catch (error) {
-    //TODO: remove console log
-    console.log(error);
     getErrorType(error);
   }
 });
@@ -69,20 +67,38 @@ router.get(
         data: rows,
       });
     } catch (error) {
-      //TODO: remove console log
-      console.log(error);
       getErrorType(error);
     }
   }
 );
 
-getOne(router, 'meals');
-//GET MEAL/:id
-getAll(router, 'meals');
+router.get(
+  '/:id',
+  validate(
+    checkSchema({
+      id: {
+        errorMessage: 'ID is not valid',
+        notEmpty: true,
+        in: 'params',
+        isInt: true,
+        toInt: true,
+      },
+    })
+  ),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const rows = await getMealInfo(id);
 
-//GET MEALS BY DAYS
-
-//('SELECT * from meals_days WHERE day_id = ($1)'), [dayId] )
+      res.status(200).json({
+        status: 'success',
+        data: rows,
+      });
+    } catch (error) {
+      getErrorType(error);
+    }
+  }
+);
 
 router.post(
   '/',
@@ -134,8 +150,6 @@ router.post(
         status: 'success',
       });
     } catch (error) {
-      //TODO: remove console log
-      console.log(error);
       getErrorType(error);
     }
   }
@@ -169,8 +183,6 @@ router.put(
         status: 'success',
       });
     } catch (error) {
-      //TODO: remove console log
-      console.log(error);
       getErrorType(error);
     }
   }
@@ -199,8 +211,6 @@ router.delete(
         status: 'success',
       });
     } catch (error) {
-      //TODO: remove console log
-      console.log(error);
       getErrorType(error);
     }
   }
@@ -214,8 +224,6 @@ router.delete('/', async (req, res) => {
       status: 'success',
     });
   } catch (error) {
-    //TODO: remove console log
-    console.log(error);
     getErrorType(error);
   }
 });

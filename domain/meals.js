@@ -3,14 +3,20 @@ import {
   deleteBy,
   insert,
   insertAndReturnId,
+  selectBy,
   update,
 } from '../db/dbHandlers.js';
 import { processMealTags, updateMealTags } from './tags.js';
 import { createMealIngredients, updateMealIngredients } from './ingredients.js';
-import { returnMealByDayId, returnMealsByDay } from '../db/dbMeals.js';
+import * as dbMeals from '../db/dbMeals.js';
+import db from '../db/index.js';
+import { returnMealIngredients } from '../db/dbIngredients.js';
+import AppError from '../utils/appError.js';
+
+//TODO: check meal creation (meals is unique, but can be on multiple days)
 
 export const getMealswithDay = async () => {
-  const { rows } = await returnMealsByDay();
+  const { rows } = await dbMeals.returnMealsByDay();
   //TODO: Probably a cleaner way of doing this?
   let data = [];
   for (const row of rows) {
@@ -30,7 +36,7 @@ export const getMealswithDay = async () => {
 };
 
 export const getMealsByDay = async (dayId) => {
-  const { rows } = await returnMealByDayId(dayId);
+  const { rows } = await dbMeals.returnMealByDayId(dayId);
   //TODO: Can be cleared up to remove repetitive code
   let data = [];
   for (const row of rows) {
@@ -53,7 +59,30 @@ export const getMealsByDay = async (dayId) => {
   return data;
 };
 
-//TODO: GET ALL meal info
+//TODO: GET meal info
+export const getMealInfo = async (mealId) => {
+  //meal
+  //if no meal by that id?
+  let meal = await selectBy('meals', 'name', 'id', mealId);
+  if (!meal.length) {
+    throw new AppError('No data found', 404);
+  }
+  //days
+  let { rows: days } = await dbMeals.returnMealDays(mealId);
+  days = days.map((value) => {
+    return value.day;
+  });
+  //tags
+  let { rows: tags } = await dbMeals.returnMealTags(mealId);
+  tags = tags.map((value) => {
+    return value.tag;
+  });
+  //ingredients
+  const { rows: ingredients } = await returnMealIngredients(mealId);
+
+  let data = { meal: meal[0].name, days, tags, ingredients };
+  return data;
+};
 
 export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
   const { id: mealId } = await insertAndReturnId('meals', [{ name: mealName }]);
