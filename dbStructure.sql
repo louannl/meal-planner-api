@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS meal_tags (
     	REFERENCES tags (id)
 );
 
-CREATE TABLE IF NOT EXISTS day_meals (
+CREATE TABLE IF NOT EXISTS meal_days (
 	id serial PRIMARY KEY,
 	meal_id INT NOT NULL,
     FOREIGN KEY (meal_id)
