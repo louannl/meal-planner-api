@@ -143,6 +143,7 @@ export const update = async (table, id, values, type_id = 'id') => {
   );
 };
 
+//TODO: DELETE AND REMOVE UPDATE ONE
 export const updateOne = async (table, id, name) => {
   const { rowCount } = await db.query(
     `UPDATE ${table} SET name = ($1) WHERE id = ($2)`,

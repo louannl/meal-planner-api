@@ -118,7 +118,7 @@ export const updateOne = (router, table) => {
       if (await dbHandlers.getExistingNames(name, table)) {
         return res.sendStatus(200);
       }
-
+      //TODO: REMOVE UPDATE ONE
       const rowCount = await dbHandlers.updateOne(table, id, name);
 
       if (rowCount === 1) {

@@ -109,12 +109,11 @@ router.post(
         notEmpty: true,
         in: 'body',
       },
-      dayId: {
+      dayIds: {
         errorMessage: 'Day Id is not valid',
         notEmpty: true,
         in: 'body',
-        isInt: true,
-        toInt: true,
+        isArray: true,
       },
       mealTags: {
         errorMessage: 'MealTag must be an array',
@@ -142,9 +141,9 @@ router.post(
     })
   ),
   async (req, res) => {
-    const { dayId, mealName, mealTags, ingredients } = req.body;
+    const { dayIds, mealName, mealTags, ingredients } = req.body;
     try {
-      await createMeal(dayId, mealName, mealTags, ingredients);
+      await createMeal(dayIds, mealName, mealTags, ingredients);
 
       res.status(201).json({
         status: 'success',
@@ -171,18 +170,20 @@ router.put(
         isInt: true,
         toInt: true,
       },
+      //TODO: tags, ingredients etc.
     })
   ),
   async (req, res) => {
     //TODO: change later
     const { id } = req.params;
-    const { dayId, mealName, mealTags, ingredients } = req.body;
+    const { dayIds, mealName, mealTags, ingredients } = req.body;
     try {
-      await updateMeal(id, mealName, dayId, mealTags, ingredients);
+      await updateMeal(id, mealName, dayIds, mealTags, ingredients);
       res.status(200).json({
         status: 'success',
       });
     } catch (error) {
+      console.log(error);
       getErrorType(error);
     }
   }

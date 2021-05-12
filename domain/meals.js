@@ -9,9 +9,9 @@ import {
 import { processMealTags, updateMealTags } from './tags.js';
 import { createMealIngredients, updateMealIngredients } from './ingredients.js';
 import * as dbMeals from '../db/dbMeals.js';
-import db from '../db/index.js';
 import { returnMealIngredients } from '../db/dbIngredients.js';
 import AppError from '../utils/appError.js';
+import { insertMealDays, updateMealDays } from './days.js';
 
 //TODO: check meal creation (meals is unique, but can be on multiple days)
 
@@ -61,32 +61,28 @@ export const getMealsByDay = async (dayId) => {
 
 //TODO: GET meal info
 export const getMealInfo = async (mealId) => {
-  //meal
-  //if no meal by that id?
+  //TODO: if no meal by that id?
   let meal = await selectBy('meals', 'name', 'id', mealId);
   if (!meal.length) {
     throw new AppError('No data found', 404);
   }
-  //days
   let { rows: days } = await dbMeals.returnMealDays(mealId);
   days = days.map((value) => {
     return value.day;
   });
-  //tags
   let { rows: tags } = await dbMeals.returnMealTags(mealId);
   tags = tags.map((value) => {
     return value.tag;
   });
-  //ingredients
   const { rows: ingredients } = await returnMealIngredients(mealId);
 
   let data = { meal: meal[0].name, days, tags, ingredients };
   return data;
 };
 
-export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
+export const createMeal = async (dayIds, mealName, mealTags, ingredients) => {
   const { id: mealId } = await insertAndReturnId('meals', [{ name: mealName }]);
-  await insert('meal_days', [{ meal_id: mealId, day_id: dayId }]);
+  await insertMealDays(mealId, dayIds);
   if (mealTags) {
     await processMealTags(mealId, mealTags);
   }
@@ -96,14 +92,14 @@ export const createMeal = async (dayId, mealName, mealTags, ingredients) => {
 export const updateMeal = async (
   mealId,
   mealName,
-  dayId,
+  dayIds,
   mealTags,
   ingredients
 ) => {
   //As not using an ORM, this becomes to tedious to update individual parts
   //so most cases the functions will delete all existing and then re-create
   await update('meals', mealId, [{ name: mealName }]);
-  await update('meal_days', mealId, [{ day_id: dayId }], 'meal_id');
+  await updateMealDays(mealId, dayIds);
   await updateMealTags(mealId, mealTags);
   await updateMealIngredients(mealId, ingredients);
 };
