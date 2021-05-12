@@ -15,23 +15,31 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.createTable('meal_days', {
+  return db.createTable('meal_tags', {
     id: { type: 'int', primaryKey: true },
     meal_id: {
       type: 'int',
       notNull: true,
       foreignKey: {
-        name: 'meal_days_meal_id_fk',
+        name: 'meal_tags_meal_id_fk',
         table: 'meals',
+        rules: {
+          onDelete: 'NO ACTION',
+          onUpdate: 'NO ACTION',
+        },
         mapping: 'id',
       },
     },
-    day_id: {
+    tag_id: {
       type: 'int',
       notNull: true,
       foreignKey: {
-        name: 'meal_days_day_id_fk',
-        table: 'days',
+        name: 'meal_tags_tag_id_fk',
+        table: 'tags',
+        rules: {
+          onDelete: 'NO ACTION',
+          onUpdate: 'NO ACTION',
+        },
         mapping: 'id',
       },
     },

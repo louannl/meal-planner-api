@@ -24,6 +24,10 @@ exports.up = function (db) {
       foreignKey: {
         name: 'meal_ingredients_meal_id_fk',
         table: 'meals',
+        rules: {
+          onDelete: 'NO ACTION',
+          onUpdate: 'NO ACTION',
+        },
         mapping: 'id',
       },
     },
@@ -33,6 +37,10 @@ exports.up = function (db) {
       foreignKey: {
         name: 'meal_ingredients_ingredient_id_fk',
         table: 'ingredients',
+        rules: {
+          onDelete: 'NO ACTION',
+          onUpdate: 'NO ACTION',
+        },
         mapping: 'id',
       },
     },
@@ -43,6 +51,10 @@ exports.up = function (db) {
       foreignKey: {
         name: 'meal_ingredients_unit_type_id_fk',
         table: 'unit_types',
+        rules: {
+          onDelete: 'NO ACTION',
+          onUpdate: 'NO ACTION',
+        },
         mapping: 'id',
       },
     },
