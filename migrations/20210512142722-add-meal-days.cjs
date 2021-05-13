@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.createTable('meal_days', {
-    id: { type: 'int', primaryKey: true },
+    id: { type: 'int', primaryKey: true, autoIncrement: true },
     meal_id: {
       type: 'int',
       notNull: true,

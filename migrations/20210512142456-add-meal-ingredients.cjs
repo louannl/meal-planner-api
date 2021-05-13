@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 //TODO: check if i have implemented foreign key correctly
 exports.up = function (db) {
   return db.createTable('meal_ingredients', {
-    id: { type: 'int', primaryKey: true },
+    id: { type: 'int', primaryKey: true, autoIncrement: true },
     meal_id: {
       type: 'int',
       notNull: true,

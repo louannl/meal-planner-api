@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.createTable('unit_types', {
-    id: { type: 'int', primaryKey: true },
+    id: { type: 'int', primaryKey: true, autoIncrement: true },
     name: { type: 'string', notNull: true, length: 50, unique: true },
     symbol: { type: 'string', notNull: true, length: 5, unique: true },
   });

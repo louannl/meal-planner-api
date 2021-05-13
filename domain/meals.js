@@ -13,8 +13,6 @@ import { returnMealIngredients } from '../db/dbIngredients.js';
 import AppError from '../utils/appError.js';
 import { insertMealDays, updateMealDays } from './days.js';
 
-//TODO: check meal creation (meals is unique, but can be on multiple days)
-
 export const getMealswithDay = async () => {
   const { rows } = await dbMeals.returnMealsByDay();
   //TODO: Probably a cleaner way of doing this?

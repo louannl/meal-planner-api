@@ -116,7 +116,7 @@ export const insertAndReturnId = async (table, values) => {
   const objectValues = getObjectValues(values);
   const placeholders = getPlaceholders(objectValues);
   const params = objectValues.flat();
-  //TODO: repetitive code above, could be separate
+  //TODO: repetitive code above, could be seperate
   const { rows } = await db.query(
     `INSERT INTO ${table} (${columns}) VALUES ${placeholders} RETURNING id`,
     params
