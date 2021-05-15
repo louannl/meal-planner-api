@@ -41,7 +41,8 @@ export const returnAllMealIngredients = async () => {
 };
 
 export const returnMealsByDay = async () => {
-  const queryText = `SELECT DISTINCT m.id AS meal_id, m.name AS meal, d.name AS day, t.name AS tags 
+  const queryText = `SELECT DISTINCT m.id AS meal_id, m.name AS meal, d.name AS day, 
+  t.name AS tags, d.id AS day_id 
   FROM meals AS m 
   INNER JOIN meal_days AS md ON m.id = md.meal_id 
   INNER JOIN meal_tags AS mt ON m.id = mt.meal_id 
@@ -53,7 +54,7 @@ export const returnMealsByDay = async () => {
 };
 
 export const returnMealByDayId = async (dayId) => {
-  const queryText = `SELECT DISTINCT m.id AS meal_id, m.name AS meal, t.name AS tags 
+  const queryText = `SELECT DISTINCT m.id AS id, m.name AS meal, t.name AS tags 
   FROM meal_days AS md 
   INNER JOIN meals AS m ON md.meal_id = m.id 
   INNER JOIN meal_tags AS mt ON m.id = mt.meal_id 

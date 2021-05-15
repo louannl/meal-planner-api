@@ -1,8 +1,8 @@
 import {
   deleteAll,
   deleteBy,
-  insert,
   insertAndReturnId,
+  selectAll,
   selectBy,
   update,
 } from '../db/dbHandlers.js';
@@ -13,40 +13,47 @@ import { returnMealIngredients } from '../db/dbIngredients.js';
 import AppError from '../utils/appError.js';
 import { insertMealDays, updateMealDays } from './days.js';
 
-export const getMealswithDay = async () => {
-  const { rows } = await dbMeals.returnMealsByDay();
-  //TODO: Probably a cleaner way of doing this?
-  let data = [];
-  for (const row of rows) {
-    if (!data.some((e) => e.meal_id === row.meal_id)) {
-      data.push({
-        meal_id: row.meal_id,
-        meal: row.meal,
-        day: row.day,
-        tags: [row.tags],
+const flattenMeals = (meals) => {
+  let flatMeals = [];
+  for (const meal of meals) {
+    if (!flatMeals.some((flatMeal) => flatMeal.id === meal.id)) {
+      flatMeals.push({
+        ...meal,
+        tags: [meal.tags],
       });
       continue;
     }
-    let index = data.findIndex((e) => e.meal_id === row.meal_id);
-    data[index].tags.push(row.tags);
+    flatMeals[
+      flatMeals.findIndex((flatMeal) => flatMeal.id === meal.id)
+    ].tags.push(meal.tags);
   }
-  return data;
+  return flatMeals;
+};
+
+export const getMealsWithDay = async () => {
+  let { rows: days } = await selectAll('days');
+
+  for (let day of days) {
+    day.meals = flattenMeals((await dbMeals.returnMealByDayId(day.id)).rows);
+  }
+
+  return days;
 };
 
 export const getMealsByDay = async (dayId) => {
   const { rows } = await dbMeals.returnMealByDayId(dayId);
-  //TODO: Can be cleared up to remove repetitive code
+  //FIXME: Can be cleared up to remove repetitive code
   let data = [];
   for (const row of rows) {
-    if (!data.some((e) => e.meal_id === row.meal_id)) {
+    if (!data.some((e) => e.id === row.id)) {
       data.push({
-        meal_id: row.meal_id,
+        id: row.id,
         meal: row.meal,
         tags: [row.tags],
       });
       continue;
     }
-    let index = data.findIndex((e) => e.meal_id === row.meal_id);
+    let index = data.findIndex((e) => e.id === row.id);
     data[index].tags.push(row.tags);
   }
 
@@ -57,9 +64,8 @@ export const getMealsByDay = async (dayId) => {
   return data;
 };
 
-//TODO: GET meal info
 export const getMealInfo = async (mealId) => {
-  //TODO: if no meal by that id?
+  //FIXME: if no meal by that id?
   let meal = await selectBy('meals', 'name', 'id', mealId);
   if (!meal.length) {
     throw new AppError('No data found', 404);

@@ -6,7 +6,7 @@ import {
   deleteMeal,
   getMealInfo,
   getMealsByDay,
-  getMealswithDay,
+  getMealsWithDay,
   updateMeal,
 } from '../domain/meals.js';
 //TODO: change this to domainMeals or something
@@ -33,7 +33,7 @@ router.get('/mealingredients', async (req, res) => {
 
 router.get('/mealswithdays', async (req, res) => {
   try {
-    const rows = await getMealswithDay();
+    const rows = await getMealsWithDay();
 
     res.status(200).json({
       status: 'success',
