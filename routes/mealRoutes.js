@@ -15,10 +15,11 @@ import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
 import { returnAllMealIngredients } from '../db/dbMeals.js';
 
+//TODO: Hyphenate routes to make it easier to read
 const router = new Router();
 export default router;
 
-router.get('/mealingredients', async (req, res) => {
+router.get('/meal-ingredients', async (req, res) => {
   try {
     const { rows } = await returnAllMealIngredients();
 
@@ -31,7 +32,7 @@ router.get('/mealingredients', async (req, res) => {
   }
 });
 
-router.get('/mealswithdays', async (req, res) => {
+router.get('/meals-with-days', async (req, res) => {
   try {
     const rows = await getMealsWithDay();
 
@@ -45,7 +46,7 @@ router.get('/mealswithdays', async (req, res) => {
 });
 
 router.get(
-  '/mealsbyday/:id',
+  '/meals-by-day/:id',
   validate(
     checkSchema({
       id: {
