@@ -1,5 +1,4 @@
 import Router from 'express-promise-router';
-import { getOne, getAll } from './routeHandler.js';
 import {
   createMeal,
   deleteAllMeals,
@@ -13,11 +12,12 @@ import {
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
-import { returnAllMealIngredients } from '../db/dbMeals.js';
+import { deleteDayByMealId, returnAllMealIngredients } from '../db/dbMeals.js';
 
-//TODO: Hyphenate routes to make it easier to read
 const router = new Router();
 export default router;
+
+//TODO: Add Route to delete day from a meal. if only one day delete whole meal
 
 router.get('/meal-ingredients', async (req, res) => {
   try {
@@ -171,11 +171,32 @@ router.put(
         isInt: true,
         toInt: true,
       },
-      //TODO: tags, ingredients etc.
+      mealTags: {
+        errorMessage: 'MealTag must be an array',
+        isArray: true,
+        in: 'body',
+      },
+      ingredients: {
+        errorMessage: 'ingredients must be an array',
+        isArray: true,
+      },
+      'ingredients.*.name': {
+        notEmpty: true,
+      },
+      'ingredients.*.amount': {
+        notEmpty: true,
+        isInt: true,
+        toInt: true,
+      },
+      'ingredients.*.unitType': {
+        errorMessage: 'unitType must exist',
+        notEmpty: true,
+        isInt: true,
+        toInt: true,
+      },
     })
   ),
   async (req, res) => {
-    //TODO: change later
     const { id } = req.params;
     const { dayIds, mealName, mealTags, ingredients } = req.body;
     try {
@@ -229,3 +250,38 @@ router.delete('/', async (req, res) => {
     getErrorType(error);
   }
 });
+
+router.delete(
+  '/:id/:dayId',
+  validate(
+    checkSchema({
+      id: {
+        errorMessage: 'ID is not valid',
+        notEmpty: true,
+        in: 'params',
+        isInt: true,
+        //sanitizer
+        toInt: true,
+      },
+      dayId: {
+        errorMessage: 'Day ID is not valid',
+        notEmpty: true,
+        in: 'params',
+        isInt: true,
+        //sanitizer
+        toInt: true,
+      },
+    })
+  ),
+  async (req, res) => {
+    const { id, dayId } = req.params;
+    try {
+      await deleteDayByMealId(id, dayId);
+      res.status(204).json({
+        status: 'success',
+      });
+    } catch (error) {
+      getErrorType(error);
+    }
+  }
+);

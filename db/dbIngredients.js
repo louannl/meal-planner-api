@@ -29,7 +29,7 @@ export const insertMealIngredient = async (mealId, ingredient) => {
 export const returnMealIngredients = async (mealId) => {
   return await db.query(
     `
-    SELECT i.name AS ingredient, mi.amount AS amount, ut.name AS unit, ut.symbol AS symbol
+    SELECT i.name AS ingredient, mi.amount AS amount, ut.name AS unit, ut.id AS id
     FROM meal_ingredients AS mi
     JOIN ingredients AS i ON mi.ingredient_id = i.id
     JOIN unit_types AS ut ON mi.unit_type_id = ut.id

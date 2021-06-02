@@ -10,7 +10,7 @@ const routes = (app) => {
   app.use('/tags', tags);
   app.use('/days', days);
   app.use('/ingredients', ingredients);
-  app.use('/unit_types', unit_types);
+  app.use('/unit-types', unit_types);
   app.all('*', (req, res, next) => {
     next(
       new AppError(`Route, ${req.originalUrl} not found on this server`, 404)

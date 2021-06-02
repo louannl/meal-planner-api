@@ -61,3 +61,10 @@ export const returnMealByDayId = async (dayId) => {
   INNER JOIN tags AS t ON mt.tag_id = t.id `;
   return await db.query(queryText + 'WHERE md.day_id = $1', [dayId]);
 };
+
+export const deleteDayByMealId = async (mealId, dayId) => {
+  return await db.query(
+    `DELETE FROM meal_days WHERE meal_id = ($1) AND day_id = $(2)`,
+    [mealId, dayId]
+  );
+};

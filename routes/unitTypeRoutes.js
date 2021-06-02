@@ -4,5 +4,7 @@ import * as handler from './routeHandler.js';
 const router = new Router();
 export default router;
 
-handler.getAll(router, 'unit_types');
-handler.getOne(router, 'unit_types');
+const name = 'unit_types';
+
+handler.getAll(router, name);
+handler.getOne(router, name);
