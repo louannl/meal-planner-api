@@ -1,5 +1,4 @@
 import db from './index.js';
-//TODO: create temperal literals instead
 
 export const createMealDay = async (mealId, dayId) => {
   await db.query('INSERT INTO meal_days (meal_id, day_id) VALUES ($1, $2)', [
@@ -64,7 +63,7 @@ export const returnMealByDayId = async (dayId) => {
 
 export const deleteDayByMealId = async (mealId, dayId) => {
   return await db.query(
-    `DELETE FROM meal_days WHERE meal_id = ($1) AND day_id = $(2)`,
+    `DELETE FROM meal_days WHERE meal_id = $1 AND day_id = $2`,
     [mealId, dayId]
   );
 };

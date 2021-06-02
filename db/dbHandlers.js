@@ -14,7 +14,7 @@ export const selectBy = async (table, outputs, by, values) => {
     values = [values];
   }
   const { rows } = await db.query(
-    `SELECT ${outputs} from ${table} WHERE ${by} IN (${parameterise(values)})`,
+    `SELECT ${outputs} FROM ${table} WHERE ${by} IN (${parameterise(values)})`,
     values
   );
   return rows;
@@ -31,7 +31,7 @@ export const selectAll = async (table) => {
 export const getExistingItems = async (table, names) => {
   //TODO: REMOVE after fully implementing selectAll
   const { rows } = await db.query(
-    `SELECT name, id from ${table} WHERE name IN (${parameterise(names)})`,
+    `SELECT name, id FROM ${table} WHERE name IN (${parameterise(names)})`,
     names
   );
 

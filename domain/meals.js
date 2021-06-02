@@ -118,6 +118,16 @@ export const deleteMeal = async (mealId) => {
   await deleteBy('meals', mealId);
 };
 
+export const deleteDayFromMeal = async (mealId, dayId) => {
+  //TODO: Check this works properly
+  const days = await selectBy('meal_days', 'day_id', 'meal_id', mealId);
+  if (Object.keys(days).length > 1) {
+    await dbMeals.deleteDayByMealId(mealId, dayId);
+  } else {
+    await deleteMeal(mealId);
+  }
+};
+
 export const deleteAllMeals = async () => {
   await Promise.all([
     deleteAll('meal_days'),

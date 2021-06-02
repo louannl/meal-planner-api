@@ -2,6 +2,7 @@ import Router from 'express-promise-router';
 import {
   createMeal,
   deleteAllMeals,
+  deleteDayFromMeal,
   deleteMeal,
   getMealInfo,
   getMealsByDay,
@@ -16,8 +17,6 @@ import { deleteDayByMealId, returnAllMealIngredients } from '../db/dbMeals.js';
 
 const router = new Router();
 export default router;
-
-//TODO: Add Route to delete day from a meal. if only one day delete whole meal
 
 router.get('/meal-ingredients', async (req, res) => {
   try {
@@ -276,11 +275,12 @@ router.delete(
   async (req, res) => {
     const { id, dayId } = req.params;
     try {
-      await deleteDayByMealId(id, dayId);
+      await deleteDayFromMeal(id, dayId);
       res.status(204).json({
         status: 'success',
       });
     } catch (error) {
+      console.log(error);
       getErrorType(error);
     }
   }
