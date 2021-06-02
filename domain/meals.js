@@ -19,7 +19,7 @@ const flattenMeals = (meals) => {
     if (!flatMeals.some((flatMeal) => flatMeal.id === meal.id)) {
       flatMeals.push({
         ...meal,
-        tags: [meal.tags],
+        tags: meal.tags ? [meal.tags] : [],
       });
       continue;
     }
@@ -85,9 +85,10 @@ export const getMealInfo = async (mealId) => {
 };
 
 export const createMeal = async (dayIds, mealName, mealTags, ingredients) => {
+  //FIXME: Fix if mealTags array is empty
   const { id: mealId } = await insertAndReturnId('meals', [{ name: mealName }]);
   await insertMealDays(mealId, dayIds);
-  if (mealTags) {
+  if (mealTags && mealTags.length) {
     await processMealTags(mealId, mealTags);
   }
   await createMealIngredients(mealId, ingredients);
