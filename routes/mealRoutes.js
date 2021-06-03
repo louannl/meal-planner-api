@@ -13,7 +13,7 @@ import {
 import validate from '../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import { getErrorType } from '../utils/appError.js';
-import { deleteDayByMealId, returnAllMealIngredients } from '../db/dbMeals.js';
+import { returnAllMealIngredients } from '../db/dbMeals.js';
 
 const router = new Router();
 export default router;
@@ -169,6 +169,12 @@ router.put(
         in: 'params',
         isInt: true,
         toInt: true,
+      },
+      dayIds: {
+        errorMessage: 'Day Id is not valid',
+        notEmpty: true,
+        in: 'body',
+        isArray: true,
       },
       mealTags: {
         errorMessage: 'MealTag must be an array',

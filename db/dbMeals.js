@@ -10,7 +10,7 @@ export const createMealDay = async (mealId, dayId) => {
 export const returnMealDays = async (mealId) => {
   return await db.query(
     `
-    SELECT d.name AS day
+    SELECT d.id AS day
     FROM days AS d
     JOIN meal_days AS md ON d.id = md.day_id
     WHERE md.meal_id = $1`,
@@ -34,9 +34,16 @@ export const returnAllMealIngredients = async () => {
     FROM meal_ingredients AS mi 
     INNER JOIN ingredients AS i ON mi.ingredient_id = i.id 
     INNER JOIN unit_types AS ut ON mi.unit_type_id = ut.id 
+    INNER JOIN meal_days AS md ON mi.meal_id = md.meal_id 
     GROUP BY i.name, ut.name`;
 
   return await db.query(queryText);
+};
+
+export const countDaysPerMeals = async () => {
+  return await db.query(`SELECT COUNT(day_id) AS days, meal_id
+  FROM meal_days
+  GROUP BY meal_id`);
 };
 
 export const returnMealsByDay = async () => {
@@ -57,7 +64,7 @@ export const returnMealByDayId = async (dayId) => {
   FROM meal_days AS md 
   INNER JOIN meals AS m ON md.meal_id = m.id 
   LEFT JOIN meal_tags AS mt ON m.id = mt.meal_id 
-  LEFT JOIN tags AS t ON mt.tag_id = t.id `;
+  INNER JOIN tags AS t ON mt.tag_id = t.id `;
   return await db.query(queryText + 'WHERE md.day_id = $1', [dayId]);
 };
 
