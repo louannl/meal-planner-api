@@ -47,3 +47,10 @@ export const updateMealIngredients = async (mealId, ingredients) => {
   await deleteBy('meal_ingredients', mealId, 'meal_id');
   await createMealIngredients(mealId, ingredients);
 };
+
+export const deleteIngredient = async (ingredient) => {
+  //TODO: Similar code to the delete tag, remove duplicate code
+  const ingredientId = await selectBy('ingredients', 'id', 'name', ingredient);
+  await deleteBy('meal_ingredients', ingredientId[0].id, 'ingredient_id');
+  await deleteBy('ingredients', ingredientId[0].id);
+};

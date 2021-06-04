@@ -4,15 +4,17 @@ import validate from '../utils/validate.js';
 import * as handler from './routeHandler.js';
 import * as dbHandlers from '../db/dbHandlers.js';
 import * as dbIngredients from '../db/dbIngredients.js';
+import { getErrorType } from '../utils/appError.js';
+import { deleteIngredient } from '../domain/ingredients.js';
 
 const router = new Router();
 export default router;
 
 handler.getAll(router, 'ingredients');
 handler.getOne(router, 'ingredients');
-handler.deleteOne(router, 'ingredients');
-handler.deleteAll(router, 'ingredients');
+// handler.deleteOne(router, 'ingredients')
 
+//FIXME: Put in line with meal routers
 router
   .post(
     '/',
@@ -100,3 +102,29 @@ router
       res.sendStatus(500);
     }
   );
+
+router.delete(
+  '/delete-ingredient',
+  validate(
+    checkSchema({
+      name: {
+        errorMessage: 'Tag name is not valid',
+        notEmpty: true,
+        in: 'body',
+      },
+    })
+  ),
+  async (req, res) => {
+    const { name } = req.body;
+    try {
+      await deleteIngredient(name);
+      res.status(204).json({
+        status: 'success',
+      });
+    } catch (error) {
+      getErrorType(error);
+    }
+  }
+);
+
+//TODO: Delete all ingredients not in use perhaps?
