@@ -64,7 +64,7 @@ export const returnMealByDayId = async (dayId) => {
   FROM meal_days AS md 
   INNER JOIN meals AS m ON md.meal_id = m.id 
   LEFT JOIN meal_tags AS mt ON m.id = mt.meal_id 
-  INNER JOIN tags AS t ON mt.tag_id = t.id `;
+  LEFT JOIN tags AS t ON mt.tag_id = t.id `;
   return await db.query(queryText + 'WHERE md.day_id = $1', [dayId]);
 };
 

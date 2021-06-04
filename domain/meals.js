@@ -65,7 +65,6 @@ export const getMealsByDay = async (dayId) => {
 };
 
 export const getMealInfo = async (mealId) => {
-  //FIXME: if no meal by that id?
   let meal = await selectBy('meals', 'name', 'id', mealId);
   if (!meal.length) {
     throw new AppError('No data found', 404);
@@ -120,7 +119,6 @@ export const deleteMeal = async (mealId) => {
 };
 
 export const deleteDayFromMeal = async (mealId, dayId) => {
-  //TODO: Check this works properly
   const days = await selectBy('meal_days', 'day_id', 'meal_id', mealId);
   if (Object.keys(days).length > 1) {
     await dbMeals.deleteDayByMealId(mealId, dayId);
