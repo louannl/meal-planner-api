@@ -11,6 +11,11 @@ class AppError extends Error {
 }
 
 export const getErrorType = (error) => {
+  if (!error.code) {
+    //FIXME: This is probably not the best method to handle errors
+    //already handled in my db queries
+    throw new AppError(error.message, error.statusCode);
+  }
   switch (error.code) {
     case '08003':
       throw new AppError('Database connection does not exists', 500);
@@ -41,7 +46,7 @@ export const getErrorType = (error) => {
     case '23505':
       throw new AppError(`${error.message}`, 400);
     default:
-      throw new AppError('A server side error has occured', 500);
+      throw new AppError('A server side error has occurred', 500);
   }
 };
 

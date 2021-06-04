@@ -14,7 +14,7 @@ handler.getAll(router, name);
 handler.getOne(router, name);
 handler.createOne(router, name);
 handler.updateOne(router, name);
-// handler.deleteAll(router, name);
+handler.deleteAll(router, name);
 
 router.delete(
   '/delete-tag',
