@@ -23,3 +23,10 @@ export const updateMealTags = async (mealId, tags) => {
     await processMealTags(mealId, tags);
   }
 };
+
+export const deleteTag = async (tag) => {
+  const tagId = await selectBy('tags', 'id', 'name', tag);
+  console.log(tagId[0].id);
+  await deleteBy('meal_tags', tagId[0].id, 'tag_id');
+  await deleteBy('tags', tagId[0].id);
+};
