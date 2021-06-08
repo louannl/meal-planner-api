@@ -1,20 +1,15 @@
 import db from './index.js';
 //TODO: sort routes and remove logic
 
-export const insertIngredient = async (name, unitTypeId) => {
-  const { rowCount } = await db.query(
-    'INSERT INTO ingredients (name, unit_type_id) VALUES ($1, $2)',
-    [name, unitTypeId]
-  );
-  return rowCount;
+export const insertIngredient = async (name) => {
+  return await db.query('INSERT INTO ingredients (name) VALUES ($1)', [name]);
 };
 
-export const updateIngredient = async (name, unitTypeId, id) => {
-  const { rowCount } = await db.query(
-    `UPDATE ingredients SET name = $1, unit_type_id = $2 WHERE id = $3`,
-    [name, unitTypeId, id]
-  );
-  return rowCount;
+export const updateIngredient = async (id, name) => {
+  return await db.query(`UPDATE ingredients SET name = $1 WHERE id = $2`, [
+    name,
+    id,
+  ]);
 };
 
 export const insertMealIngredient = async (mealId, ingredient) => {

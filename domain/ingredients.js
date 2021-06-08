@@ -51,6 +51,7 @@ export const updateMealIngredients = async (mealId, ingredients) => {
 export const deleteIngredient = async (ingredient) => {
   //TODO: Similar code to the delete tag, remove duplicate code
   const ingredientId = await selectBy('ingredients', 'id', 'name', ingredient);
+  //FIXME: If deletes last meal ingredient it needs to also delete the meal OR fail
   await deleteBy('meal_ingredients', ingredientId[0].id, 'ingredient_id');
   await deleteBy('ingredients', ingredientId[0].id);
 };

@@ -124,6 +124,13 @@ export const insertAndReturnId = async (table, values) => {
   return { id: rows[0]['id'] };
 };
 
+export const updateName = async (table, name, newName) => {
+  await db.query(`UPDATE ${table} SET name = $1 WHERE name = $2`, [
+    name,
+    newName,
+  ]);
+};
+
 export const update = async (table, id, values, type_id = 'id') => {
   const objectValues = getObjectValues(values);
   let params = objectValues.flat();

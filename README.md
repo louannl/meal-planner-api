@@ -8,7 +8,8 @@ NPM install
 
 # POSTMAN
 
-# Bugs and improvements
+# Bugs/TODOs
+- FIX: if you delete an ingredient which is the sole ingredient for a meal, it doesn't remove the meal also
 
 # How to use
 ## Migrating the database
