@@ -123,9 +123,11 @@ router.post(
       ingredients: {
         errorMessage: 'ingredients must be an array',
         isArray: true,
+        notEmpty: true,
       },
       'ingredients.*.name': {
         notEmpty: true,
+        isString: true,
       },
       'ingredients.*.amount': {
         notEmpty: true,
@@ -184,9 +186,11 @@ router.put(
       ingredients: {
         errorMessage: 'ingredients must be an array',
         isArray: true,
+        notEmpty: true,
       },
       'ingredients.*.name': {
         notEmpty: true,
+        isString: true,
       },
       'ingredients.*.amount': {
         notEmpty: true,

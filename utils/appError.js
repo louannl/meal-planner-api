@@ -44,7 +44,7 @@ export const getErrorType = (error) => {
     case '42P02':
       throw new AppError('Parameter is undefined', 400);
     case '23505':
-      throw new AppError(`${error.message}`, 400);
+      throw new AppError(`${error.detail}`, 409);
     default:
       throw new AppError('A server side error has occurred', 500);
   }

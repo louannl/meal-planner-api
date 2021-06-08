@@ -6,6 +6,10 @@ Backend for my meal-planner project
 # Usage
 NPM install
 
+# POSTMAN
+
+# Bugs and improvements
+
 # How to use
 ## Migrating the database
 Ensure the .env file is completed with your database details, there 
@@ -14,7 +18,6 @@ Next run:
 ```
 $ db-migrate up
 ```
-
 
 # Learning points 
 
