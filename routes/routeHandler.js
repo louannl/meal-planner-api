@@ -1,12 +1,12 @@
 import { checkSchema } from 'express-validator';
-import { selectAll, selectBy } from '../db/dbHandlers.js';
+import * as dbHandlers from '../db/dbHandlers.js';
 import validate from '../utils/validate.js';
 import AppError from '../utils/appError.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
     try {
-      const { rows, rowCount } = await selectAll(table);
+      const { rows, rowCount } = await dbHandlers.selectAll(table);
 
       if (rowCount === 0) {
         throw new AppError(`No records found in ${table}`, 404);
@@ -40,7 +40,7 @@ export const getOne = (router, table) => {
       //TODO: update
       const { id } = req.params;
 
-      const rows = await selectBy(table, '*', 'id', id);
+      const rows = await dbHandlers.selectBy(table, '*', 'id', id);
 
       if (rows == 0) {
         throw new AppError(
@@ -107,30 +107,16 @@ export const updateOne = (router, table) => {
       })
     ),
     async (req, res) => {
-      //TODO: update
       const { id } = req.params;
       const { name } = req.body;
-
-      if (!(await dbHandlers.idExists(id, table))) {
-        return res.sendStatus(200);
-      }
-
-      if (await dbHandlers.getExistingNames(name, table)) {
-        return res.sendStatus(200);
-      }
-      //TODO: REMOVE UPDATE ONE
-      const rowCount = await dbHandlers.updateOne(table, id, name);
-
-      if (rowCount === 1) {
-        return res.status(200).json({
+      try {
+        await dbHandlers.update(table, id, [{ name: name }]);
+        res.status(200).json({
           status: 'success',
-          data: {
-            //TODO: Add data
-          },
         });
+      } catch (error) {
+        getErrorType(error);
       }
-
-      res.sendStatus(500);
     }
   );
 };

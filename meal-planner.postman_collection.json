@@ -1,0 +1,628 @@
+{
+	"info": {
+		"_postman_id": "597bad85-46b1-4a4f-985d-4d42c2f657dc",
+		"name": "meal-planner",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tags",
+			"item": [
+				{
+					"name": "Get Tag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/tags/2",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"tags",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/tags/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"tags",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Tag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Dinner\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/tags",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Tag",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Breakfast\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/tags/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"tags",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tag",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"protein\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/tags/delete-tag",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"tags",
+								"delete-tag"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All Tags",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/tags",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Meals",
+			"item": [
+				{
+					"name": "Get Meal By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/45",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								"45"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meals And Days",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/meals-with-days",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								"meals-with-days"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meals By Day",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/meals-by-day/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								"meals-by-day",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meal Ingredients",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/meal-ingredients",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								"meal-ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Meal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dayIds\": [\"3\", \"5\"],\n    \"mealName\": \"Beef Casserole\",\n    \"mealTags\": [\"Dinner\"],\n    \"ingredients\": [\n        {\n            \"name\": \"Diced Beef\",\n            \"amount\": \"200\",\n            \"unitType\": \"1\"\n        },\n        {\n            \"name\": \"Red Pepper\",\n            \"amount\": \"1\",\n            \"unitType\": \"3\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Meal",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mealName\": \"ketchup\",\n    \"dayIds\": [\"3\", \"4\"],\n    \"mealTags\": [\"Dinner\", \"protein\", \"Snacks\"],\n    \"ingredients\": [\n        {\n            \"name\": \"tomato\",\n            \"amount\": \"3000\",\n            \"unitType\": \"2\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/4",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Meal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/53",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								"53"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All Meals",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Day From Meal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/meals/12/2",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"meals",
+								"12",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Days",
+			"item": [
+				{
+					"name": "Get Day",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/days/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"days",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Days",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/days",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"days"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ingredients",
+			"item": [
+				{
+					"name": "Get Ingredient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/ingredients/29",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"ingredients",
+								"29"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Ingredients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/ingredients",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Ingredient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Tomatoes\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/ingredients",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Ingredient",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Skinless Chicken Breasts\",\n    \"newName\": \"Chicken Breasts\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/ingredients/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"ingredients",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ingredient by Name",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Tomatoes\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/ingredients/delete-ingredient",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"ingredients",
+								"delete-ingredient"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "UnitTypes",
+			"item": [
+				{
+					"name": "Get UnitType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/unit-types/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"unit-types",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All UnitTypes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/unit-types",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"unit-types"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

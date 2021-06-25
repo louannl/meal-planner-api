@@ -3,7 +3,6 @@ import { checkSchema } from 'express-validator';
 import validate from '../utils/validate.js';
 import * as handler from './routeHandler.js';
 import * as dbHandlers from '../db/dbHandlers.js';
-import * as dbIngredients from '../db/dbIngredients.js';
 import { getErrorType } from '../utils/appError.js';
 import { deleteIngredient } from '../domain/ingredients.js';
 
