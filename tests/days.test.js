@@ -5,18 +5,18 @@ describe('Get Day route', () => {
   it('should show all days', async () => {
     const res = await request(app).get('/days');
     expect(res.statusCode).toEqual(200);
-    res.body.forEach((day) => {
-      expect(day).toHaveProperty('name');
+    res.body.data.forEach((day) => {
       expect(day).toHaveProperty('id');
+      expect(day).toHaveProperty('name');
     });
   });
 
   it('should show first day', async () => {
     const res = await request(app).get('/days/1');
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('day');
-    expect(res.body.day).toHaveProperty('name');
-    expect(res.body.day).toHaveProperty('id');
+    //FIXME: data not be empty?
+    expect(res.body.data).toHaveProperty('name');
+    expect(res.body.data).toHaveProperty('id');
   });
 
   it('should throw 404 error if unknown day id', async () => {
