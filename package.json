@@ -7,11 +7,12 @@
   "scripts": {
     "make-model": "npx sequelize-cli model: generate --name user --attributes email:string",
     "make-seed": "npx sequelize-cli seed:generate --name demo-user",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:rollback": "npx sequelize-cli db:migrate:undo",
     "db:seed": "npx sequelize-cli db:seed:all",
-    "debug": "ndb app.js"
+    "debug": "ndb index.js"
   },
   "repository": {
     "type": "git",
