@@ -47,3 +47,33 @@ export const getById = (router, table) => {
     }
   });
 };
+
+export const create = (router, table) => {
+  router.post('/', async (req, res) => {
+    try {
+      const { name } = req.body;
+
+      const item = await sequelize.models[table].findOrCreate({
+        where: { name: name },
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+      });
+
+      if (item[1]) {
+        return res.status(201).json({
+          status: 'success, created item',
+          data: item[0],
+        });
+      }
+
+      res.status(200).json({
+        status: 'Item already exists',
+      });
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
+  });
+};
+
+// export const update
+
+// export const remove
