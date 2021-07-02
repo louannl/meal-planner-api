@@ -25,4 +25,13 @@ describe('Get unitType route', () => {
     expect(res.statusCode).toEqual(404);
     expect(res.text).toEqual('Unit-type with the specified ID does not exist');
   });
+
+  it('should throw error if unauthorised post request is made', async () => {
+    const res = await request(app).post('/unit-types/1').send({
+      name: 'something',
+      symbol: 'sm',
+    });
+    //FIXME: Is this a good enough response?
+    expect(res.statusCode).toEqual(404);
+  });
 });
