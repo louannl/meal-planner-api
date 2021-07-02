@@ -30,6 +30,7 @@
 ### Built With
 - SQL / PostgreSQL
 - Node.js / Express
+- Sequelize
 - Axios
 
 <!-- GETTING STARTED -->
@@ -40,7 +41,7 @@ To run this project you will need to install npm
   npm install npm@latest -g
   ``
 
-### Migrating the database
+### Migrating the database OUT OF DATE
 Ensure the .env file is completed with your database details, there 
 is an example env file on the github repo - .env.example.
 Next run: 
