@@ -8,7 +8,10 @@
     "make-model": "npx sequelize-cli model: generate --name user --attributes email:string",
     "make-seed": "npx sequelize-cli seed:generate --name demo-user",
     "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "db:create:test": "NODE_ENV=test npx sequelize-cli db:create",
+    "pretest": "NODE_ENV=test npm run db:reset",
+    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest",
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:rollback": "npx sequelize-cli db:migrate:undo",
     "db:seed": "npx sequelize-cli db:seed:all",
@@ -22,6 +25,13 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/louannl/meal-planner-be/issues"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "homepage": "https://github.com/louannl/meal-planner-be#readme",
   "dependencies": {
@@ -39,6 +49,8 @@
   },
   "devDependencies": {
     "babel-register": "^6.26.0",
-    "sequelize-cli": "^6.2.0"
+    "jest": "^27.0.6",
+    "sequelize-cli": "^6.2.0",
+    "supertest": "^6.1.3"
   }
 }

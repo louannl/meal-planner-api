@@ -6,7 +6,9 @@ const router = new Router();
 export default router;
 
 router.get('/', async (req, res) => {
-  const days = await sequelize.models.Day.findAll();
+  const days = await sequelize.models.Day.findAll({
+    attributes: ['id', 'name'],
+  });
   res.status(200).json(days);
 });
 
