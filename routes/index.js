@@ -3,6 +3,7 @@ import tags from './tagRoutes.js';
 import days from './dayRoutes.js';
 import ingredients from './ingredientRoutes.js';
 import unit_types from './unitTypeRoutes.js';
+import health_check from './healthCheck.js';
 import AppError from '../utils/appError.js';
 
 const routes = (app) => {
@@ -11,6 +12,7 @@ const routes = (app) => {
   app.use('/days', days);
   app.use('/ingredients', ingredients);
   app.use('/unit-types', unit_types);
+  app.use('/health-check', health_check);
   app.all('*', (req, res, next) => {
     next(
       new AppError(`Route, ${req.originalUrl} not found on this server`, 404)
