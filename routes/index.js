@@ -7,11 +7,11 @@ import health_check from './healthCheck.js';
 import AppError from '../utils/appError.js';
 
 const routes = (app) => {
-  app.use('/meals', meals);
-  app.use('/tags', tags);
-  app.use('/days', days);
-  app.use('/ingredients', ingredients);
-  app.use('/unit-types', unit_types);
+  app.use('/api/meals', meals);
+  app.use('/api/tags', tags);
+  app.use('/api/days', days);
+  app.use('/api/ingredients', ingredients);
+  app.use('/api/unit-types', unit_types);
   app.use('/health-check', health_check);
   app.all('*', (req, res, next) => {
     next(
