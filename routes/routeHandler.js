@@ -1,16 +1,12 @@
 import { checkSchema } from 'express-validator';
 import * as dbHandlers from '../db/dbHandlers.js';
 import validate from '../utils/validate.js';
-import AppError from '../utils/appError.js';
+import { default as AppError, getErrorType } from '../utils/appError.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
     try {
       const { rows, rowCount } = await dbHandlers.selectAll(table);
-
-      if (rowCount === 0) {
-        throw new AppError(`No records found in ${table}`, 404);
-      }
 
       res.status(200).json({
         status: 'success',
