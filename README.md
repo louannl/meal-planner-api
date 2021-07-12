@@ -6,6 +6,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#branches">Branches</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
@@ -14,7 +15,6 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
-        <li><a href="#migrating-the-database">Migrating the database</a></li>
         <li><a href="#postman">Postman</a></li>
       </ul>
     </li>
@@ -30,30 +30,44 @@
 This is the API used for my meal-planner app, it allows users to manage their meals by giving information such as the days the meals are on, tags to identify groups of meals, and ingredients. The user can then return a shopping list, an aggregated list, of all the ingredients they will need for their weekly shop. 
 
 Checkout the API in use by my frontend app: 
-[MealPlanner App Github](https://github.com/louannl/meal-planner.git)
+[MealPlanner App Github](https://github.com/louannl/meal-planner.git) /
 [Online sample](meal-planner.louannloizou.co.uk)
+
 Please see notes for the online example in the app github readme.
 
 ### Branches
-There are three branches at current: main, NonORM, and Sequelize. 
+There are three branches at current: main, rawsql, and sequelize. 
 1. Main 
-  Self-explanatory, this is the branch I have used to update the API set up to be used online with my frontend at current. Eventually I will merge the Sequelize branch to this branch. 
 
-2. Non-ORM 
-  This is practically a snapshot of the code before I started working on the Sequelize version, there are only a few differences to the current main branch (mainly changes needed to setup the api online)
+This is the working version used online with my frontend application.
+Eventually I will merge the Sequelize branch to this branch. 
+
+1. Rawsql
+
+This is a snapshot of the code before I started working on the Sequelize version, there are only a few differences to the current main branch, barring the readme changes (mainly changes needed to setup the api online). 
+
+There was a lot more work that could have gone into this version, however, I decided it would be a better use of my time learning to use sequelize.
 
 3. Sequelize
-   This is the branch I am working on in current, checkout the branch readme 
+
+This is the branch I am working on at current, checkout the branch readme for more information. 
+
+I have used this opportunity to setup tests before re-factoring each section of code.
 
 ### Built With
-- SQL / PostgreSQL
+- PostgreSQL / Sequelize*
 - Node.js / Express
 - Docker
-- Axios
+- Jest*
+
+*Used on the Sequelize branch.
 
 <!-- GETTING STARTED -->
 ## Getting Started
-To run this project you will need to install Node.js and NPM, checkout the docs for how to download NPM [Link to NPM Docs](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm);
+
+### Prerequisites
+To run this project you will need to install Node.js and NPM, checkout the NPM docs for how to download NPM [Link to NPM Docs](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm);
+Additionally you will need to use a postgres database.
 
 ### Installation
 1. Clone the repo
@@ -64,11 +78,11 @@ To run this project you will need to install Node.js and NPM, checkout the docs 
   ```sh
   npm install
   ```
-3. Copy .env.example and rename it to .env. Enter your database details in `.env`. E.g.
+3. Copy .env.example and rename it to .env - Enter your postgres database details in `.env`. E.g.
   ```
   DATABASE_HOST=localhost
   ```
-4. Migrate the Database by running:
+4. Migrate and seed the Database by running:
   ```sh
   db-migrate up
   ```
@@ -78,45 +92,79 @@ To run this project you will need to install Node.js and NPM, checkout the docs 
   ```
 
 ### Postman
-The Postman collection is available to import from the JSON file: meal-planner.postman_collection.json
+The Postman collection is available to import from the JSON file: meal-planner.postman_collection.json.
 This can be used to test the API without using the frontend application.
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 This is designed to be used with my meal-planner react app, however you can still use this comfortably with Postman or with your own app.
 
-The API lets you create/edit/delete meals which have details such as the day/s the meals are on, custom 'tags' and ingredients. 
+The API lets you create/edit/delete meals which have details such as the day/s the meals are on, custom 'tags' and ingredients. Additionally you can add ingredients/tags separately. 
 
 You can then fetch information on the meals or even fetch an aggregated ingredient list to make creating your weekly shopping list easier.
 
 <!-- ROADMAP -->
-## Bugs and current issues
+## Bugs and Issues
+*As a note, some issues are easily solved by using an ORM or will naturally be fixed when refactoring anyway. So some of the current issues with the app will have been solved in the sequelize branch, but are not currently in production.*
 
+- Consistent queries and error handling:
+  
+  Some routes (a good example is routeHandler.js) use an earlier version of my database queries and handled errors differently to the newer routes.
+
+  A lot of code could be replaced with smaller, simpler queries used elsewhere already, and some errors should not be thrown e.g. when the db has no data, it should still return an OK status instead of an error, no data found. 
+
+- Testing
+  
+  The sequelize version uses testing as there was much more help/documentation on how to use jest with an ORM as opposed to without one. 
+
+- User accounts / authentication 
+  
+  Uses the main postgres user and lacks authentication for uses, so lacks security. 
+
+- No Transactions 
+  
+  No ORM, no transactions. If an error manages to get through on the creation of a meal with ingredients/days/tags for example, it could potentially still be created and stored in the database. The chances are higher with a lack of testing in place in the non-sequelize version. 
+
+- Created_at / Updated_At
+  
+  These table columns are used in the sequelize version from the get go. They are useful for spotting errors and in general are good pieces of information to have for the user.
 
 ## Roadmap
-- If deleting a meal leaves an ingredient 'orphaned', delete the ingredient from ingredients as well.
-- Route handler uses some old db functions which should be replaces with my new ones which are easier to use. *note: I plan to use an ORM, and since this currently doesn't break the API, I wonder if I should leave this as most functions will be replaced eventually.*
-- Testing, need some :(
+- Users and Authentication
+  
+- DB transactions
+  
+  This would allow me to wrap an entire API call in a singular transaction, so if any failures happen I can roll back all of the queries.
 
-I learnt a lot from not using an ORM. This largely involved having to use a lot of array manipulation to process queries as well as having to understand how queries work in SQL much better. I assume also that setting up the migrations would have been easier too.
+- Custom dates instead of a set week.
+  
+  Remove the day table and implement dates column on the meal_days table.
 
-On one hand, it is likely that my code in places will run faster than a
-ORM due to more precise queries; on the other, this took way too much time to implement without an ORM. 
-
-...So I will be working on branching off the code and implementing a ORM instead, while still retaining the original code.
+- API lookup for ingredients / meals
+  
+  To allow users fetch meals or ingredients from a third-party api.
 
 <!-- LEARNING -->
 ## Learning 
+*Note: There can be a lot of detail here as this is a reference for myself as well as others*
 - ORM
-As not using an ORM is not common, there was a lack of help I could find online when facing issues such as queries not returning the correct information or the migration not working (originally due to import/require issues, then due to some required fields which wouldn't be required in sql but are when migrating). A lot of these issues were fixed by using ndb to debug and *guessing* roughly where the error is occurring and stepping through the functions till an issue cropped up.
+  
+As using raw sql is uncommon, there was a lack of help I could find online when facing issues such as queries not returning the correct information or the migration not working (originally the migration error was due to import/require compatibility issues, then due to some sql fields being required in the migration files, which were not required when creating a postgresql database).
+
+A lot of these issues were fixed by using ndb to debug and *guessing* roughly where the error is occurring and stepping through the functions till an issue cropped up.
 
 - Array manipulation
-Getting the data I wanted from an SQL type database and not using an ORM meant I had to use a lot of array manipulation to not only run as few queries as necessary to the database in the first place, but also to return the data as I want it to the frontend so less computing is needed on the frontend app.
+  
+I needed to use a lot of array manipulation to get data from the database and to process it before sending it to the frontend, so most of the computing is done within the api. 
+
+In some cases, it was beneficial to use array manipulation instead of using multiple queries to the database, making it quicker to return data, which is a benefit of raw sql compared to an ORM.
 
 - Require vs. Import
-Before this I hadn't used imports, imports required being more careful with positioning of some elements; notably with configuring the index.js file in the db folder.
+  
+Before this I hadn't used ES6 imports. Imports required being more careful with positioning of some elements; notably with configuring the index.js file in the db folder.
 
 - Folder Structure
+  
 I attempted to separate the routes from the 'business logic' in the domain folder and the database logic, as can be seen by the folder structure. 
 
-This was fairly difficult in the beginning as initially I was just trying to test out creating the api, so you may notice some db logic doesn't go through domain but straight to the route files. However, I still found that having this logic separated made it much easier to find functions and reuse those functions. 
+This was fairly difficult in the beginning as initially I was just trying to test out creating the api, so you may notice some db logic doesn't go through domain but straight to the route files. However, I still found that having this logic separated made it much easier to find functions and reuse those functions down the line.
