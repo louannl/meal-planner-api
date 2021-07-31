@@ -36,32 +36,37 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 To run this project you will need to install npm 
-* npm
-  ```sh
-  npm install npm@latest -g
-  ``
-
-### Migrating the database OUT OF DATE
-Ensure the .env file is completed with your database details, there 
-is an example env file on the github repo - .env.example.
-Next run: 
 ```
-$ db-migrate up
+npm install npm@latest -g
 ```
 
 ### Installation
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/louannl/meal-planner.git
    ```
-3. Install NPM packages
+2. Install NPM packages
    ```sh
    npm install
    ```
-4. Copy .env.example and rename it to .env. Enter the database details in `.env`. E.g.
+3. Copy .env.example and rename it to .env. Enter the database details in `.env`. E.g.
    ```sh
     DATABASE_HOST=localhost
    ```
+
+### Migrating the database (TBD)
+This will create, migrate and seed the data on the database:
+```
+npm run db:reset
+```
+
+This will create the test database 
+```
+npm run db:create:test
+```
+
+### Testing
+
 
 ### Postman
 The Postman collection is available to import from the JSON file: meal-planner.postman_collection.json
