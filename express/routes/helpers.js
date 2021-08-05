@@ -66,7 +66,28 @@ export const create = (router, table) => {
   });
 };
 
-// export const update
+export const update = (router, table) => {
+  router.put('/:id', async (req, res) => {
+    const { name } = req.body;
+    const { id } = req.params;
+    try {
+      await sequelize.models[table].update(
+        {
+          name,
+        },
+        {
+          where: { id },
+        }
+      );
+
+      return res.status(200).json({
+        status: 'success',
+      });
+    } catch (error) {
+      getErrorType(error.parent);
+    }
+  });
+};
 
 export const remove = (router, table) => {
   router.delete('/:id', async (req, res) => {

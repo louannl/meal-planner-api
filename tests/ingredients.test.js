@@ -29,6 +29,11 @@ describe('Get Ingredient routes', () => {
     expect(res.body.data).toHaveProperty('id');
   });
 
+  it('should update ingredient name', async () => {
+    const res = await request(app).put('/ingredients/3');
+    expect(res.statusCode).toEqual(200);
+  });
+
   it('should throw 404 error if unknown ingredient id', async () => {
     const res = await request(app).get('/ingredients/120');
     expect(res.statusCode).toEqual(404);
