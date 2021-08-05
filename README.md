@@ -159,6 +159,10 @@ You can then fetch information on the meals or even fetch an aggregated ingredie
   
   To allow users fetch meals or ingredients from a third-party api.
 
+- Transactions as default *Sequelize
+
+  At the time of writing, the cls-hooked library uses AsyncWrap which is unsupported by NodeJs, alternatively it uses Async-hooks which is still considered 'experimental' - so at the moment, I won't be implementing transactions as a default.
+
 <!-- LEARNING -->
 ## Learning 
 *Note: There can be a lot of detail here as this is a reference for myself as well as others*

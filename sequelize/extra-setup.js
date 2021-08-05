@@ -10,14 +10,36 @@ const applyExtraSetup = (sequelize) => {
     MealTag,
   } = sequelize.models;
 
-  Day.belongsToMany(Meal, { through: MealDay });
-  Ingredient.belongsToMany(Meal, { through: MealIngredient });
-  Meal.belongsToMany(Ingredient, { through: MealIngredient });
-  Meal.belongsToMany(Tag, { through: MealTag });
-  Meal.belongsToMany(Day, { through: MealDay });
-  Tag.belongsToMany(Meal, { through: MealTag });
-  UnitType.belongsToMany(Meal, { through: MealIngredient });
-  UnitType.belongsToMany(Ingredient, { through: MealIngredient });
+  Meal.belongsToMany(Day, { through: MealDay, foreignKey: 'meal_id' });
+  Day.belongsToMany(Meal, { through: MealDay, foreignKey: 'day_id' });
+
+  Meal.belongsToMany(Ingredient, {
+    through: MealIngredient,
+    foreignKey: 'meal_id',
+  });
+  Meal.belongsToMany(UnitType, {
+    through: MealIngredient,
+    foreignKey: 'meal_id',
+  });
+  Ingredient.belongsToMany(Meal, {
+    through: MealIngredient,
+    foreignKey: 'ingredient_id',
+  });
+  Ingredient.belongsToMany(UnitType, {
+    through: MealIngredient,
+    foreignKey: 'ingredient_id',
+  });
+  UnitType.belongsToMany(Meal, {
+    through: MealIngredient,
+    foreignKey: 'unit_type_id',
+  });
+  UnitType.belongsToMany(Ingredient, {
+    through: MealIngredient,
+    foreignKey: 'unit_type_id',
+  });
+
+  Meal.belongsToMany(Tag, { through: MealTag, foreignKey: 'meal_id' });
+  Tag.belongsToMany(Meal, { through: MealTag, foreignKey: 'tag_id' });
 };
 
 export default applyExtraSetup;
