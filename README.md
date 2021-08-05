@@ -104,7 +104,10 @@ npm run db:create:test
 ```
 
 ### Testing
-
+Once details are added to the .env file and the test database is created: 
+```
+npm run test
+```
 
 ### Postman
 The Postman collection is available to import from the JSON file: meal-planner.postman_collection.json.

@@ -43,6 +43,8 @@ export const getErrorType = (error) => {
       throw new AppError('Table is undefined', 400);
     case '42P02':
       throw new AppError('Parameter is undefined', 400);
+    case '23503':
+      throw new AppError(`Item is currently in use in ${error.table}`, 400);
     case '23505':
       throw new AppError(`${error.detail}`, 409);
     default:

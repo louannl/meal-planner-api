@@ -25,7 +25,6 @@ describe('Get Ingredient routes', () => {
   it('should return ingredient details', async () => {
     const res = await request(app).get('/ingredients/1');
     expect(res.statusCode).toEqual(200);
-    //FIXME: data not be empty?
     expect(res.body.data).toHaveProperty('name');
     expect(res.body.data).toHaveProperty('id');
   });
@@ -37,7 +36,7 @@ describe('Get Ingredient routes', () => {
   });
 
   it('should delete an ingredient by id', async () => {
-    const res = await request(app).del('/ingredients/1');
+    const res = await request(app).del('/ingredients/3');
     expect(res.statusCode).toEqual(204);
   });
 });
