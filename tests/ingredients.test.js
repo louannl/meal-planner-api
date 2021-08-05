@@ -6,13 +6,11 @@ import app from '../express/app';
 
 describe('Get Ingredient routes', () => {
   it('should successfully post ingredient data', async () => {
-    const res = await await request(app)
+    const res = await request(app)
       .post('/ingredients')
       .send({ name: 'testIng' });
 
     expect(res.statusCode).toEqual(201);
-    expect(res.body.data).toHaveProperty('name');
-    expect(res.body.data).toHaveProperty('id');
   });
 
   it('should show all Ingredients', async () => {
@@ -38,8 +36,8 @@ describe('Get Ingredient routes', () => {
     expect(res.text).toEqual('Ingredient with the specified ID does not exist');
   });
 
-  it('should delete a ingredient', async () => {
-    const res = await request(app).del('/ingredient/1');
+  it('should delete an ingredient by id', async () => {
+    const res = await request(app).del('/ingredients/1');
     expect(res.statusCode).toEqual(204);
   });
 });

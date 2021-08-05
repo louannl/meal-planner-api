@@ -70,29 +70,11 @@ export const create = (router, table) => {
 
 export const remove = (router, table) => {
   router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
       await sequelize.models[table].destroy({
         where: {
-          id: id,
-        },
-      });
-      return res.status(204).json({
-        status: 'success',
-      });
-    } catch (error) {
-      getErrorType(error.parent);
-    }
-  });
-};
-
-export const removeByName = (router, table) => {
-  router.delete(`/delete-${table}`, async (req, res) => {
-    try {
-      const { name } = req.body;
-      await sequelize.models[table].destroy({
-        where: {
-          name: name,
+          id,
         },
       });
       return res.status(204).json({
