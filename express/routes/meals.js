@@ -1,5 +1,6 @@
 import Router from 'express-promise-router';
 import sequelize from '../../sequelize/index.js';
+import { getErrorType } from '../../utils/appError.js';
 
 const router = new Router();
 export default router;
@@ -32,7 +33,7 @@ router.get('/:id', async (req, res) => {
 
     return res.status(404).send('Meal with the specified ID does not exist');
   } catch (error) {
-    return res.status(500).send(error);
+    getErrorType(error.parent);
   }
 });
 
@@ -103,7 +104,7 @@ router.post('/', async (req, res) => {
       status: 'success',
     });
   } catch (error) {
-    return res.status(500).send(error.parent.detail);
+    getErrorType(error.parent);
   }
 });
 

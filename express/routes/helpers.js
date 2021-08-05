@@ -1,4 +1,5 @@
 import sequelize from '../../sequelize/index.js';
+import { getErrorType } from '../../utils/appError.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
@@ -16,7 +17,7 @@ export const getAll = (router, table) => {
 
       return res.status(404).send(`No data found in ${table}s`);
     } catch (error) {
-      return res.status(500).send(error.message);
+      getErrorType(error.parent);
     }
   });
 };
@@ -42,7 +43,7 @@ export const getById = (router, table) => {
         .status(404)
         .send(`${table} with the specified ID does not exist`);
     } catch (error) {
-      return res.status(500).send(error.message);
+      getErrorType(error.parent);
     }
   });
 };
@@ -60,7 +61,7 @@ export const create = (router, table) => {
         status: 'success',
       });
     } catch (error) {
-      return res.status(500).send(error.message);
+      getErrorType(error.parent);
     }
   });
 };
@@ -80,7 +81,7 @@ export const remove = (router, table) => {
         status: 'success',
       });
     } catch (error) {
-      return res.status(500).send(error.message);
+      getErrorType(error.parent);
     }
   });
 };
@@ -98,7 +99,7 @@ export const removeByName = (router, table) => {
         status: 'success',
       });
     } catch (error) {
-      return res.status(500).send(error.message);
+      getErrorType(error.parent);
     }
   });
 };
