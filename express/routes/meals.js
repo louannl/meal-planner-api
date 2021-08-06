@@ -22,7 +22,6 @@ router.get('/:id', async (req, res) => {
         exclude: ['createdAt', 'updatedAt'],
       },
     });
-    console.log(meal);
 
     if (meal) {
       return res.status(200).json({
@@ -33,7 +32,7 @@ router.get('/:id', async (req, res) => {
 
     return res.status(404).send('Meal with the specified ID does not exist');
   } catch (error) {
-    getErrorType(error.parent);
+    getErrorType(error, 'Meals');
   }
 });
 
@@ -54,7 +53,7 @@ router.post('/', async (req, res) => {
       for (const dayId of dayIds) {
         await sequelize.models['MealDay'].create(
           {
-            meal_id: meal_id,
+            meal_id,
             day_id: dayId,
           },
           { transaction }
@@ -104,7 +103,7 @@ router.post('/', async (req, res) => {
       status: 'success',
     });
   } catch (error) {
-    getErrorType(error.parent);
+    getErrorType(error, 'Meals');
   }
 });
 

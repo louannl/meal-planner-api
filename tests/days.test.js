@@ -1,8 +1,6 @@
 import request from 'supertest';
 import app from '../express/app';
 
-//TODO: Deny request to delete routes
-
 describe('Get Day route', () => {
   it('should show all days', async () => {
     const res = await request(app).get('/days');

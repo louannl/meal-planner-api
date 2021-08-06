@@ -25,6 +25,29 @@ describe('Post/Put meal routes', () => {
     expect(res.statusCode).toEqual(201);
   });
 
+  it('should throw an error when trying to create an existing meal', async () => {
+    const res = await request(app)
+      .post('/meals')
+      .send({
+        dayIds: ['3', '5'],
+        mealName: 'Beef Casserole',
+        mealTags: ['Dinner'],
+        ingredients: [
+          {
+            name: 'Diced Beef',
+            amount: '200',
+            unitType: '1',
+          },
+          {
+            name: 'Red Pepper',
+            amount: '1',
+            unitType: '3',
+          },
+        ],
+      });
+    expect(res.statusCode).toEqual(409);
+  });
+
   // it('should update a meal with ingredients, tags and days', async () => {
 
   // });

@@ -135,6 +135,8 @@ You can then fetch information on the meals or even fetch an aggregated ingredie
   
   The sequelize version uses testing as there was much more help/documentation on how to use jest with an ORM as opposed to without one. 
 
+  JEST - Currently I run --inband - which is lame - I want to use transactions to test so my tests take a tiny tiny tiny amount of time compared to running in band. However, setting up a way to do this would take a significant amount of time. I'd eventually be able to use cls-hooked when it's no longer 'experimental'.
+
 - User accounts / authentication 
   
   Uses the main postgres user and lacks authentication for uses, so lacks security. 

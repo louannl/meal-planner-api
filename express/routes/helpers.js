@@ -17,7 +17,7 @@ export const getAll = (router, table) => {
 
       return res.status(404).send(`No data found in ${table}s`);
     } catch (error) {
-      getErrorType(error.parent);
+      getErrorType(error, table);
     }
   });
 };
@@ -43,7 +43,7 @@ export const getById = (router, table) => {
         .status(404)
         .send(`${table} with the specified ID does not exist`);
     } catch (error) {
-      getErrorType(error.parent);
+      getErrorType(error, table);
     }
   });
 };
@@ -54,14 +54,14 @@ export const create = (router, table) => {
       const { name } = req.body;
 
       await sequelize.models[table].create({
-        name: name,
+        name,
       });
 
       return res.status(201).json({
         status: 'success',
       });
     } catch (error) {
-      getErrorType(error.parent);
+      getErrorType(error, table);
     }
   });
 };
@@ -70,8 +70,9 @@ export const update = (router, table) => {
   router.put('/:id', async (req, res) => {
     const { name } = req.body;
     const { id } = req.params;
+
     try {
-      await sequelize.models[table].update(
+      const rowsUpdated = await sequelize.models[table].update(
         {
           name,
         },
@@ -80,11 +81,16 @@ export const update = (router, table) => {
         }
       );
 
+      if (rowsUpdated[0] === 0) {
+        console.log(rowsUpdated[0]);
+        return res.status(404).send('Item does not exist');
+      }
+
       return res.status(200).json({
         status: 'success',
       });
     } catch (error) {
-      getErrorType(error.parent);
+      getErrorType(error, table);
     }
   });
 };
@@ -102,7 +108,7 @@ export const remove = (router, table) => {
         status: 'success',
       });
     } catch (error) {
-      getErrorType(error.parent);
+      getErrorType(error, table);
     }
   });
 };

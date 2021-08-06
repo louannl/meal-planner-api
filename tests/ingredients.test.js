@@ -1,9 +1,6 @@
 import request from 'supertest';
 import app from '../express/app';
 
-//FIXME: Add before method to pre-fill data, otherwise it will be
-//reliant on order. (set & retrieve);
-
 describe('Get Ingredient routes', () => {
   it('should successfully post ingredient data', async () => {
     const res = await request(app)
@@ -30,8 +27,17 @@ describe('Get Ingredient routes', () => {
   });
 
   it('should update ingredient name', async () => {
-    const res = await request(app).put('/ingredients/3');
+    const res = await request(app)
+      .put('/ingredients/1')
+      .send({ name: 'something' });
     expect(res.statusCode).toEqual(200);
+  });
+
+  it('should throw a 404 error when attempting to update an ingredient which does not exist', async () => {
+    const res = await request(app)
+      .put('/ingredients/20')
+      .send({ name: 'something' });
+    expect(res.statusCode).toEqual(404);
   });
 
   it('should throw 404 error if unknown ingredient id', async () => {
