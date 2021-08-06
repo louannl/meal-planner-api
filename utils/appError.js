@@ -19,14 +19,18 @@ export const getErrorType = (error, table) => {
     throw new AppError(`${table} ${errors.message}`, 400);
   }
 
-  const errorParent = error.parent;
+  let err = error;
 
-  if (!errorParent.code) {
-    //FIXME: This is an absolute mess to be honest
-    throw new AppError(errorParent.message, errorParent.statusCode);
+  if (error.parent) {
+    err = error.parent;
   }
 
-  switch (errorParent.code) {
+  if (!err.code) {
+    //FIXME: This is an absolute mess to be honest
+    throw new AppError(err.message, err.statusCode);
+  }
+
+  switch (err.code) {
     case '08003':
       throw new AppError('Database connection does not exists', 500);
     case '08006':
@@ -54,12 +58,9 @@ export const getErrorType = (error, table) => {
     case '42P02':
       throw new AppError('Parameter is undefined', 400);
     case '23503':
-      throw new AppError(
-        `Item is currently in use in ${errorParent.table}`,
-        400
-      );
+      throw new AppError(`Item is currently in use in ${err.table}`, 400);
     case '23505':
-      throw new AppError(`${errorParent.detail}`, 409);
+      throw new AppError(`${err.detail}`, 409);
     default:
       throw new AppError('A server side error has occurred', 500);
   }
