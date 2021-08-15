@@ -16,31 +16,64 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const meal = await sequelize.models['Meal'].findOne({
-      where: { id: id },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
-    });
+    const result = await sequelize.models['Meal']
+      .scope('mealInfo')
+      .findByPk(id);
 
-    if (meal) {
+    if (result) {
       return res.status(200).json({
         status: 'success',
-        data: meal,
+        data: result,
       });
     }
 
     return res.status(404).send('Meal with the specified ID does not exist');
   } catch (error) {
-    getErrorType(error, 'Meals');
+    console.log(error);
+    getErrorType(error, 'Meal');
   }
 });
 
-//POST /meal
 router.post('/', async (req, res) => {
   const { dayIds, mealName, mealTags, ingredients } = req.body;
   try {
+    // let mappedTags = mealTags.map((tag) => {
+    //   return { name: tag };
+    // });
+
+    // let mappedIngredients = ingredients.map((ingredient) => {
+    //   return {
+    //     name: ingredient.name,
+    //     MealIngredient: {
+    //       amount: ingredient.amount,
+    //       unit_type_id: ingredient.unitType,
+    //     },
+    //   };
+    // });
+
+    // let mappedDays = dayIds.map((day) => {
+    //   return { day_id: day };
+    // });
+
     await sequelize.transaction(async (transaction) => {
+      // await sequelize.models['Meal'].create(
+      //   {
+      //     name: mealName,
+      //     Tags: [...mappedTags],
+      //     MealDays: [...mappedDays],
+      //     Ingredients: [...mappedIngredients],
+      //   },
+      //   {
+      //     include: [
+      //       sequelize.models['Tag'],
+      //       sequelize.models['Ingredient'],
+      //       sequelize.models['UnitType'],
+      //       sequelize.models['MealDay'],
+      //     ],
+      //     transaction,
+      //   }
+      // );
+
       const {
         dataValues: { id: meal_id },
       } = await sequelize.models['Meal'].create(
@@ -67,9 +100,7 @@ router.post('/', async (req, res) => {
           where: { name: ingredient.name },
           transaction,
         });
-
         const ingredient_id = ingredientResult[0].dataValues.id;
-
         await sequelize.models['MealIngredient'].create(
           {
             ingredient_id,
@@ -86,9 +117,7 @@ router.post('/', async (req, res) => {
           where: { name: tag },
           transaction,
         });
-
         const tag_id = tagResult[0].dataValues.id;
-
         await sequelize.models['MealTag'].create(
           {
             meal_id,
@@ -103,7 +132,8 @@ router.post('/', async (req, res) => {
       status: 'success',
     });
   } catch (error) {
-    getErrorType(error, 'Meals');
+    console.log(error);
+    getErrorType(error, 'Meal');
   }
 });
 

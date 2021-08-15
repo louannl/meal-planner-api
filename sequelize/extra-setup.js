@@ -40,6 +40,40 @@ const applyExtraSetup = (sequelize) => {
 
   Meal.belongsToMany(Tag, { through: MealTag, foreignKey: 'meal_id' });
   Tag.belongsToMany(Meal, { through: MealTag, foreignKey: 'tag_id' });
+
+  Meal.addScope('mealInfo', {
+    include: [
+      {
+        model: Ingredient,
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        through: {
+          attributes: [],
+        },
+        include: {
+          model: UnitType,
+          attributes: ['name', 'symbol'],
+          through: {
+            attributes: ['amount'],
+          },
+        },
+      },
+      {
+        model: Day,
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        through: {
+          attributes: [],
+        },
+      },
+      {
+        model: Tag,
+        attributes: ['name'],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+    attributes: { exclude: ['createdAt', 'updatedAt'] },
+  });
 };
 
 export default applyExtraSetup;

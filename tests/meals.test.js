@@ -48,9 +48,23 @@ describe('Post/Put meal routes', () => {
     expect(res.statusCode).toEqual(409);
   });
 
-  // it('should update a meal with ingredients, tags and days', async () => {
-
-  // });
+  it('should update meal with name, ingredients, tags and days', async () => {
+    const res = await request(app)
+      .put('/meals/1')
+      .send({
+        mealName: 'ketchup',
+        dayIds: ['3', '4'],
+        mealTags: ['Dinner', 'Protein', 'Snacks'],
+        ingredients: [
+          {
+            name: 'tomato',
+            amount: '3000',
+            unitType: '2',
+          },
+        ],
+      });
+    expect(res.statusCode).toEqual(200);
+  });
 });
 
 // describe('Get meal routes', () => {
