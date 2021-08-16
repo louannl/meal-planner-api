@@ -1,5 +1,12 @@
 import Router from 'express-promise-router';
-import sequelize from '../../sequelize/index.js';
+import sequelize, {
+  Ingredient,
+  Meal,
+  MealDay,
+  MealIngredient,
+  MealTag,
+  Tag,
+} from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 
 const router = new Router();
@@ -16,9 +23,27 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await sequelize.models['Meal']
-      .scope('mealInfo')
-      .findByPk(id);
+    const result = await Meal.scope('mealInfo').findByPk(id);
+
+    /*
+    {
+    "dayIds": ["2", "3"],
+    "mealName": "Beef Casserole",
+    "mealTags": ["Dinner", "something"],
+    "ingredients": [
+        {
+            "name": "Diced Beef",
+            "amount": "200",
+            "unitType": "1"
+        },
+        {
+            "name": "Red Pepper",
+            "amount": "1",
+            "unitType": "3"
+        }
+    ]
+}
+    */
 
     if (result) {
       return res.status(200).json({
@@ -29,7 +54,6 @@ router.get('/:id', async (req, res) => {
 
     return res.status(404).send('Meal with the specified ID does not exist');
   } catch (error) {
-    console.log(error);
     getErrorType(error, 'Meal');
   }
 });
@@ -51,7 +75,7 @@ router.post('/', async (req, res) => {
     await sequelize.transaction(async (transaction) => {
       const {
         dataValues: { id: meal_id },
-      } = await sequelize.models['Meal'].create(
+      } = await Meal.create(
         {
           name: mealName,
         },
@@ -59,7 +83,7 @@ router.post('/', async (req, res) => {
       );
 
       for (const dayId of dayIds) {
-        await sequelize.models['MealDay'].create(
+        await MealDay.create(
           {
             meal_id,
             day_id: dayId,
@@ -69,14 +93,12 @@ router.post('/', async (req, res) => {
       }
 
       for (const ingredient of ingredients) {
-        const ingredientResult = await sequelize.models[
-          'Ingredient'
-        ].findOrCreate({
+        const ingredientResult = await Ingredient.findOrCreate({
           where: { name: ingredient.name },
           transaction,
         });
         const ingredient_id = ingredientResult[0].dataValues.id;
-        await sequelize.models['MealIngredient'].create(
+        await MealIngredient.create(
           {
             ingredient_id,
             meal_id,
@@ -89,12 +111,12 @@ router.post('/', async (req, res) => {
 
       if (mealTags.length > 0) {
         for (const tag of mealTags) {
-          const tagResult = await sequelize.models['Tag'].findOrCreate({
+          const tagResult = await Tag.findOrCreate({
             where: { name: tag },
             transaction,
           });
           const tag_id = tagResult[0].dataValues.id;
-          await sequelize.models['MealTag'].create(
+          await MealTag.create(
             {
               meal_id,
               tag_id,
@@ -109,12 +131,109 @@ router.post('/', async (req, res) => {
       status: 'success',
     });
   } catch (error) {
-    console.log(error);
     getErrorType(error, 'Meal');
   }
 });
 
 //PUT /:id
+router.put('/:id', async (req, res) => {
+  const { id: meal_id } = req.params;
+  const { dayIds, mealName, mealTags, ingredients } = req.body;
+
+  try {
+    await sequelize.transaction(async (transaction) => {
+      //UPDATE MEAL NAME
+      await Meal.update(
+        {
+          name: mealName,
+        },
+        {
+          where: { id: meal_id },
+        },
+        { transaction }
+      );
+      //UPDATE MEAL DAYS 1. DESTROY THEN CREATE
+      await MealDay.destroy(
+        {
+          where: {
+            meal_id,
+          },
+        },
+        { transaction }
+      );
+
+      let mappedDays = [];
+      await dayIds.forEach((dayId) => {
+        mappedDays.push({
+          meal_id,
+          day_id: dayId,
+        });
+      });
+
+      await MealDay.bulkCreate(mappedDays, { transaction });
+
+      //UPDATE INGREDIENTS - DELETE THEN CREATE
+      await MealIngredient.destroy(
+        {
+          where: {
+            meal_id,
+          },
+        },
+        { transaction }
+      );
+
+      for (const ingredient of ingredients) {
+        const ingredientResult = await Ingredient.findOrCreate({
+          where: { name: ingredient.name },
+          transaction,
+        });
+        const ingredient_id = ingredientResult[0].dataValues.id;
+        await MealIngredient.create(
+          {
+            ingredient_id,
+            meal_id,
+            amount: ingredient.amount,
+            unit_type_id: ingredient.unitType,
+          },
+          { transaction }
+        );
+      }
+
+      //UPDATE TAGS - DELETE THEN CREATE
+      await MealTag.destroy(
+        {
+          where: {
+            meal_id,
+          },
+        },
+        { transaction }
+      );
+
+      if (mealTags.length > 0) {
+        for (const tag of mealTags) {
+          const tagResult = await Tag.findOrCreate({
+            where: { name: tag },
+            transaction,
+          });
+          const tag_id = tagResult[0].dataValues.id;
+          await MealTag.create(
+            {
+              meal_id,
+              tag_id,
+            },
+            { transaction }
+          );
+        }
+      }
+    });
+
+    return res.status(200).json({
+      status: 'success',
+    });
+  } catch (error) {
+    getErrorType(error, 'Meal');
+  }
+});
 
 //DELETE /:id
 

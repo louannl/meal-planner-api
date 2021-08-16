@@ -48,6 +48,29 @@ describe('Post/Put meal routes', () => {
     expect(res.statusCode).toEqual(409);
   });
 
+  it('should throw an error when creating a meal without any days', async () => {
+    const res = await request(app)
+      .post('/meals')
+      .send({
+        dayIds: [],
+        mealName: 'I have no days',
+        mealTags: ['Dinner'],
+        ingredients: [
+          {
+            name: 'Diced Beef',
+            amount: '200',
+            unitType: '1',
+          },
+          {
+            name: 'Red Pepper',
+            amount: '1',
+            unitType: '3',
+          },
+        ],
+      });
+    expect(res.statusCode).toEqual(400);
+  });
+
   it('should update meal with name, ingredients, tags and days', async () => {
     const res = await request(app)
       .put('/meals/1')

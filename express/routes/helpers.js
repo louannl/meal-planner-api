@@ -82,7 +82,6 @@ export const update = (router, table) => {
       );
 
       if (rowsUpdated[0] === 0) {
-        console.log(rowsUpdated[0]);
         return res.status(404).send('Item does not exist');
       }
 

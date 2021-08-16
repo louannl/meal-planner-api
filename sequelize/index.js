@@ -5,14 +5,14 @@ const env = process.env.NODE_ENV || 'development';
 import envConfig from '../config/moduleConfig.js';
 const config = envConfig[env];
 
-import Day from './models/day.model.js';
-import Ingredient from './models/ingredient.model.js';
-import Meal from './models/meal.model.js';
-import Tag from './models/tag.model.js';
-import UnitType from './models/unitType.model.js';
-import MealDay from './models/mealDay.model.js';
-import MealIngredient from './models/mealIngredient.model.js';
-import MealTag from './models/mealTag.model.js';
+import { default as DayModel } from './models/day.model.js';
+import { default as IngredientModel } from './models/ingredient.model.js';
+import { default as MealModel } from './models/meal.model.js';
+import { default as TagModel } from './models/tag.model.js';
+import { default as UnitTypeModel } from './models/unitType.model.js';
+import { default as MealDayModel } from './models/mealDay.model.js';
+import { default as MealIngredientModel } from './models/mealIngredient.model.js';
+import { default as MealTagModel } from './models/mealTag.model.js';
 //TODO: Use file reader to avoid all this code??
 
 const sequelize = new Sequelize(
@@ -26,14 +26,14 @@ const sequelize = new Sequelize(
 );
 
 const modelDefiners = [
-  Day,
-  Ingredient,
-  Meal,
-  Tag,
-  UnitType,
-  MealDay,
-  MealIngredient,
-  MealTag,
+  DayModel,
+  IngredientModel,
+  MealModel,
+  TagModel,
+  UnitTypeModel,
+  MealDayModel,
+  MealIngredientModel,
+  MealTagModel,
 ];
 
 for (const modelDefiner of modelDefiners) {
@@ -41,5 +41,14 @@ for (const modelDefiner of modelDefiners) {
 }
 
 applyExtraSetup(sequelize);
+
+export const Meal = sequelize.models['Meal'];
+export const Day = sequelize.models['Day'];
+export const Ingredient = sequelize.models['Ingredient'];
+export const Tag = sequelize.models['Tag'];
+export const UnitType = sequelize.models['UnitType'];
+export const MealDay = sequelize.models['MealDay'];
+export const MealIngredient = sequelize.models['MealIngredient'];
+export const MealTag = sequelize.models['MealTag'];
 
 export default sequelize;
