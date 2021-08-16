@@ -1,5 +1,6 @@
 import sequelize from '../../sequelize/index.js';
 import { getErrorType } from '../../utils/appError.js';
+import { createName, updateName } from '../domain/domainHelper.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
@@ -53,9 +54,7 @@ export const create = (router, table) => {
     try {
       const { name } = req.body;
 
-      await sequelize.models[table].create({
-        name,
-      });
+      await createName(table, name);
 
       return res.status(201).json({
         status: 'success',
@@ -72,14 +71,7 @@ export const update = (router, table) => {
     const { id } = req.params;
 
     try {
-      const rowsUpdated = await sequelize.models[table].update(
-        {
-          name,
-        },
-        {
-          where: { id },
-        }
-      );
+      const rowsUpdated = await updateName(table, name, id);
 
       if (rowsUpdated[0] === 0) {
         return res.status(404).send('Item does not exist');
