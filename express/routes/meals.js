@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import sequelize from '../../sequelize/index.js';
-import { getErrorType } from '../../utils/appError.js';
+import AppError, { getErrorType } from '../../utils/appError.js';
 
 const router = new Router();
 export default router;
@@ -36,44 +36,19 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const { dayIds, mealName, mealTags, ingredients } = req.body;
+  //FIXME: If items are missing, it throws an error it is not iterable
+  //Which is not very informative.
   try {
-    // let mappedTags = mealTags.map((tag) => {
-    //   return { name: tag };
-    // });
+    //TODO: There should be a nicer way to implement these validations
+    if (ingredients.length === 0) {
+      throw new AppError('Ingredients cannot be empty', 400);
+    }
 
-    // let mappedIngredients = ingredients.map((ingredient) => {
-    //   return {
-    //     name: ingredient.name,
-    //     MealIngredient: {
-    //       amount: ingredient.amount,
-    //       unit_type_id: ingredient.unitType,
-    //     },
-    //   };
-    // });
-
-    // let mappedDays = dayIds.map((day) => {
-    //   return { day_id: day };
-    // });
+    if (dayIds.length === 0) {
+      throw new AppError('Days cannot be empty', 400);
+    }
 
     await sequelize.transaction(async (transaction) => {
-      // await sequelize.models['Meal'].create(
-      //   {
-      //     name: mealName,
-      //     Tags: [...mappedTags],
-      //     MealDays: [...mappedDays],
-      //     Ingredients: [...mappedIngredients],
-      //   },
-      //   {
-      //     include: [
-      //       sequelize.models['Tag'],
-      //       sequelize.models['Ingredient'],
-      //       sequelize.models['UnitType'],
-      //       sequelize.models['MealDay'],
-      //     ],
-      //     transaction,
-      //   }
-      // );
-
       const {
         dataValues: { id: meal_id },
       } = await sequelize.models['Meal'].create(
@@ -112,19 +87,21 @@ router.post('/', async (req, res) => {
         );
       }
 
-      for (const tag of mealTags) {
-        const tagResult = await sequelize.models['Tag'].findOrCreate({
-          where: { name: tag },
-          transaction,
-        });
-        const tag_id = tagResult[0].dataValues.id;
-        await sequelize.models['MealTag'].create(
-          {
-            meal_id,
-            tag_id,
-          },
-          { transaction }
-        );
+      if (mealTags.length > 0) {
+        for (const tag of mealTags) {
+          const tagResult = await sequelize.models['Tag'].findOrCreate({
+            where: { name: tag },
+            transaction,
+          });
+          const tag_id = tagResult[0].dataValues.id;
+          await sequelize.models['MealTag'].create(
+            {
+              meal_id,
+              tag_id,
+            },
+            { transaction }
+          );
+        }
       }
     });
 
