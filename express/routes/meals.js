@@ -8,6 +8,7 @@ import sequelize, {
   Tag,
 } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
+import { transformMealInfo } from '../domain/domainMeal.js';
 
 const router = new Router();
 export default router;
@@ -28,31 +29,7 @@ router.get('/:id', async (req, res) => {
       return res.status(404).send('Meal with the specified ID does not exist');
     }
 
-    let mealDays = [];
-    for (const day of result.Days) {
-      mealDays.push(day.id);
-    }
-
-    let mealIngredients = [];
-    for (const ing of result.Ingredients) {
-      mealIngredients.push({
-        id,
-        ingredient: ing.name,
-        amount: ing['UnitTypes'][0]['MealIngredient'].amount,
-        unit: ing['UnitTypes'][0].name,
-      });
-    }
-
-    let mealTags = [];
-    result.Tags.forEach((tag) => mealTags.push(tag.name));
-
-    let mealData = {
-      id: result.id,
-      meal: result.name,
-      days: mealDays,
-      tags: mealTags,
-      ingredients: mealIngredients,
-    };
+    const mealData = transformMealInfo(result, id);
 
     return res.status(200).json({
       status: 'success',

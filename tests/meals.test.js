@@ -91,7 +91,7 @@ describe('Post/Put meal routes', () => {
 });
 
 describe('Get meal routes', () => {
-  it('should get all meal details by the meal id', async () => {
+  it('should get a specified meal and details by the id', async () => {
     const res = await request(app).get('/meals/1');
     expect(res.statusCode).toEqual(200);
 
@@ -105,7 +105,7 @@ describe('Get meal routes', () => {
 
     res.body.data.ingredients.forEach((ingredient) => {
       expect(ingredient).toMatchObject({
-        id: expect.any(Number),
+        id: expect.any(String),
         ingredient: expect.any(String),
         amount: expect.any(Number),
         unit: expect.any(String),
@@ -124,7 +124,7 @@ describe('Get meal routes', () => {
     });
   });
 
-  it('should get meals by day id', async () => {
+  it('should get all meals on a specified day', async () => {
     const res = await request(app).get('/meals/meals-by-day/1');
     expect(res.statusCode).toEqual(200);
     res.body.data.forEach((meal) => {
