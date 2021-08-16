@@ -6,17 +6,20 @@ describe('Get Day route', () => {
     const res = await request(app).get('/days');
     expect(res.statusCode).toEqual(200);
     res.body.data.forEach((day) => {
-      expect(day).toHaveProperty('id');
-      expect(day).toHaveProperty('name');
+      expect(day).toMatchObject({
+        id: expect.any(Number),
+        name: expect.any(String),
+      });
     });
   });
 
   it('should show first day', async () => {
     const res = await request(app).get('/days/1');
     expect(res.statusCode).toEqual(200);
-    //FIXME: data not be empty?
-    expect(res.body.data).toHaveProperty('name');
-    expect(res.body.data).toHaveProperty('id');
+    expect(res.body.data).toMatchObject({
+      id: expect.any(Number),
+      name: expect.any(String),
+    });
   });
 
   it('should throw 404 error if unknown day id', async () => {

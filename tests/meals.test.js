@@ -90,50 +90,67 @@ describe('Post/Put meal routes', () => {
   });
 });
 
-// describe('Get meal routes', () => {
-//   it('should get all meal details by the meal id', async () => {
-//     const res = await request(app).get('/meals/1');
-//     expect(res.statusCode).toEqual(200);
-//     expect(res.body.data).toHaveProperty('id');
-//     expect(res.body.data).toHaveProperty('name');
-//     expect(res.body.data).toHaveProperty('days');
-//     expect(res.body.data).toHaveProperty('tags');
-//     //TODO: for each ing to have name, amount, unitTypeid
-//     expect(res.body.data).toHaveProperty('ingredients');
-//   });
+describe('Get meal routes', () => {
+  it('should get all meal details by the meal id', async () => {
+    const res = await request(app).get('/meals/1');
+    expect(res.statusCode).toEqual(200);
 
-//   it('should get all meals under days', async () => {
-//     const res = await request(app).get('/meals/meals-with-day');
-//     expect(res.statusCode).toEqual(200);
-//     res.body.data.forEach((meal) => {
-//       expect(meal).toHaveProperty('id');
-//       expect(meal).toHaveProperty('name');
-//     });
-//   });
+    expect(res.body.data).toMatchObject({
+      id: expect.any(Number),
+      meal: expect.any(String),
+      days: expect.any(Array),
+      tags: expect.any(Array),
+      ingredients: expect.any(Array),
+    });
 
-//   it('should get meals by day id', async () => {
-//     const res = await request(app).get('/meals/meals-by-day/1');
-//     expect(res.statusCode).toEqual(200);
-//     res.body.data.forEach((meal) => {
-//       expect(meal).toHaveProperty('id');
-//       expect(meal).toHaveProperty('name');
-//     });
-//   });
+    res.body.data.ingredients.forEach((ingredient) => {
+      expect(ingredient).toMatchObject({
+        id: expect.any(Number),
+        ingredient: expect.any(String),
+        amount: expect.any(Number),
+        unit: expect.any(String),
+      });
+    });
+  });
 
-//   it('should get all meal ingredients and aggregate them', async () => {
-//     const res = await request(app).get('meals/meal-ingredients');
-//     expect(res.statusCode).toEqual(200);
-//     res.body.data.forEach((ingredient) => {
-//       expect(ingredient).toHaveProperty('id');
-//       expect(ingredient).toHaveProperty('name');
-//       expect(ingredient).toHaveProperty('amount');
-//       expect(ingredient).toHaveProperty('unitType');
-//     });
-//   });
-// });
+  it('should get all meals sorted by days', async () => {
+    const res = await request(app).get('/meals/meals-with-day');
+    expect(res.statusCode).toEqual(200);
+    res.body.data.forEach((meal) => {
+      expect(meal).toMatchObject({
+        id: expect.any(Number),
+        name: expect.any(String),
+      });
+    });
+  });
 
-// describe('Delete meal routes', () => {
-//   it('should delete an individual meal by id', async () => {});
-//   it('should delete all meals, including the meal ingredients/tags/days', async () => {});
-//   it('should only delete the day from the meal', async () => {});
-// });
+  it('should get meals by day id', async () => {
+    const res = await request(app).get('/meals/meals-by-day/1');
+    expect(res.statusCode).toEqual(200);
+    res.body.data.forEach((meal) => {
+      expect(meal).toMatchObject({
+        id: expect.any(Number),
+        name: expect.any(String),
+      });
+    });
+  });
+
+  it('should get all meal ingredients and aggregate them', async () => {
+    const res = await request(app).get('meals/meal-ingredients');
+    expect(res.statusCode).toEqual(200);
+    res.body.data.forEach((ingredient) => {
+      expect(ingredient).toMatchObject({
+        id: expect.any(Number),
+        ingredient: expect.any(String),
+        amount: expect.any(Number),
+        unitType: expect.any(String),
+      });
+    });
+  });
+});
+
+describe('Delete meal routes', () => {
+  it('should delete an individual meal by id', async () => {});
+  it('should delete all meals, including the meal ingredients/tags/days', async () => {});
+  it('should only delete the day from the meal', async () => {});
+});

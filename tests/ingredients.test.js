@@ -13,17 +13,21 @@ describe('Get Ingredient routes', () => {
   it('should show all Ingredients', async () => {
     const res = await request(app).get('/ingredients');
     expect(res.statusCode).toEqual(200);
-    res.body.data.forEach((day) => {
-      expect(day).toHaveProperty('id');
-      expect(day).toHaveProperty('name');
+    res.body.data.forEach((ingredient) => {
+      expect(ingredient).toMatchObject({
+        id: expect.any(Number),
+        name: expect.any(String),
+      });
     });
   });
 
   it('should return ingredient details', async () => {
     const res = await request(app).get('/ingredients/1');
     expect(res.statusCode).toEqual(200);
-    expect(res.body.data).toHaveProperty('name');
-    expect(res.body.data).toHaveProperty('id');
+    expect(res.body.data).toMatchObject({
+      id: expect.any(Number),
+      name: expect.any(String),
+    });
   });
 
   it('should update ingredient name', async () => {
@@ -47,7 +51,7 @@ describe('Get Ingredient routes', () => {
   });
 
   it('should delete an ingredient by id', async () => {
-    const res = await request(app).del('/ingredients/3');
+    const res = await request(app).del('/ingredients/1');
     expect(res.statusCode).toEqual(204);
   });
 });
