@@ -1,5 +1,6 @@
 import sequelize, {
   Ingredient,
+  Meal,
   MealDay,
   MealIngredient,
   MealTag,
@@ -162,5 +163,24 @@ export const updateMeal = (body, meal_id) => {
         );
       }
     }
+  });
+};
+
+export const deleteMeal = (id) => {
+  return sequelize.transaction(async (transaction) => {
+    await Promise.all([
+      deleteByMealId('MealDay', id, transaction),
+      deleteByMealId('MealIngredient', id, transaction),
+      deleteByMealId('MealTag', id, transaction),
+    ]);
+
+    await Meal.destroy(
+      {
+        where: {
+          id,
+        },
+      },
+      { transaction }
+    );
   });
 };

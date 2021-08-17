@@ -1,15 +1,9 @@
 import Router from 'express-promise-router';
-import sequelize, {
-  Ingredient,
-  Meal,
-  MealDay,
-  MealIngredient,
-  MealTag,
-  Tag,
-} from '../../sequelize/index.js';
+import { Meal, MealDay } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import {
   createMeal,
+  deleteMeal,
   transformMealInfo,
   updateMeal,
 } from '../domain/domainMeal.js';
@@ -72,7 +66,7 @@ router.put('/:id', async (req, res) => {
   const { id: meal_id } = req.params;
 
   try {
-    updateMeal(req.body, meal_id);
+    await updateMeal(req.body, meal_id);
 
     return res.status(200).json({
       status: 'success',
@@ -83,6 +77,18 @@ router.put('/:id', async (req, res) => {
 });
 
 //DELETE /:id
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await deleteMeal(id);
+
+    return res.status(204).json({
+      status: 'success',
+    });
+  } catch (error) {
+    getErrorType(error, 'Meal');
+  }
+});
 
 //DELETE / (all)
 

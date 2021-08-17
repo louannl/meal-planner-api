@@ -113,44 +113,47 @@ describe('Get meal routes', () => {
     });
   });
 
-  it('should get all meals sorted by days', async () => {
-    const res = await request(app).get('/meals/meals-with-day');
-    expect(res.statusCode).toEqual(200);
-    res.body.data.forEach((meal) => {
-      expect(meal).toMatchObject({
-        id: expect.any(Number),
-        name: expect.any(String),
-      });
-    });
-  });
+  // it('should get all meals sorted by days', async () => {
+  //   const res = await request(app).get('/meals/meals-with-day');
+  //   expect(res.statusCode).toEqual(200);
+  //   res.body.data.forEach((meal) => {
+  //     expect(meal).toMatchObject({
+  //       id: expect.any(Number),
+  //       name: expect.any(String),
+  //     });
+  //   });
+  // });
 
-  it('should get all meals on a specified day', async () => {
-    const res = await request(app).get('/meals/meals-by-day/1');
-    expect(res.statusCode).toEqual(200);
-    res.body.data.forEach((meal) => {
-      expect(meal).toMatchObject({
-        id: expect.any(Number),
-        name: expect.any(String),
-      });
-    });
-  });
+  // it('should get all meals on a specified day', async () => {
+  //   const res = await request(app).get('/meals/meals-by-day/1');
+  //   expect(res.statusCode).toEqual(200);
+  //   res.body.data.forEach((meal) => {
+  //     expect(meal).toMatchObject({
+  //       id: expect.any(Number),
+  //       name: expect.any(String),
+  //     });
+  //   });
+  // });
 
-  it('should get all meal ingredients and aggregate them', async () => {
-    const res = await request(app).get('meals/meal-ingredients');
-    expect(res.statusCode).toEqual(200);
-    res.body.data.forEach((ingredient) => {
-      expect(ingredient).toMatchObject({
-        id: expect.any(Number),
-        ingredient: expect.any(String),
-        amount: expect.any(Number),
-        unitType: expect.any(String),
-      });
-    });
-  });
+  // it('should get all meal ingredients and aggregate them', async () => {
+  //   const res = await request(app).get('meals/meal-ingredients');
+  //   expect(res.statusCode).toEqual(200);
+  //   res.body.data.forEach((ingredient) => {
+  //     expect(ingredient).toMatchObject({
+  //       id: expect.any(Number),
+  //       ingredient: expect.any(String),
+  //       amount: expect.any(Number),
+  //       unitType: expect.any(String),
+  //     });
+  //   });
+  // });
 });
 
 describe('Delete meal routes', () => {
-  it('should delete an individual meal by id', async () => {});
+  it('should delete an individual meal by id', async () => {
+    const res = await request(app).del('/meals/1');
+    expect(res.statusCode).toEqual(204);
+  });
   it('should delete all meals, including the meal ingredients/tags/days', async () => {});
   it('should only delete the day from the meal', async () => {});
 });
