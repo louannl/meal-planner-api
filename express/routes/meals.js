@@ -8,7 +8,11 @@ import sequelize, {
   Tag,
 } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
-import { createMeal, transformMealInfo } from '../domain/domainMeal.js';
+import {
+  createMeal,
+  transformMealInfo,
+  updateMeal,
+} from '../domain/domainMeal.js';
 
 const router = new Router();
 export default router;
@@ -66,94 +70,9 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   const { id: meal_id } = req.params;
-  const { dayIds, mealName, mealTags, ingredients } = req.body;
 
   try {
-    await sequelize.transaction(async (transaction) => {
-      //UPDATE MEAL NAME
-      await Meal.update(
-        {
-          name: mealName,
-        },
-        {
-          where: { id: meal_id },
-        },
-        { transaction }
-      );
-      //UPDATE MEAL DAYS 1. DESTROY THEN CREATE
-      await MealDay.destroy(
-        {
-          where: {
-            meal_id,
-          },
-        },
-        { transaction }
-      );
-
-      let mappedDays = [];
-      await dayIds.forEach((dayId) => {
-        mappedDays.push({
-          meal_id,
-          day_id: dayId,
-        });
-      });
-
-      await MealDay.bulkCreate(mappedDays, { transaction });
-
-      //UPDATE INGREDIENTS - DELETE THEN CREATE
-      await MealIngredient.destroy(
-        {
-          where: {
-            meal_id,
-          },
-        },
-        { transaction }
-      );
-
-      for (const ingredient of ingredients) {
-        const ingredientResult = await Ingredient.findOrCreate({
-          where: { name: ingredient.name },
-          transaction,
-        });
-        const ingredient_id = ingredientResult[0].dataValues.id;
-        await MealIngredient.create(
-          {
-            ingredient_id,
-            meal_id,
-            amount: ingredient.amount,
-            unit_type_id: ingredient.unitType,
-          },
-          { transaction }
-        );
-      }
-
-      //UPDATE TAGS - DELETE THEN CREATE
-      await MealTag.destroy(
-        {
-          where: {
-            meal_id,
-          },
-        },
-        { transaction }
-      );
-
-      if (mealTags.length > 0) {
-        for (const tag of mealTags) {
-          const tagResult = await Tag.findOrCreate({
-            where: { name: tag },
-            transaction,
-          });
-          const tag_id = tagResult[0].dataValues.id;
-          await MealTag.create(
-            {
-              meal_id,
-              tag_id,
-            },
-            { transaction }
-          );
-        }
-      }
-    });
+    updateMeal(req.body, meal_id);
 
     return res.status(200).json({
       status: 'success',
