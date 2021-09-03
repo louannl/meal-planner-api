@@ -1,5 +1,5 @@
 import Router from 'express-promise-router';
-import { Meal, MealDay } from '../../sequelize/index.js';
+import { Meal } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import {
   createMeal,
@@ -14,6 +14,13 @@ export default router;
 //GET meal-ingredients
 
 //GET meal-with-days
+router.get('/meal-with-days', async (req, res) => {
+  try {
+    //TODO:
+  } catch (error) {
+    getErrorType(error, 'Meal');
+  }
+});
 
 //GET meals-by-day/:id
 
