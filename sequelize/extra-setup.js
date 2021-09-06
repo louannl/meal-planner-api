@@ -74,6 +74,26 @@ const applyExtraSetup = (sequelize) => {
     ],
     attributes: { exclude: ['createdAt', 'updatedAt'] },
   });
+
+  Day.addScope('dayMeal', {
+    include: [
+      {
+        model: Meal,
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        through: {
+          attributes: [],
+        },
+        include: {
+          model: Tag,
+          attributes: ['name'],
+          through: {
+            attributes: [],
+          },
+        },
+      },
+    ],
+    attributes: { exclude: ['createdAt', 'updatedAt'] },
+  });
 };
 
 export default applyExtraSetup;

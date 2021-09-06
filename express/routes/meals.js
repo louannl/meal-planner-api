@@ -1,6 +1,7 @@
 import Router from 'express-promise-router';
-import { Meal } from '../../sequelize/index.js';
+import { Meal, Day } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
+import { transformDayMeals } from '../domain/domainDay.js';
 import {
   createMeal,
   deleteMeal,
@@ -13,12 +14,16 @@ export default router;
 
 //GET meal-ingredients
 
-//GET meal-with-days
-router.get('/meal-with-days', async (req, res) => {
+router.get('/meals-with-days', async (req, res) => {
   try {
-    //TODO:
+    const result = await Day.scope('dayMeal').findAll();
+
+    return res.status(200).json({
+      status: 'success',
+      data: transformDayMeals(result),
+    });
   } catch (error) {
-    getErrorType(error, 'Meal');
+    getErrorType(error, 'Day');
   }
 });
 

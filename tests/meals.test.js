@@ -114,12 +114,13 @@ describe('Get meal routes', () => {
   });
 
   it('should get all meals sorted by days', async () => {
-    const res = await request(app).get('/meals/meals-with-day');
+    const res = await request(app).get('/meals/meals-with-days');
     expect(res.statusCode).toEqual(200);
-    res.body.data.forEach((meal) => {
-      expect(meal).toMatchObject({
+    res.body.data.forEach((day) => {
+      expect(day).toMatchObject({
         id: expect.any(Number),
         name: expect.any(String),
+        meals: expect.any(Array),
       });
     });
   });
