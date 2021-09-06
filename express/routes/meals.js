@@ -1,7 +1,7 @@
 import Router from 'express-promise-router';
-import { Meal, Day } from '../../sequelize/index.js';
+import { Meal, Day, Tag } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
-import { transformDayMeals } from '../domain/domainDay.js';
+import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
 import {
   createMeal,
   deleteMeal,
@@ -28,6 +28,19 @@ router.get('/meals-with-days', async (req, res) => {
 });
 
 //GET meals-by-day/:id
+router.get('/meals-by-day/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await Day.scope('dayMeal').findByPk(id);
+
+    return res.status(200).json({
+      status: 'success',
+      data: transformTagMeals(result.Meals),
+    });
+  } catch (error) {
+    getErrorType(error, 'Day');
+  }
+});
 
 router.get('/:id', async (req, res) => {
   try {

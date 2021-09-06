@@ -125,16 +125,17 @@ describe('Get meal routes', () => {
     });
   });
 
-  // it('should get all meals on a specified day', async () => {
-  //   const res = await request(app).get('/meals/meals-by-day/1');
-  //   expect(res.statusCode).toEqual(200);
-  //   res.body.data.forEach((meal) => {
-  //     expect(meal).toMatchObject({
-  //       id: expect.any(Number),
-  //       name: expect.any(String),
-  //     });
-  //   });
-  // });
+  it('should get all meals on a specified day', async () => {
+    const res = await request(app).get('/meals/meals-by-day/3');
+    expect(res.statusCode).toEqual(200);
+    res.body.data.forEach((meal) => {
+      expect(meal).toMatchObject({
+        id: expect.any(Number),
+        meal: expect.any(String),
+        tags: expect.any(Array),
+      });
+    });
+  });
 
   // it('should get all meal ingredients and aggregate them', async () => {
   //   const res = await request(app).get('meals/meal-ingredients');
