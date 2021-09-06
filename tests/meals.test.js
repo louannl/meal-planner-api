@@ -137,18 +137,17 @@ describe('Get meal routes', () => {
     });
   });
 
-  // it('should get all meal ingredients and aggregate them', async () => {
-  //   const res = await request(app).get('meals/meal-ingredients');
-  //   expect(res.statusCode).toEqual(200);
-  //   res.body.data.forEach((ingredient) => {
-  //     expect(ingredient).toMatchObject({
-  //       id: expect.any(Number),
-  //       ingredient: expect.any(String),
-  //       amount: expect.any(Number),
-  //       unitType: expect.any(String),
-  //     });
-  //   });
-  // });
+  it('should get all meal-ingredients and aggregate them', async () => {
+    const res = await request(app).get('/meals/meal-ingredients');
+    expect(res.statusCode).toEqual(200);
+    res.body.data.forEach((ing) => {
+      expect(ing).toMatchObject({
+        ingredient: expect.any(String),
+        total: expect.any(String),
+        unit: expect.any(String),
+      });
+    });
+  });
 });
 
 describe('Delete meal routes', () => {

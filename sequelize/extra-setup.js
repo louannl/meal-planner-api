@@ -37,6 +37,9 @@ const applyExtraSetup = (sequelize) => {
     through: MealIngredient,
     foreignKey: 'unit_type_id',
   });
+  MealIngredient.belongsTo(Meal, { foreignKey: 'meal_id' });
+  MealIngredient.belongsTo(Ingredient, { foreignKey: 'ingredient_id' });
+  MealIngredient.belongsTo(UnitType, { foreignKey: 'unit_type_id' });
 
   Meal.belongsToMany(Tag, { through: MealTag, foreignKey: 'meal_id' });
   Tag.belongsToMany(Meal, { through: MealTag, foreignKey: 'tag_id' });

@@ -1,7 +1,14 @@
 import Router from 'express-promise-router';
-import { Meal, Day, Tag } from '../../sequelize/index.js';
+import sequelize, {
+  Meal,
+  Day,
+  MealIngredient,
+  Ingredient,
+  UnitType,
+} from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
+import { transformMealIngredients } from '../domain/domainIngredients.js';
 import {
   createMeal,
   deleteMeal,
@@ -12,7 +19,34 @@ import {
 const router = new Router();
 export default router;
 
-//GET meal-ingredients
+router.get('/meal-ingredients', async (req, res) => {
+  try {
+    const result = await MealIngredient.findAll({
+      group: ['unit_type_id', 'UnitType.id', 'Ingredient.id', 'ingredient_id'],
+      include: [
+        {
+          model: Ingredient,
+          attributes: { exclude: ['createdAt', 'updatedAt', 'id'] },
+        },
+        {
+          model: UnitType,
+          attributes: { exclude: ['createdAt', 'updatedAt', 'id'] },
+        },
+      ],
+      attributes: {
+        include: [[sequelize.fn('SUM', sequelize.col('amount')), 'total']],
+        exclude: ['createdAt', 'updatedAt', 'meal_id', 'amount'],
+      },
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      data: transformMealIngredients(result),
+    });
+  } catch (error) {
+    getErrorType(error, 'Ingredients');
+  }
+});
 
 router.get('/meals-with-days', async (req, res) => {
   try {
@@ -27,7 +61,6 @@ router.get('/meals-with-days', async (req, res) => {
   }
 });
 
-//GET meals-by-day/:id
 router.get('/meals-by-day/:id', async (req, res) => {
   const { id } = req.params;
   try {
