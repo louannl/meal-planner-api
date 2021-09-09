@@ -5,6 +5,7 @@ import sequelize, {
   MealIngredient,
   Ingredient,
   UnitType,
+  MealDay,
 } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
@@ -148,6 +149,44 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-//DELETE / (all)
+//TODO: DELETE / All meals
 
-//DELETE /:id/:dayId (delete day from meal)
+//DELETE a DAY from the meal
+router.delete('/:mealId/:dayId', async (req, res) => {
+  const { mealId, dayId } = req.params;
+  try {
+    const days = await MealDay.findAll({
+      where: { meal_id: mealId },
+    });
+
+    //If the dayId doesn't exist in the table -> do nothing
+    if (!days.some((entry) => entry.day_id == dayId)) {
+      return res.status(204).json({
+        status: 'success',
+      });
+    }
+
+    //If there are multiple days, only delete the specific day
+    if (days.length > 1) {
+      await MealDay.destroy({
+        where: {
+          meal_id: mealId,
+          day_id: dayId,
+        },
+      });
+
+      return res.status(204).json({
+        status: 'success',
+      });
+    }
+
+    // If the day is the last day in the table, delete the entire meal:
+    await deleteMeal(mealId);
+
+    return res.status(204).json({
+      status: 'success',
+    });
+  } catch (error) {
+    getErrorType(error, 'Meal');
+  }
+});
