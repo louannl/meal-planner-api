@@ -149,6 +149,10 @@ You can then fetch information on the meals or even fetch an aggregated ingredie
   
   These table columns are used in the sequelize version from the get go. They are useful for spotting errors and in general are good pieces of information to have for the user.
 
+- Deleted_at (Soft Deletion)
+  
+  Not currently used in either versions, but would be useful to have once authentication has been added in.
+
 ## Roadmap
 - Users and Authentication
   

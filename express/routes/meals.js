@@ -135,7 +135,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-//DELETE /:id
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -180,7 +179,7 @@ router.delete('/:mealId/:dayId', async (req, res) => {
       });
     }
 
-    // If the day is the last day in the table, delete the entire meal:
+    //If the day is the last day in the table, delete the entire meal:
     await deleteMeal(mealId);
 
     return res.status(204).json({

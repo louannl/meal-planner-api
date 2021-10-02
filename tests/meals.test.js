@@ -157,7 +157,7 @@ describe('Delete meal routes', () => {
   it('should only delete the day from the meal', async () => {
     await createMeal(validMealData);
 
-    // check if we delete a non-existent day, it doesn't delete the meal
+    // Check if we delete a non-existent day, it doesn't delete the meal
     await request(app).del('/meals/1/7');
 
     const dbMealData = await Meal.scope('mealInfo').findByPk(1);
@@ -173,7 +173,7 @@ describe('Delete meal routes', () => {
     const res = await request(app).del('/meals/1/3');
     expect(res.statusCode).toEqual(204);
 
-    //TODO: check the meal still exists and has only one day:
+    //Check if we delete a day the meal still exists with remaining days:
     const days = await MealDay.findAll({
       where: { meal_id: 1 },
       attributes: ['day_id'],
@@ -181,16 +181,16 @@ describe('Delete meal routes', () => {
     expect(days.length).toEqual(1);
     expect(days[0].day_id).toEqual(5);
 
-    // //check if we delete the remaining day, it deletes the entire meal
-    // res = await request(app).del('/meals/1/4');
-    // expect(res.statusCode).toEqual(204);
-    // mealData = await request(app).get('meals/1');
-    // expect(mealData.statusCode).toEqual(404);
+    //TODO: Separate these tests more, so it's cleaner
+    // Check if we delete the remaining day, it deletes the entire meal
+    const response = await request(app).del('/meals/1/5');
+    expect(response.statusCode).toEqual(204);
+    const mealData = await request(app).get('meals/1');
+    expect(mealData.statusCode).toEqual(404);
   });
 
   it('should delete an individual meal by id', async () => {
-    //TODO: I'd rather run a beforeall, tear down and reimplement
-    //Post a meal to be deleted
+    //TODO: I'd rather run a beforeAll, tear down and re-implement
     await createMeal(validMealData);
 
     const res = await request(app).del('/meals/1');
@@ -198,5 +198,8 @@ describe('Delete meal routes', () => {
     await request(app).get('/meals/1').expect(404);
   });
 
-  // it('should delete all meals, including the meal ingredients/tags/days', async () => {});
+  /*
+   it('should delete all meals, including the meal ingredients/tags/days', 
+   async () => {});
+  */
 });
