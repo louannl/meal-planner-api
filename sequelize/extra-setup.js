@@ -21,6 +21,7 @@ const applyExtraSetup = (sequelize) => {
     through: MealIngredient,
     foreignKey: 'meal_id',
   });
+
   Ingredient.belongsToMany(Meal, {
     through: MealIngredient,
     foreignKey: 'ingredient_id',
@@ -29,6 +30,7 @@ const applyExtraSetup = (sequelize) => {
     through: MealIngredient,
     foreignKey: 'ingredient_id',
   });
+
   UnitType.belongsToMany(Meal, {
     through: MealIngredient,
     foreignKey: 'unit_type_id',
@@ -37,6 +39,10 @@ const applyExtraSetup = (sequelize) => {
     through: MealIngredient,
     foreignKey: 'unit_type_id',
   });
+
+  MealDay.belongsTo(Meal, { foreignKey: 'meal_id' });
+  MealDay.belongsTo(Day, { foreignKey: 'day_id' });
+
   MealIngredient.belongsTo(Meal, { foreignKey: 'meal_id' });
   MealIngredient.belongsTo(Ingredient, { foreignKey: 'ingredient_id' });
   MealIngredient.belongsTo(UnitType, { foreignKey: 'unit_type_id' });
@@ -79,6 +85,7 @@ const applyExtraSetup = (sequelize) => {
   });
 
   Day.addScope('dayMeal', {
+    order: [['id', 'ASC']],
     include: [
       {
         model: Meal,

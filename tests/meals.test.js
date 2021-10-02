@@ -38,6 +38,11 @@ const validMealData2 = {
       amount: '3000',
       unitType: '2',
     },
+    {
+      name: 'Red Pepper',
+      amount: '1',
+      unitType: '3',
+    },
   ],
 };
 
@@ -104,7 +109,7 @@ describe('Get meal routes', () => {
 
     res.body.data.ingredients.forEach((ingredient) => {
       expect(ingredient).toMatchObject({
-        id: expect.any(String),
+        id: expect.any(Number),
         ingredient: expect.any(String),
         amount: expect.any(Number),
         unit: expect.any(String),
@@ -129,6 +134,7 @@ describe('Get meal routes', () => {
 
   it('should get all meals on a specified day', async () => {
     await createMeal(validMealData);
+
     const res = await request(app).get('/meals/meals-by-day/3');
     expect(res.statusCode).toEqual(200);
     res.body.data.forEach((meal) => {
@@ -141,6 +147,11 @@ describe('Get meal routes', () => {
   });
 
   it('should get all meal-ingredients and aggregate them', async () => {
+    await createMeal(validMealData);
+    await createMeal(validMealData2);
+
+    //FIXME: Checks it actually adds up correctly
+
     const res = await request(app).get('/meals/meal-ingredients');
     expect(res.statusCode).toEqual(200);
     res.body.data.forEach((ing) => {
