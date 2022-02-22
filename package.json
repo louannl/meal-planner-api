@@ -25,7 +25,7 @@
     "db-migrate-pg": "^1.2.2",
     "db-migrate-plugin-es6cjs": "^0.0.1",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-promise-router": "^4.1.0",
     "express-validator": "^6.10.0",
     "pg": "^8.5.1"
