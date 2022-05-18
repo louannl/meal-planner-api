@@ -184,7 +184,7 @@ describe('Delete meal routes', () => {
     const res = await request(app).del('/meals/1/3');
     expect(res.statusCode).toEqual(204);
 
-    //Check if we delete a day the meal still exists with remaining days:
+    // Check if we delete a day the meal still exists with remaining days:
     const days = await MealDay.findAll({
       where: { meal_id: 1 },
       attributes: ['day_id'],
@@ -196,7 +196,7 @@ describe('Delete meal routes', () => {
     // Check if we delete the remaining day, it deletes the entire meal
     const response = await request(app).del('/meals/1/5');
     expect(response.statusCode).toEqual(204);
-    const mealData = await request(app).get('meals/1');
+    const mealData = await request(app).get('/meals/1');
     expect(mealData.statusCode).toEqual(404);
   });
 
