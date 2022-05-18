@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  meal_planner_service:
+    container_name: meal_planner_service
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: npm run start:dev
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_HOST=meal_planner_db
+      - DATABASE_NAME=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - TEST_DATABASE_HOST=meal_planner_db_test
+      - TEST_DATABASE_NAME=postgres
+      - TEST_DATABASE_USER=postgres
+      - TEST_DATABASE_PASSWORD=postgres
+    ports:
+      - '5000:5000'
+    expose:
+      - '5000'
+
+  meal_planner_db_test:
+    image: postgres:14-alpine
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5401:5432'
+
+  meal_planner_db:
+    image: postgres:14-alpine
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5400:5432'
+
+volumes:
+  postgres-db:

@@ -7,10 +7,10 @@
   "scripts": {
     "make:model": "npx sequelize-cli model: generate --name user --attributes email:string",
     "make:seed": "npx sequelize-cli seed:generate --name demo-user",
-    "start": "nodemon index.js",
+    "start": "index.js",
+    "start:dev": "nodemon index.js",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "db:create:test": "NODE_ENV=test npx sequelize-cli db:create",
-    "pretest": "NODE_ENV=test npm run db:reset",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "test:silent": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand",
     "db:migrate": "npx sequelize-cli db:migrate",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "babel-register": "^6.26.0",
     "jest": "^27.0.6",
+    "nodemon": "^2.0.15",
     "sequelize-cli": "^6.2.0",
     "supertest": "^6.1.3"
   }
