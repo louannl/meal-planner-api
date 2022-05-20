@@ -26,7 +26,7 @@ services:
   meal_planner_db_test:
     image: postgres:14-alpine
     volumes:
-      - postgres-db:/var/lib/postgresql/data
+      - postgres-db-test:/var/lib/postgresql/data
     restart: always
     environment:
       - POSTGRES_NAME=postgres
@@ -49,3 +49,4 @@ services:
 
 volumes:
   postgres-db:
+  postgres-db-test:
