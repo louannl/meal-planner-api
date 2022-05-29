@@ -11,6 +11,7 @@
     "start:dev": "nodemon index.js",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "db:create:test": "NODE_ENV=test npx sequelize-cli db:create",
+    "pretest": "NODE_ENV=test npx sequelize-cli db:migrate:undo:all && NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test npx sequelize-cli db:seed:undo && NODE_ENV=test sequelize db:seed:all",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "test:silent": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand",
     "db:migrate": "npx sequelize-cli db:migrate",
