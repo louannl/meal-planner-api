@@ -10,13 +10,27 @@ class AppError extends Error {
   }
 }
 
-export const getErrorType = (error) => {
-  if (!error.code) {
-    //FIXME: This is probably not the best method to handle errors
-    //already handled in my db queries
-    throw new AppError(error.message, error.statusCode);
+export const getErrorType = (error, table) => {
+  if (error.name === 'SequelizeValidationError') {
+    const errors = error.errors[0];
+    if (errors.validatorKey === 'is_null') {
+      throw new AppError(`${table} ${errors.path} cannot be empty`, 400);
+    }
+    throw new AppError(`${table} ${errors.message}`, 400);
   }
-  switch (error.code) {
+
+  let err = error;
+
+  if (error.parent) {
+    err = error.parent;
+  }
+
+  if (!err.code) {
+    //FIXME: This is an absolute mess to be honest
+    throw new AppError(err.message, err.statusCode);
+  }
+
+  switch (err.code) {
     case '08003':
       throw new AppError('Database connection does not exists', 500);
     case '08006':
@@ -43,8 +57,10 @@ export const getErrorType = (error) => {
       throw new AppError('Table is undefined', 400);
     case '42P02':
       throw new AppError('Parameter is undefined', 400);
+    case '23503':
+      throw new AppError(`Item is currently in use in ${err.table}`, 400);
     case '23505':
-      throw new AppError(`${error.detail}`, 409);
+      throw new AppError(`${err.detail}`, 409);
     default:
       throw new AppError('A server side error has occurred', 500);
   }

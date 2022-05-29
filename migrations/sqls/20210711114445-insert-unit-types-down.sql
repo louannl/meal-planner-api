@@ -1,1 +1,0 @@
-TRUNCATE unit_types;
