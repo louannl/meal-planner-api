@@ -30,87 +30,75 @@
 This is the API used for my meal-planner app, it allows users to manage their meals by giving information such as the days the meals are on, tags to identify groups of meals, and ingredients. The user can then return a shopping list, an aggregated list, of all the ingredients they will need for their weekly shop. 
 
 Checkout the API in use by my frontend app: 
-[MealPlanner App Github](https://github.com/louannl/meal-planner.git) /
-[Online sample](meal-planner.louannloizou.co.uk)
-
-Please see notes for the online example in the app github readme.
+[MealPlanner App Github](https://github.com/louannl/meal-planner.git)
 
 ### Branches
 There are three branches at current: main, rawsql, and sequelize. 
 1. Main 
 
-This is the working version used online with my frontend application.
-Eventually I will merge the Sequelize branch to this branch. 
+This is the current version using Sequelize, after originally creating the app without an ORM (or automated tests).
 
 1. Rawsql
 
-This is a snapshot of the code before I started working on the Sequelize version, there are only a few differences to the current main branch, barring the readme changes (mainly changes needed to setup the api online). 
-
-There was a lot more work that could have gone into this version, however, I decided it would be a better use of my time learning to use sequelize.
-
-3. Sequelize
-
-This is the branch I am working on at current, checkout the branch readme for more information. 
-
-I have used this opportunity to setup tests before re-factoring each section of code.
+This is a snapshot of the code before I started working on the Sequelize version.
+There are multiple improvements that could have happend to this code before using an ORM, however
+I thought it's best to continue on to make use of an ORM.
 
 ### Built With
-- PostgreSQL / Sequelize*
+- PostgreSQL / Sequelize
 - Node.js / Express
-- Sequelize
 - Docker
-- Jest*
-
-*Used on the Sequelize branch.
+- Jest
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
 ### Prerequisites
-To run this project you will need to install Node.js and NPM, checkout the NPM docs for how to download NPM [Link to NPM Docs](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm);
-Additionally you will need to use a postgres database.
+To run this project you will need to install Node.js and NPM, checkout the NPM docs for how to download NPM 
+[Link to NPM Docs](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm);
 
 ### Installation
 1. Clone the repo
   ```sh
   git clone https://github.com/louannl/meal-planner-api.git
   ```
-2. Install NPM packages (within the folder) - refer to getting started on how to install npm and node before this step:
+2. Install NPM packages (optional)
   ```sh
   npm install
   ```
-3. Copy .env.example and rename it to .env - Enter your postgres database details in `.env`. E.g.
-  ```
-  DATABASE_HOST=localhost
-  ```
-4. Migrate and seed the Database by running:
+3. Set up your containers and volumes using:
   ```sh
-  db-migrate up
+  docker-compose up
   ```
-5. Run the command to start the API:
+  *note: you may need to use `docker-compose down` then `up` again if the volumes
+  start after the container because the connection won't be established to the db
+  (will fix this at some point)
+
+4. Use bash to interact within the container then run tests/migrations/seeds etc.
   ```sh
-  npm run start
+  docker container exec -it meal_planner_service bash
+  ```
+5. Run migrations and seeding with the container with:
+  ```sh
+  npm run db:migrate
+  npm run db:seed
   ```
 
-### Migrating the database (TBD)
-This will create, migrate and seed the data on the database:
-```
-npm run db:reset
-```
-
-This will create the test database 
+### Testing
+This will create the test database
 ```
 npm run db:create:test
 ```
 
-### Testing
-Once details are added to the .env file and the test database is created: 
+Within the running container:
 ```
 npm run test
 ```
+*pretest is set up to migrate and seed the data
 
 ### Postman
 The Postman collection is available to import from the JSON file: meal-planner.postman_collection.json.
+
 This can be used to test the API without using the frontend application.
 
 <!-- USAGE EXAMPLES -->
@@ -122,7 +110,7 @@ The API lets you create/edit/delete meals which have details such as the day/s t
 You can then fetch information on the meals or even fetch an aggregated ingredient list to make creating your weekly shopping list easier.
 
 <!-- ROADMAP -->
-## Bugs and Issues
+## Bugs and Issues (Outdated)
 *As a note, some issues are easily solved by using an ORM or will naturally be fixed when refactoring anyway. So some of the current issues with the app will have been solved in the sequelize branch, but are not currently in production.*
 
 - Consistent queries and error handling:
