@@ -6,4 +6,6 @@ RUN apk add --no-cache bash
 
 WORKDIR /app
 
+RUN npm install
+
 CMD ["npm", "run", "start"]
