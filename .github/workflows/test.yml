@@ -46,3 +46,7 @@ jobs:
         # Environment variables used by the `client.js` script to create a new PostgreSQL table.
         env:
           TEST_DATABASE_HOST: postgres
+          TEST_DATABASE_NAME: postgres
+          TEST_DATABASE_USER: postgres
+          TEST_DATABASE_PASSWORD: postgres
+          TEST_DATABASE_PORT: 5432
