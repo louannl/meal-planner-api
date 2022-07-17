@@ -3,13 +3,11 @@ import app from '../express/app';
 import { createMeal, transformMealInfo } from '../express/domain/domainMeal';
 import { Meal, MealDay } from '../sequelize';
 
-import { resetDb } from './testSetup';
+import resetDb from './testSetup';
 
-beforeEach(() => {
-  return resetDb();
-});
+beforeEach(() => resetDb());
 
-//HELPERS - Test data:
+// HELPERS - Test data:
 const validMealData = {
   dayIds: [3, 5],
   mealName: 'Beef Casserole',
@@ -68,15 +66,15 @@ describe('Post/Put meal routes', () => {
   it('should create a meal with ingredients, tags and days', async () => {
     const res = await request(app).post('/meals').send(validMealData);
     expect(res.statusCode).toEqual(201);
-    //TODO: check db data afterwards
+    // TODO: check db data afterwards
   });
 
   it('should throw an error when trying to create an existing meal', async () => {
-    //TODO:Post twice here
+    // TODO:Post twice here
     await request(app).post('/meals').send(validMealData);
     const res = await request(app).post('/meals').send(validMealData);
     expect(res.statusCode).toEqual(409);
-    //TODO: Validate no duplicates in DB
+    // TODO: Validate no duplicates in DB
   });
 
   it('should throw an error when creating a meal without any days', async () => {
@@ -89,7 +87,7 @@ describe('Post/Put meal routes', () => {
 
     const res = await request(app).put('/meals/1').send(validMealData2);
     expect(res.statusCode).toEqual(200);
-    //TODO: Check data is in database
+    // TODO: Check data is in database
   });
 });
 
@@ -150,7 +148,7 @@ describe('Get meal routes', () => {
     await createMeal(validMealData);
     await createMeal(validMealData2);
 
-    //FIXME: Checks it actually adds up correctly
+    // FIXME: Checks it actually adds up correctly
 
     const res = await request(app).get('/meals/meal-ingredients');
     expect(res.statusCode).toEqual(200);
@@ -178,7 +176,7 @@ describe('Delete meal routes', () => {
     expect(transformedDbMeal.meal).toEqual(validMealData.mealName);
     expect(transformedDbMeal.tags).toEqual(validMealData.mealTags);
     expect(transformedDbMeal.ingredients.map((ing) => ing.ingredient)).toEqual(
-      validMealData.ingredients.map((ing) => ing.name)
+      validMealData.ingredients.map((ing) => ing.name),
     );
 
     const res = await request(app).del('/meals/1/3');
@@ -192,7 +190,7 @@ describe('Delete meal routes', () => {
     expect(days.length).toEqual(1);
     expect(days[0].day_id).toEqual(5);
 
-    //TODO: Separate these tests more, so it's cleaner
+    // TODO: Separate these tests more, so it's cleaner
     // Check if we delete the remaining day, it deletes the entire meal
     const response = await request(app).del('/meals/1/5');
     expect(response.statusCode).toEqual(204);
@@ -201,7 +199,7 @@ describe('Delete meal routes', () => {
   });
 
   it('should delete an individual meal by id', async () => {
-    //TODO: I'd rather run a beforeAll, tear down and re-implement
+    // TODO: I'd rather run a beforeAll, tear down and re-implement
     await createMeal(validMealData);
 
     const res = await request(app).del('/meals/1');
@@ -210,7 +208,7 @@ describe('Delete meal routes', () => {
   });
 
   /*
-   it('should delete all meals, including the meal ingredients/tags/days', 
+   it('should delete all meals, including the meal ingredients/tags/days',
    async () => {});
   */
 });

@@ -1,11 +1,11 @@
 export const transformMealIngredients = (mealIngredients) => {
-  let mappedIngredients = [];
+  const mappedIngredients = [];
 
   for (const ingredient of mealIngredients) {
     mappedIngredients.push({
-      ingredient: ingredient.Ingredient['name'],
-      total: ingredient.dataValues['total'],
-      unit: ingredient.UnitType['name'],
+      ingredient: ingredient.Ingredient.name,
+      total: ingredient.dataValues.total,
+      unit: ingredient.UnitType.name,
     });
   }
 

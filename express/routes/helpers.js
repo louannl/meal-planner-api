@@ -1,6 +1,6 @@
+import { checkSchema } from 'express-validator';
 import sequelize from '../../sequelize/index.js';
 import validate from '../../utils/validate.js';
-import { checkSchema } from 'express-validator';
 import { getErrorType } from '../../utils/appError.js';
 import { createName, updateName } from '../domain/domainHelper.js';
 
@@ -31,14 +31,14 @@ export const getById = (router, table) => {
           isInt: true,
           toInt: true,
         },
-      })
+      }),
     ),
     async (req, res) => {
       try {
         const { id } = req.params;
 
         const items = await sequelize.models[table].findOne({
-          where: { id: id },
+          where: { id },
           attributes: { exclude: ['createdAt', 'updatedAt'] },
         });
 
@@ -55,7 +55,7 @@ export const getById = (router, table) => {
       } catch (error) {
         getErrorType(error, table);
       }
-    }
+    },
   );
 };
 
@@ -69,7 +69,7 @@ export const create = (router, table) => {
           notEmpty: true,
           in: 'body',
         },
-      })
+      }),
     ),
     async (req, res) => {
       try {
@@ -83,7 +83,7 @@ export const create = (router, table) => {
       } catch (error) {
         getErrorType(error, table);
       }
-    }
+    },
   );
 };
 
@@ -104,7 +104,7 @@ export const update = (router, table) => {
           isInt: true,
           toInt: true,
         },
-      })
+      }),
     ),
     async (req, res) => {
       const { name } = req.body;
@@ -123,7 +123,7 @@ export const update = (router, table) => {
       } catch (error) {
         getErrorType(error, table);
       }
-    }
+    },
   );
 };
 
@@ -137,10 +137,10 @@ export const remove = (router, table) => {
           notEmpty: true,
           in: 'params',
           isInt: true,
-          //sanitizer
+          // sanitizer
           toInt: true,
         },
-      })
+      }),
     ),
     async (req, res) => {
       const { id } = req.params;
@@ -156,6 +156,6 @@ export const remove = (router, table) => {
       } catch (error) {
         getErrorType(error, table);
       }
-    }
+    },
   );
 };

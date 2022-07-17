@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import app from './express/app.js';
 import sequelize from './sequelize/index.js';
+
 const PORT = 5000;
 
 const assertDatabaseConnectionOk = async () => {
@@ -21,7 +23,7 @@ const init = async () => {
 
   app.listen(PORT, () => {
     console.log(
-      `Express server started on port ${PORT}. Try some routes, such as '/days'.`
+      `Express server started on port ${PORT}. Try some routes, such as '/days'.`,
     );
   });
 };

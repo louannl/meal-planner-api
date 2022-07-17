@@ -9,9 +9,9 @@ import sequelize, {
 import { createName, updateName } from './domainHelper.js';
 
 export const transformMealInfo = (mealInfo, id) => {
-  let mealDays = [];
-  let mealIngredients = [];
-  let mealTags = [];
+  const mealDays = [];
+  const mealIngredients = [];
+  const mealTags = [];
 
   for (const day of mealInfo.Days) {
     mealDays.push(day.id);
@@ -21,8 +21,8 @@ export const transformMealInfo = (mealInfo, id) => {
     mealIngredients.push({
       id,
       ingredient: ing.name,
-      amount: ing['UnitTypes'][0]['MealIngredient'].amount,
-      unit: ing['UnitTypes'][0].name,
+      amount: ing.UnitTypes[0].MealIngredient.amount,
+      unit: ing.UnitTypes[0].name,
     });
   }
 
@@ -37,19 +37,19 @@ export const transformMealInfo = (mealInfo, id) => {
   };
 };
 
-const deleteByMealId = (table, id, transaction) => {
-  return sequelize.models[table].destroy(
-    {
-      where: {
-        meal_id: id,
-      },
+const deleteByMealId = (table, id, transaction) => sequelize.models[table].destroy(
+  {
+    where: {
+      meal_id: id,
     },
-    { transaction }
-  );
-};
+  },
+  { transaction },
+);
 
 export const createMeal = (body) => {
-  const { dayIds, mealName, mealTags, ingredients } = body;
+  const {
+    dayIds, mealName, mealTags, ingredients,
+  } = body;
   return sequelize.transaction(async (transaction) => {
     const {
       dataValues: { id: meal_id },
@@ -61,7 +61,7 @@ export const createMeal = (body) => {
           meal_id,
           day_id: dayId,
         },
-        { transaction }
+        { transaction },
       );
     }
 
@@ -80,7 +80,7 @@ export const createMeal = (body) => {
           amount: ingredient.amount,
           unit_type_id: ingredient.unitType,
         },
-        { transaction }
+        { transaction },
       );
     }
 
@@ -98,7 +98,7 @@ export const createMeal = (body) => {
             meal_id,
             tag_id,
           },
-          { transaction }
+          { transaction },
         );
       }
     }
@@ -106,15 +106,17 @@ export const createMeal = (body) => {
 };
 
 export const updateMeal = (body, meal_id) => {
-  const { dayIds, mealName, mealTags, ingredients } = body;
+  const {
+    dayIds, mealName, mealTags, ingredients,
+  } = body;
 
   return sequelize.transaction(async (transaction) => {
-    //UPDATE MEAL NAME
+    // UPDATE MEAL NAME
     updateName('Meal', mealName, meal_id, transaction);
-    //UPDATE MEAL DAYS
+    // UPDATE MEAL DAYS
     deleteByMealId('MealDay', meal_id, transaction);
 
-    let mappedDays = [];
+    const mappedDays = [];
     dayIds.forEach((dayId) => {
       mappedDays.push({
         meal_id,
@@ -124,7 +126,7 @@ export const updateMeal = (body, meal_id) => {
 
     await MealDay.bulkCreate(mappedDays, { transaction });
 
-    //UPDATE INGREDIENTS
+    // UPDATE INGREDIENTS
     deleteByMealId('MealIngredient', meal_id, transaction);
 
     for (const ingredient of ingredients) {
@@ -140,11 +142,11 @@ export const updateMeal = (body, meal_id) => {
           amount: ingredient.amount,
           unit_type_id: ingredient.unitType,
         },
-        { transaction }
+        { transaction },
       );
     }
 
-    //UPDATE TAGS
+    // UPDATE TAGS
     deleteByMealId('MealTag', meal_id, transaction);
 
     if (mealTags.length > 0) {
@@ -159,28 +161,26 @@ export const updateMeal = (body, meal_id) => {
             meal_id,
             tag_id,
           },
-          { transaction }
+          { transaction },
         );
       }
     }
   });
 };
 
-export const deleteMeal = (id) => {
-  return sequelize.transaction(async (transaction) => {
-    await Promise.all([
-      deleteByMealId('MealDay', id, transaction),
-      deleteByMealId('MealIngredient', id, transaction),
-      deleteByMealId('MealTag', id, transaction),
-    ]);
+export const deleteMeal = (id) => sequelize.transaction(async (transaction) => {
+  await Promise.all([
+    deleteByMealId('MealDay', id, transaction),
+    deleteByMealId('MealIngredient', id, transaction),
+    deleteByMealId('MealTag', id, transaction),
+  ]);
 
-    await Meal.destroy(
-      {
-        where: {
-          id,
-        },
+  await Meal.destroy(
+    {
+      where: {
+        id,
       },
-      { transaction }
-    );
-  });
-};
+    },
+    { transaction },
+  );
+});

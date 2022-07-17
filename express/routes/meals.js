@@ -1,8 +1,7 @@
 import Router from 'express-promise-router';
-import validate from '../../utils/validate.js';
 import { checkSchema } from 'express-validator';
 import pkg from 'sequelize';
-const { QueryTypes } = pkg;
+import validate from '../../utils/validate.js';
 import sequelize, { Meal, Day, MealDay } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
@@ -12,6 +11,8 @@ import {
   transformMealInfo,
   updateMeal,
 } from '../domain/domainMeal.js';
+
+const { QueryTypes } = pkg;
 
 const router = new Router();
 export default router;
@@ -27,7 +28,7 @@ router.get('/meal-ingredients', async (req, res) => {
       INNER JOIN meal_days AS md ON mi.meal_id = md.meal_id 
       GROUP BY i.name, ut.name
       `,
-      { type: QueryTypes.SELECT }
+      { type: QueryTypes.SELECT },
     );
 
     return res.status(200).json({
@@ -63,7 +64,7 @@ router.get(
         isInt: true,
         toInt: true,
       },
-    })
+    }),
   ),
   async (req, res) => {
     const { id } = req.params;
@@ -77,7 +78,7 @@ router.get(
     } catch (error) {
       getErrorType(error, 'Day');
     }
-  }
+  },
 );
 
 router.get(
@@ -91,7 +92,7 @@ router.get(
         isInt: true,
         toInt: true,
       },
-    })
+    }),
   ),
   async (req, res) => {
     try {
@@ -114,7 +115,7 @@ router.get(
     } catch (error) {
       getErrorType(error, 'Meal');
     }
-  }
+  },
 );
 
 router.post(
@@ -157,14 +158,14 @@ router.post(
         isInt: true,
         toInt: true,
       },
-    })
+    }),
   ),
   async (req, res) => {
     const { dayIds, ingredients } = req.body;
-    //FIXME: If items are missing, it throws an error it is not iterable
-    //Which is not very informative.
+    // FIXME: If items are missing, it throws an error it is not iterable
+    // Which is not very informative.
     try {
-      //TODO: There should be a nicer way to implement these validations
+      // TODO: There should be a nicer way to implement these validations
       if (ingredients.length === 0) {
         throw new AppError('Ingredients cannot be empty', 400);
       }
@@ -181,7 +182,7 @@ router.post(
     } catch (error) {
       getErrorType(error, 'Meal');
     }
-  }
+  },
 );
 
 router.put(
@@ -231,7 +232,7 @@ router.put(
         isInt: true,
         toInt: true,
       },
-    })
+    }),
   ),
   async (req, res) => {
     const { id: meal_id } = req.params;
@@ -245,7 +246,7 @@ router.put(
     } catch (error) {
       getErrorType(error, 'Meal');
     }
-  }
+  },
 );
 
 router.delete(
@@ -257,10 +258,10 @@ router.delete(
         notEmpty: true,
         in: 'params',
         isInt: true,
-        //sanitizer
+        // sanitizer
         toInt: true,
       },
-    })
+    }),
   ),
   async (req, res) => {
     const { id } = req.params;
@@ -273,12 +274,12 @@ router.delete(
     } catch (error) {
       getErrorType(error, 'Meal');
     }
-  }
+  },
 );
 
-//TODO: DELETE / All meals
+// TODO: DELETE / All meals
 
-//DELETE a DAY from the meal
+// DELETE a DAY from the meal
 router.delete(
   '/:mealId/:dayId',
   validate(
@@ -288,7 +289,7 @@ router.delete(
         notEmpty: true,
         in: 'params',
         isInt: true,
-        //sanitizer
+        // sanitizer
         toInt: true,
       },
       dayId: {
@@ -296,10 +297,10 @@ router.delete(
         notEmpty: true,
         in: 'params',
         isInt: true,
-        //sanitizer
+        // sanitizer
         toInt: true,
       },
-    })
+    }),
   ),
   async (req, res) => {
     const { mealId, dayId } = req.params;
@@ -308,14 +309,14 @@ router.delete(
         where: { meal_id: mealId },
       });
 
-      //If the dayId doesn't exist in the table -> do nothing
-      if (!days.some((entry) => entry.day_id == dayId)) {
+      // If the dayId doesn't exist in the table -> do nothing
+      if (!days.some((entry) => entry.day_id === dayId)) {
         return res.status(204).json({
           status: 'success',
         });
       }
 
-      //If there are multiple days, only delete the specific day
+      // If there are multiple days, only delete the specific day
       if (days.length > 1) {
         await MealDay.destroy({
           where: {
@@ -329,7 +330,7 @@ router.delete(
         });
       }
 
-      //If the day is the last day in the table, delete the entire meal:
+      // If the day is the last day in the table, delete the entire meal:
       await deleteMeal(mealId);
 
       return res.status(204).json({
@@ -338,5 +339,5 @@ router.delete(
     } catch (error) {
       getErrorType(error, 'Meal');
     }
-  }
+  },
 );

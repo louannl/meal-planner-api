@@ -1,8 +1,9 @@
 import pkg from 'sequelize';
-const { DataTypes } = pkg;
 import Meal from './meal.model.js';
 import Ingredient from './ingredient.model.js';
 import UnitType from './unitType.model.js';
+
+const { DataTypes } = pkg;
 
 export default (sequelize) => {
   sequelize.define(
@@ -57,6 +58,6 @@ export default (sequelize) => {
         },
       },
     },
-    { tableName: 'meal_ingredients' }
+    { tableName: 'meal_ingredients' },
   );
 };

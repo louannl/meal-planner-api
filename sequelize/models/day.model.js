@@ -1,4 +1,5 @@
 import pkg from 'sequelize';
+
 const { DataTypes } = pkg;
 
 export default (sequelize) => {
@@ -22,6 +23,6 @@ export default (sequelize) => {
         },
       },
     },
-    { tableName: 'days' }
+    { tableName: 'days' },
   );
 };

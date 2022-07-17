@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 
+import mountRoutes from './routes/index.js';
+
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-import mountRoutes from './routes/index.js';
 mountRoutes(app);
 
 app.use((err, req, res, next) => {
@@ -27,7 +27,7 @@ function makeHandlerAwareOfAsyncErrors(handler) {
   };
 }
 
-//define standard routes if applicable
+// define standard routes if applicable
 
 // for (const [routeName, routeController] of Object.entries(routes)) {
 // 	if (routeController.getAll) {

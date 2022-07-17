@@ -1,5 +1,5 @@
 export const transformTagMeals = (meals) => {
-  let tagMeals = [];
+  const tagMeals = [];
 
   for (const meal of meals) {
     tagMeals.push({
@@ -13,7 +13,7 @@ export const transformTagMeals = (meals) => {
 };
 
 export const transformDayMeals = (dayInfo) => {
-  let mappedDays = [];
+  const mappedDays = [];
 
   dayInfo.forEach((day) => {
     const dayMeals = transformTagMeals(day.Meals);

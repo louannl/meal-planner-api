@@ -1,13 +1,13 @@
 import request from 'supertest';
 import app from '../express/app';
 import { createName } from '../express/domain/domainHelper';
-import { resetDb } from './testSetup';
+import resetDb from './testSetup';
 
 beforeEach(() => {
   resetDb();
 });
 
-//FIXME: Make these tests uniform and test data in the db
+// FIXME: Make these tests uniform and test data in the db
 
 describe('Post/Update Ingredient Routes', () => {
   it('should successfully post ingredient data', async () => {
@@ -16,7 +16,7 @@ describe('Post/Update Ingredient Routes', () => {
       .send({ name: 'testIng' });
 
     expect(res.statusCode).toEqual(201);
-    //TODO: Test ingredient is in database
+    // TODO: Test ingredient is in database
   });
 
   it('should update ingredient name', async () => {
@@ -27,7 +27,7 @@ describe('Post/Update Ingredient Routes', () => {
       .send({ name: 'something' });
 
     expect(res.statusCode).toEqual(200);
-    //TODO: Test ingredient is in database
+    // TODO: Test ingredient is in database
   });
 
   it(`should throw a 404 error when attempting to update an ingredient 

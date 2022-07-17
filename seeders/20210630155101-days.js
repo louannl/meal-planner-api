@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
@@ -48,13 +46,11 @@ module.exports = {
           updated_at: new Date(),
         },
       ],
-      {}
+      {},
     );
   },
-  //Since we are not using sequelize to inset the seed data,
-  //we need to insert the createAt items
+  // Since we are not using sequelize to inset the seed data,
+  // we need to insert the createAt items
 
-  down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('days', null, {});
-  },
+  down: async (queryInterface, Sequelize) => queryInterface.bulkDelete('days', null, {}),
 };

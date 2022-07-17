@@ -1,5 +1,7 @@
 import Router from 'express-promise-router';
-import { create, getAll, getById, remove } from './helpers.js';
+import {
+  create, getAll, getById, remove,
+} from './helpers.js';
 
 const router = new Router();
 export default router;

@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
@@ -41,11 +39,9 @@ module.exports = {
           updated_at: new Date(),
         },
       ],
-      {}
+      {},
     );
   },
 
-  down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('unit_types', null, {});
-  },
+  down: async (queryInterface, Sequelize) => queryInterface.bulkDelete('unit_types', null, {}),
 };

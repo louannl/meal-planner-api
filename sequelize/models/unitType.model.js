@@ -1,4 +1,5 @@
 import pkg from 'sequelize';
+
 const { DataTypes } = pkg;
 
 export default (sequelize) => {
@@ -31,6 +32,6 @@ export default (sequelize) => {
         },
       },
     },
-    { tableName: 'unit_types' }
+    { tableName: 'unit_types' },
   );
 };

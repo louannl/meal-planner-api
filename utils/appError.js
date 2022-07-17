@@ -26,7 +26,7 @@ export const getErrorType = (error, table) => {
   }
 
   if (!err.code) {
-    //FIXME: This is an absolute mess to be honest
+    // FIXME: This is an absolute mess to be honest
     throw new AppError(err.message, err.statusCode);
   }
 

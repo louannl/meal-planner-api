@@ -34,7 +34,7 @@ describe('Get unitType route', () => {
       name: 'something',
       symbol: 'sm',
     });
-    //FIXME: Is this a good enough response?
+    // FIXME: Is this a good enough response?
     expect(res.statusCode).toEqual(404);
   });
 });
