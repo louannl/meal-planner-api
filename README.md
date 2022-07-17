@@ -89,8 +89,7 @@ This will create the test database
 ```
 npm run db:create:test
 ```
-
-Within the running container:
+To run tests
 ```
 npm run test
 ```

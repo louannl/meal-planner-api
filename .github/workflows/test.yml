@@ -1,0 +1,36 @@
+name: Tests
+on: push
+
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container: node:18
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: meal_planner_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
+        env:
+          TEST_DATABASE_HOST: postgres
+          TEST_DATABASE_NAME: postgres
+          TEST_DATABASE_USER: postgres
+          TEST_DATABASE_PASSWORD: postgres
+          TEST_DATABASE_PORT: 5432
