@@ -1,13 +1,13 @@
 export const transformTagMeals = (meals) => {
   const tagMeals = [];
 
-  for (const meal of meals) {
+  meals.forEach((meal) => {
     tagMeals.push({
       id: meal.id,
       meal: meal.name,
       tags: meal.Tags.map((tag) => tag.name),
     });
-  }
+  });
 
   return tagMeals;
 };
