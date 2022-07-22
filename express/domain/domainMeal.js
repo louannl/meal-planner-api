@@ -13,18 +13,18 @@ export const transformMealInfo = (mealInfo, id) => {
   const mealIngredients = [];
   const mealTags = [];
 
-  for (const day of mealInfo.Days) {
+  mealInfo.Days.forEach((day) => {
     mealDays.push(day.id);
-  }
+  });
 
-  for (const ing of mealInfo.Ingredients) {
+  mealInfo.Ingredients.forEach((ing) => {
     mealIngredients.push({
       id,
       ingredient: ing.name,
       amount: ing.UnitTypes[0].MealIngredient.amount,
       unit: ing.UnitTypes[0].name,
     });
-  }
+  });
 
   mealInfo.Tags.forEach((tag) => mealTags.push(tag.name));
 
@@ -52,18 +52,20 @@ export const createMeal = (body) => {
   } = body;
   return sequelize.transaction(async (transaction) => {
     const {
-      dataValues: { id: meal_id },
+      dataValues: { id: mealId },
     } = await createName('Meal', mealName, transaction);
 
-    for (const dayId of dayIds) {
-      await MealDay.create(
+    const createMealDays = [];
+    dayIds.forEach((dayId) => {
+      createMealDays.push((MealDay.create(
         {
-          meal_id,
+          meal_id: mealId,
           day_id: dayId,
         },
         { transaction },
-      );
-    }
+      )));
+    });
+    await Promise.all(createMealDays);
 
     for (const ingredient of ingredients) {
       const ingredientResult = await Ingredient.findOrCreate({
@@ -71,12 +73,12 @@ export const createMeal = (body) => {
         transaction,
       });
 
-      const ingredient_id = ingredientResult[0].dataValues.id;
+      const ingredientId = ingredientResult[0].dataValues.id;
 
       await MealIngredient.create(
         {
-          ingredient_id,
-          meal_id,
+          ingredient_id: ingredientId,
+          meal_id: mealId,
           amount: ingredient.amount,
           unit_type_id: ingredient.unitType,
         },
@@ -91,12 +93,10 @@ export const createMeal = (body) => {
           transaction,
         });
 
-        const tag_id = tagResult[0].dataValues.id;
-
         await MealTag.create(
           {
-            meal_id,
-            tag_id,
+            meal_id: mealId,
+            tag_id: tagResult[0].dataValues.id,
           },
           { transaction },
         );
@@ -105,21 +105,21 @@ export const createMeal = (body) => {
   });
 };
 
-export const updateMeal = (body, meal_id) => {
+export const updateMeal = (body, mealId) => {
   const {
     dayIds, mealName, mealTags, ingredients,
   } = body;
 
   return sequelize.transaction(async (transaction) => {
     // UPDATE MEAL NAME
-    updateName('Meal', mealName, meal_id, transaction);
+    updateName('Meal', mealName, mealId, transaction);
     // UPDATE MEAL DAYS
-    deleteByMealId('MealDay', meal_id, transaction);
+    deleteByMealId('MealDay', mealId, transaction);
 
     const mappedDays = [];
     dayIds.forEach((dayId) => {
       mappedDays.push({
-        meal_id,
+        meal_id: mealId,
         day_id: dayId,
       });
     });
@@ -127,18 +127,17 @@ export const updateMeal = (body, meal_id) => {
     await MealDay.bulkCreate(mappedDays, { transaction });
 
     // UPDATE INGREDIENTS
-    deleteByMealId('MealIngredient', meal_id, transaction);
+    deleteByMealId('MealIngredient', mealId, transaction);
 
     for (const ingredient of ingredients) {
       const ingredientResult = await Ingredient.findOrCreate({
         where: { name: ingredient.name },
         transaction,
       });
-      const ingredient_id = ingredientResult[0].dataValues.id;
       await MealIngredient.create(
         {
-          ingredient_id,
-          meal_id,
+          ingredient_id: ingredientResult[0].dataValues.id,
+          meal_id: mealId,
           amount: ingredient.amount,
           unit_type_id: ingredient.unitType,
         },
@@ -147,7 +146,7 @@ export const updateMeal = (body, meal_id) => {
     }
 
     // UPDATE TAGS
-    deleteByMealId('MealTag', meal_id, transaction);
+    deleteByMealId('MealTag', mealId, transaction);
 
     if (mealTags.length > 0) {
       for (const tag of mealTags) {
@@ -155,11 +154,10 @@ export const updateMeal = (body, meal_id) => {
           where: { name: tag },
           transaction,
         });
-        const tag_id = tagResult[0].dataValues.id;
         await MealTag.create(
           {
-            meal_id,
-            tag_id,
+            meal_id: mealId,
+            tag_id: tagResult[0].dataValues.id,
           },
           { transaction },
         );
