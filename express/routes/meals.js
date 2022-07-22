@@ -36,7 +36,7 @@ router.get('/meal-ingredients', async (req, res) => {
       data: results,
     });
   } catch (error) {
-    getErrorType(error, 'Ingredients');
+    return getErrorType(error, 'Ingredients');
   }
 });
 
@@ -49,7 +49,7 @@ router.get('/meals-with-days', async (req, res) => {
       data: transformDayMeals(result),
     });
   } catch (error) {
-    getErrorType(error, 'Day');
+    return getErrorType(error, 'Day');
   }
 });
 
@@ -76,7 +76,7 @@ router.get(
         data: transformTagMeals(result.Meals),
       });
     } catch (error) {
-      getErrorType(error, 'Day');
+      return getErrorType(error, 'Day');
     }
   },
 );
@@ -113,7 +113,7 @@ router.get(
         data: mealData,
       });
     } catch (error) {
-      getErrorType(error, 'Meal');
+      return getErrorType(error, 'Meal');
     }
   },
 );
@@ -166,6 +166,7 @@ router.post(
     // Which is not very informative.
     try {
       // TODO: There should be a nicer way to implement these validations
+      // TODO: If one item is not valid it'll hit a 500 error instead of validation
       if (ingredients.length === 0) {
         throw new AppError('Ingredients cannot be empty', 400);
       }
@@ -180,7 +181,7 @@ router.post(
         status: 'success',
       });
     } catch (error) {
-      getErrorType(error, 'Meal');
+      return getErrorType(error, 'Meal');
     }
   },
 );
@@ -235,16 +236,16 @@ router.put(
     }),
   ),
   async (req, res) => {
-    const { id: meal_id } = req.params;
+    const { id: mealId } = req.params;
 
     try {
-      await updateMeal(req.body, meal_id);
+      await updateMeal(req.body, mealId);
 
       return res.status(200).json({
         status: 'success',
       });
     } catch (error) {
-      getErrorType(error, 'Meal');
+      return getErrorType(error, 'Meal');
     }
   },
 );
@@ -272,7 +273,7 @@ router.delete(
         status: 'success',
       });
     } catch (error) {
-      getErrorType(error, 'Meal');
+      return getErrorType(error, 'Meal');
     }
   },
 );
@@ -337,7 +338,7 @@ router.delete(
         status: 'success',
       });
     } catch (error) {
-      getErrorType(error, 'Meal');
+      return getErrorType(error, 'Meal');
     }
   },
 );

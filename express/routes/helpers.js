@@ -14,7 +14,7 @@ export const getAll = (router, table) => {
         }),
       });
     } catch (error) {
-      getErrorType(error, table);
+      return getErrorType(error, table);
     }
   });
 };
@@ -53,7 +53,7 @@ export const getById = (router, table) => {
           .status(404)
           .send(`${table} with the specified ID does not exist`);
       } catch (error) {
-        getErrorType(error, table);
+        return getErrorType(error, table);
       }
     },
   );
@@ -81,7 +81,7 @@ export const create = (router, table) => {
           status: 'success',
         });
       } catch (error) {
-        getErrorType(error, table);
+        return getErrorType(error, table);
       }
     },
   );
@@ -121,7 +121,7 @@ export const update = (router, table) => {
           status: 'success',
         });
       } catch (error) {
-        getErrorType(error, table);
+        return getErrorType(error, table);
       }
     },
   );
@@ -154,7 +154,7 @@ export const remove = (router, table) => {
           status: 'success',
         });
       } catch (error) {
-        getErrorType(error, table);
+        return getErrorType(error, table);
       }
     },
   );

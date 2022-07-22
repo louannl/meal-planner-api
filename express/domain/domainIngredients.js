@@ -1,13 +1,15 @@
-export const transformMealIngredients = (mealIngredients) => {
+const transformMealIngredients = (mealIngredients) => {
   const mappedIngredients = [];
 
-  for (const ingredient of mealIngredients) {
+  mealIngredients.forEach((ingredient) => {
     mappedIngredients.push({
       ingredient: ingredient.Ingredient.name,
       total: ingredient.dataValues.total,
       unit: ingredient.UnitType.name,
     });
-  }
+  });
 
   return mappedIngredients;
 };
+
+export default transformMealIngredients;
