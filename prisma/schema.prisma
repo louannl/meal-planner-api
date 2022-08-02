@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model days {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique @db.VarChar(255)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  meal_days  meal_days[]
+}
+
+model ingredients {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique @db.VarChar(255)
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  meal_ingredients meal_ingredients[]
+}
+
+model meal_days {
+  id         Int      @id @default(autoincrement())
+  meal_id    Int
+  day_id     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  days       days     @relation(fields: [day_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  meals      meals    @relation(fields: [meal_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model meal_ingredients {
+  id            Int         @id @default(autoincrement())
+  meal_id       Int
+  ingredient_id Int
+  unit_type_id  Int
+  amount        Int
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  ingredients   ingredients @relation(fields: [ingredient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  meals         meals       @relation(fields: [meal_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  unit_types    unit_types  @relation(fields: [unit_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model meal_tags {
+  id         Int      @id @default(autoincrement())
+  meal_id    Int
+  tag_id     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  meals      meals    @relation(fields: [meal_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tags       tags     @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model meals {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique @db.VarChar(255)
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  meal_days        meal_days[]
+  meal_ingredients meal_ingredients[]
+  meal_tags        meal_tags[]
+}
+
+model tags {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique @db.VarChar(255)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  meal_tags  meal_tags[]
+}
+
+model unit_types {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique @db.VarChar(255)
+  symbol           String             @unique @db.VarChar(255)
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  meal_ingredients meal_ingredients[]
+}
