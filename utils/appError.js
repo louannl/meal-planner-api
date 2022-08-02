@@ -61,6 +61,11 @@ export const getErrorType = (error, table) => {
       throw new AppError(`Item is currently in use in ${err.table}`, 400);
     case '23505':
       throw new AppError(`${err.detail}`, 409);
+    case 'P2002':
+      // PRISMA CASES TODO: TIDY THIS MESS UP PLEASE
+      throw new AppError('Item already exists', 400);
+    case 'P2025':
+      throw new AppError('Item not found', 404);
     default:
       throw new AppError('A server side error has occurred', 500);
   }

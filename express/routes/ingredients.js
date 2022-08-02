@@ -9,5 +9,5 @@ export default router;
 getAll(router, 'ingredients');
 getById(router, 'ingredients');
 create(router, 'ingredients');
-update(router, 'Ingredient');
+update(router, 'ingredients');
 remove(router, 'Ingredient');

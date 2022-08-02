@@ -123,11 +123,10 @@ export const update = (router, table) => {
       const { id } = req.params;
 
       try {
-        const rowsUpdated = await updateName(table, name, id);
-
-        if (rowsUpdated[0] === 0) {
-          return res.status(404).send('Item does not exist');
-        }
+        await prisma[table].update({
+          where: { id },
+          data: { name },
+        });
 
         return res.status(200).json({
           status: 'success',
