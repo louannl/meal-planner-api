@@ -41,21 +41,25 @@ export const getById = (router, table) => {
       try {
         const { id } = req.params;
 
-        const items = await sequelize.models[table].findOne({
+        const result = await prisma[table].findUnique({
           where: { id },
-          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          select: {
+            id: true,
+            name: true,
+          },
         });
 
-        if (items) {
-          return res.status(200).json({
-            status: 'success',
-            data: items,
-          });
+        if (!result) {
+          const tableText = (table[0].toUpperCase() + table.slice(1).toLowerCase()).slice(0, -1);
+          return res
+            .status(404)
+            .send(`${tableText} with the specified ID does not exist`);
         }
 
-        return res
-          .status(404)
-          .send(`${table} with the specified ID does not exist`);
+        return res.status(200).json({
+          status: 'success',
+          data: result,
+        });
       } catch (error) {
         return getErrorType(error, table);
       }

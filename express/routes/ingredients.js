@@ -7,7 +7,7 @@ const router = new Router();
 export default router;
 
 getAll(router, 'ingredients');
-getById(router, 'Ingredient');
+getById(router, 'ingredients');
 create(router, 'Ingredient');
 update(router, 'Ingredient');
 remove(router, 'Ingredient');

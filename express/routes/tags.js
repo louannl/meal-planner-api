@@ -7,6 +7,6 @@ const router = new Router();
 export default router;
 
 getAll(router, 'tags');
-getById(router, 'Tag');
+getById(router, 'tags');
 create(router, 'Tag');
 remove(router, 'Tag');

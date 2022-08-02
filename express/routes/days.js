@@ -5,4 +5,4 @@ const router = new Router();
 export default router;
 
 getAll(router, 'days');
-getById(router, 'Day');
+getById(router, 'days');
