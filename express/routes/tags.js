@@ -8,5 +8,5 @@ export default router;
 
 getAll(router, 'tags');
 getById(router, 'tags');
-create(router, 'Tag');
+create(router, 'tags');
 remove(router, 'Tag');

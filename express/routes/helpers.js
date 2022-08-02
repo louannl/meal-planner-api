@@ -2,7 +2,7 @@ import { checkSchema } from 'express-validator';
 import sequelize from '../../sequelize/index.js';
 import validate from '../../utils/validate.js';
 import { getErrorType } from '../../utils/appError.js';
-import { createName, updateName } from '../domain/domainHelper.js';
+import { updateName } from '../domain/domainHelper.js';
 import prisma from '../../prisma.js';
 
 export const getAll = (router, table) => {
@@ -83,7 +83,11 @@ export const create = (router, table) => {
       try {
         const { name } = req.body;
 
-        await createName(table, name);
+        await prisma[table].create({
+          data: {
+            name,
+          },
+        });
 
         return res.status(201).json({
           status: 'success',

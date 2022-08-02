@@ -8,6 +8,6 @@ export default router;
 
 getAll(router, 'ingredients');
 getById(router, 'ingredients');
-create(router, 'Ingredient');
+create(router, 'ingredients');
 update(router, 'Ingredient');
 remove(router, 'Ingredient');
