@@ -6,7 +6,7 @@ import {
 const router = new Router();
 export default router;
 
-getAll(router, 'Ingredient');
+getAll(router, 'ingredients');
 getById(router, 'Ingredient');
 create(router, 'Ingredient');
 update(router, 'Ingredient');

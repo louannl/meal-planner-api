@@ -3,14 +3,18 @@ import sequelize from '../../sequelize/index.js';
 import validate from '../../utils/validate.js';
 import { getErrorType } from '../../utils/appError.js';
 import { createName, updateName } from '../domain/domainHelper.js';
+import prisma from '../../prisma.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
     try {
       return res.status(200).json({
         status: 'success',
-        data: await sequelize.models[table].findAll({
-          attributes: { exclude: ['createdAt', 'updatedAt'] },
+        data: await prisma[table].findMany({
+          select: {
+            id: true,
+            name: true,
+          },
         }),
       });
     } catch (error) {

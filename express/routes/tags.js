@@ -6,7 +6,7 @@ import {
 const router = new Router();
 export default router;
 
-getAll(router, 'Tag');
+getAll(router, 'tags');
 getById(router, 'Tag');
 create(router, 'Tag');
 remove(router, 'Tag');
