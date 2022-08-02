@@ -10,4 +10,4 @@ getAll(router, 'ingredients');
 getById(router, 'ingredients');
 create(router, 'ingredients');
 update(router, 'ingredients');
-remove(router, 'Ingredient');
+remove(router, 'ingredients');

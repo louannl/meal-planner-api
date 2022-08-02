@@ -10,4 +10,4 @@ getAll(router, 'tags');
 getById(router, 'tags');
 create(router, 'tags');
 update(router, 'tags');
-remove(router, 'Tag');
+remove(router, 'tags');

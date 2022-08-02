@@ -1,8 +1,6 @@
 import { checkSchema } from 'express-validator';
-import sequelize from '../../sequelize/index.js';
 import validate from '../../utils/validate.js';
 import { getErrorType } from '../../utils/appError.js';
-import { updateName } from '../domain/domainHelper.js';
 import prisma from '../../prisma.js';
 
 export const getAll = (router, table) => {
@@ -156,11 +154,10 @@ export const remove = (router, table) => {
     async (req, res) => {
       const { id } = req.params;
       try {
-        await sequelize.models[table].destroy({
-          where: {
-            id,
-          },
+        await prisma[table].delete({
+          where: { id },
         });
+
         return res.status(204).json({
           status: 'success',
         });
