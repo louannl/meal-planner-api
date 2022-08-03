@@ -1,8 +1,7 @@
 import Router from 'express-promise-router';
 import { checkSchema } from 'express-validator';
-import pkg from 'sequelize';
 import validate from '../../utils/validate.js';
-import sequelize, { Meal, Day, MealDay } from '../../sequelize/index.js';
+import { Meal, Day, MealDay } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
 import {
@@ -11,25 +10,21 @@ import {
   transformMealInfo,
   updateMeal,
 } from '../domain/domainMeal.js';
-
-const { QueryTypes } = pkg;
+import prisma from '../../prisma.js';
 
 const router = new Router();
 export default router;
 
 router.get('/meal-ingredients', async (req, res) => {
   try {
-    const results = await sequelize.query(
-      `
-      SELECT i.name AS ingredient, SUM(amount) AS total, ut.name AS unit 
+    const results = await prisma.$queryRaw`
+      SELECT i.name AS ingredient, (SUM(amount))::text AS total, ut.name AS unit 
       FROM meal_ingredients AS mi 
       INNER JOIN ingredients AS i ON mi.ingredient_id = i.id 
       INNER JOIN unit_types AS ut ON mi.unit_type_id = ut.id 
       INNER JOIN meal_days AS md ON mi.meal_id = md.meal_id 
       GROUP BY i.name, ut.name
-      `,
-      { type: QueryTypes.SELECT },
-    );
+    `;
 
     return res.status(200).json({
       status: 'success',
