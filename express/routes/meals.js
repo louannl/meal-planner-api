@@ -37,7 +37,23 @@ router.get('/meal-ingredients', async (req, res) => {
 
 router.get('/meals-with-days', async (req, res) => {
   try {
-    const result = await Day.scope('dayMeal').findAll();
+    const result = await prisma.days.findMany({
+      select: {
+        id: true,
+        name: true,
+        meal_days: {
+          select: {
+            meal_id: true,
+            meals: {
+              select: {
+                name: true,
+                meal_tags: { select: { tags: { select: { name: true } } } },
+              },
+            },
+          },
+        },
+      },
+    });
 
     return res.status(200).json({
       status: 'success',
