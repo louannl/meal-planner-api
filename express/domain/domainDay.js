@@ -13,17 +13,23 @@ export const transformTagMeals = (meals) => {
 };
 
 export const transformDayMeals = (dayInfo) => {
-  const mappedDays = [];
+  const transformedDays = [];
 
   dayInfo.forEach((day) => {
-    const dayMeals = transformTagMeals(day.Meals);
-
-    mappedDays.push({
+    const meals = [];
+    day.meal_days.forEach((meal) => {
+      meals.push({
+        id: meal.meal_id,
+        meal: meal.meals.name,
+        tags: meal.meals.meal_tags.map((tag) => tag.tags.name),
+      });
+    });
+    transformedDays.push({
       id: day.id,
       name: day.name,
-      meals: dayMeals,
+      meals,
     });
   });
 
-  return mappedDays;
+  return transformedDays;
 };

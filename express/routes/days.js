@@ -4,5 +4,5 @@ import { getAll, getById } from './helpers.js';
 const router = new Router();
 export default router;
 
-getAll(router, 'Day');
-getById(router, 'Day');
+getAll(router, 'days');
+getById(router, 'days');

@@ -1,16 +1,18 @@
 import { checkSchema } from 'express-validator';
-import sequelize from '../../sequelize/index.js';
 import validate from '../../utils/validate.js';
 import { getErrorType } from '../../utils/appError.js';
-import { createName, updateName } from '../domain/domainHelper.js';
+import prisma from '../../prisma.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
     try {
       return res.status(200).json({
         status: 'success',
-        data: await sequelize.models[table].findAll({
-          attributes: { exclude: ['createdAt', 'updatedAt'] },
+        data: await prisma[table].findMany({
+          select: {
+            id: true,
+            name: true,
+          },
         }),
       });
     } catch (error) {
@@ -37,21 +39,25 @@ export const getById = (router, table) => {
       try {
         const { id } = req.params;
 
-        const items = await sequelize.models[table].findOne({
+        const result = await prisma[table].findUnique({
           where: { id },
-          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          select: {
+            id: true,
+            name: true,
+          },
         });
 
-        if (items) {
-          return res.status(200).json({
-            status: 'success',
-            data: items,
-          });
+        if (!result) {
+          const tableText = (table[0].toUpperCase() + table.slice(1).toLowerCase()).slice(0, -1);
+          return res
+            .status(404)
+            .send(`${tableText} with the specified ID does not exist`);
         }
 
-        return res
-          .status(404)
-          .send(`${table} with the specified ID does not exist`);
+        return res.status(200).json({
+          status: 'success',
+          data: result,
+        });
       } catch (error) {
         return getErrorType(error, table);
       }
@@ -75,7 +81,11 @@ export const create = (router, table) => {
       try {
         const { name } = req.body;
 
-        await createName(table, name);
+        await prisma[table].create({
+          data: {
+            name,
+          },
+        });
 
         return res.status(201).json({
           status: 'success',
@@ -111,11 +121,10 @@ export const update = (router, table) => {
       const { id } = req.params;
 
       try {
-        const rowsUpdated = await updateName(table, name, id);
-
-        if (rowsUpdated[0] === 0) {
-          return res.status(404).send('Item does not exist');
-        }
+        await prisma[table].update({
+          where: { id },
+          data: { name },
+        });
 
         return res.status(200).json({
           status: 'success',
@@ -145,11 +154,10 @@ export const remove = (router, table) => {
     async (req, res) => {
       const { id } = req.params;
       try {
-        await sequelize.models[table].destroy({
-          where: {
-            id,
-          },
+        await prisma[table].delete({
+          where: { id },
         });
+
         return res.status(204).json({
           status: 'success',
         });
