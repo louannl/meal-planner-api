@@ -1,7 +1,7 @@
 import Router from 'express-promise-router';
 import { checkSchema } from 'express-validator';
 import validate from '../../utils/validate.js';
-import { Meal, MealDay } from '../../sequelize/index.js';
+import { MealDay } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
 import {
@@ -124,7 +124,27 @@ router.get(
     try {
       const { id } = req.params;
 
-      const result = await Meal.scope('mealInfo').findByPk(id);
+      const result = await prisma.meals.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          meal_days: {
+            select: { day_id: true },
+          },
+          meal_tags: {
+            select: { tags: { select: { name: true } } },
+          },
+          meal_ingredients: {
+            select: {
+              ingredient_id: true,
+              ingredients: { select: { name: true } },
+              amount: true,
+              unit_types: { select: { name: true } },
+            },
+          },
+        },
+      });
 
       if (result === null) {
         return res
@@ -132,7 +152,7 @@ router.get(
           .send('Meal with the specified ID does not exist');
       }
 
-      const mealData = transformMealInfo(result, id);
+      const mealData = transformMealInfo(result);
 
       return res.status(200).json({
         status: 'success',

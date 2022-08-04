@@ -8,34 +8,20 @@ import sequelize, {
 } from '../../sequelize/index.js';
 import { createName, updateName } from './domainHelper.js';
 
-export const transformMealInfo = (mealInfo, id) => {
-  const mealDays = [];
-  const mealIngredients = [];
-  const mealTags = [];
-
-  mealInfo.Days.forEach((day) => {
-    mealDays.push(day.id);
-  });
-
-  mealInfo.Ingredients.forEach((ing) => {
-    mealIngredients.push({
-      id,
-      ingredient: ing.name,
-      amount: ing.UnitTypes[0].MealIngredient.amount,
-      unit: ing.UnitTypes[0].name,
-    });
-  });
-
-  mealInfo.Tags.forEach((tag) => mealTags.push(tag.name));
-
-  return {
-    id: mealInfo.id,
-    meal: mealInfo.name,
-    days: mealDays,
-    tags: mealTags,
-    ingredients: mealIngredients,
-  };
-};
+export const transformMealInfo = (mealInfo) => ({
+  id: mealInfo.id,
+  meal: mealInfo.name,
+  days: mealInfo.meal_days.map((day) => day.day_id),
+  tags: mealInfo.meal_tags.map((tag) => tag.tags.name),
+  ingredients: mealInfo.meal_ingredients.map((ing) => (
+    {
+      id: ing.ingredient_id,
+      ingredient: ing.ingredients.name,
+      amount: ing.amount,
+      unit: ing.unit_types.name,
+    }
+  )),
+});
 
 const deleteByMealId = (table, id, transaction) => sequelize.models[table].destroy(
   {

@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../express/app';
-import { createMeal, transformMealInfo } from '../express/domain/domainMeal';
+import { createMeal } from '../express/domain/domainMeal';
 import { Meal, MealDay } from '../sequelize';
 
 import resetDb from './testSetup';
@@ -170,12 +170,11 @@ describe('Delete meal routes', () => {
     await request(app).del('/meals/1/7');
 
     const dbMealData = await Meal.scope('mealInfo').findByPk(1);
-    const transformedDbMeal = transformMealInfo(dbMealData);
 
-    expect(transformedDbMeal.days).toEqual(validMealData.dayIds);
-    expect(transformedDbMeal.meal).toEqual(validMealData.mealName);
-    expect(transformedDbMeal.tags).toEqual(validMealData.mealTags);
-    expect(transformedDbMeal.ingredients.map((ing) => ing.ingredient)).toEqual(
+    expect(dbMealData.Days.map((day) => day.dataValues.id)).toEqual(validMealData.dayIds);
+    expect(dbMealData.dataValues.name).toEqual(validMealData.mealName);
+    expect(dbMealData.Tags.map((tag) => tag.dataValues.name)).toEqual(validMealData.mealTags);
+    expect(dbMealData.Ingredients.map((ing) => ing.dataValues.name)).toEqual(
       validMealData.ingredients.map((ing) => ing.name),
     );
 
