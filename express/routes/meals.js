@@ -1,7 +1,7 @@
 import Router from 'express-promise-router';
 import { checkSchema } from 'express-validator';
 import validate from '../../utils/validate.js';
-import { Meal, Day, MealDay } from '../../sequelize/index.js';
+import { Meal, MealDay } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
 import {
@@ -80,11 +80,26 @@ router.get(
   async (req, res) => {
     const { id } = req.params;
     try {
-      const result = await Day.scope('dayMeal').findByPk(id);
+      const result = await prisma.days.findUnique({
+        where: { id },
+        select: {
+          meal_days: {
+            select: {
+              meal_id: true,
+              meals: {
+                select: {
+                  name: true,
+                  meal_tags: { select: { tags: { select: { name: true } } } },
+                },
+              },
+            },
+          },
+        },
+      });
 
       return res.status(200).json({
         status: 'success',
-        data: transformTagMeals(result.Meals),
+        data: transformTagMeals(result.meal_days),
       });
     } catch (error) {
       return getErrorType(error, 'Day');
