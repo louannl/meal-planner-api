@@ -6,7 +6,8 @@ import sequelize, {
   MealTag,
   Tag,
 } from '../../sequelize/index.js';
-import { createName, updateName } from './domainHelper.js';
+import { updateName } from './domainHelper.js';
+import prisma from '../../prisma.js';
 
 export const transformMealInfo = (mealInfo) => ({
   id: mealInfo.id,
@@ -36,58 +37,62 @@ export const createMeal = (body) => {
   const {
     dayIds, mealName, mealTags, ingredients,
   } = body;
-  return sequelize.transaction(async (transaction) => {
-    const {
-      dataValues: { id: mealId },
-    } = await createName('Meal', mealName, transaction);
 
-    const createMealDays = [];
-    dayIds.forEach((dayId) => {
-      createMealDays.push((MealDay.create(
-        {
-          meal_id: mealId,
-          day_id: dayId,
-        },
-        { transaction },
-      )));
+  // eslint-disable-next-line no-shadow
+  return prisma.$transaction(async (prisma) => {
+    // Create meal
+    const meal = await prisma.meals.create({
+      data: {
+        name: mealName,
+      },
     });
-    await Promise.all(createMealDays);
 
-    for (const ingredient of ingredients) {
-      const ingredientResult = await Ingredient.findOrCreate({
-        where: { name: ingredient.name },
-        transaction,
-      });
+    //  create meal days using ids
+    await prisma.meal_days.createMany({
+      data: dayIds.map((id) => ({ meal_id: meal.id, day_id: Number(id) })),
+    });
 
-      const ingredientId = ingredientResult[0].dataValues.id;
-
-      await MealIngredient.create(
-        {
-          ingredient_id: ingredientId,
-          meal_id: mealId,
-          amount: ingredient.amount,
-          unit_type_id: ingredient.unitType,
-        },
-        { transaction },
-      );
-    }
-
-    if (mealTags.length > 0) {
-      for (const tag of mealTags) {
-        const tagResult = await Tag.findOrCreate({
-          where: { name: tag },
-          transaction,
-        });
-
-        await MealTag.create(
-          {
-            meal_id: mealId,
-            tag_id: tagResult[0].dataValues.id,
+    //  if tags, find or create using tag name
+    //  create tags if they don't exist, then create relation
+    const createMealTags = [];
+    mealTags.forEach((tag) => {
+      createMealTags.push((prisma.meal_tags.create({
+        data: {
+          meals: {
+            connect: { id: meal.id },
           },
-          { transaction },
-        );
-      }
-    }
+          tags: {
+            connectOrCreate: {
+              create: { name: tag },
+              where: { name: tag },
+            },
+          },
+        },
+      })));
+    });
+    await Promise.all(createMealTags);
+
+    const createMealIngredients = [];
+    ingredients.forEach((ingredient) => {
+      createMealIngredients.push((prisma.meal_ingredients.create({
+        data: {
+          meals: {
+            connect: { id: meal.id },
+          },
+          unit_types: {
+            connect: { id: Number(ingredient.unitType) },
+          },
+          amount: Number(ingredient.amount),
+          ingredients: {
+            connectOrCreate: {
+              create: { name: ingredient.name },
+              where: { name: ingredient.name },
+            },
+          },
+        },
+      })));
+    });
+    await Promise.all(createMealIngredients);
   });
 };
 
