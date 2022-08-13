@@ -1,6 +1,3 @@
-import sequelize, {
-  Meal,
-} from '../../sequelize/index.js';
 import prisma from '../../prisma.js';
 
 export const transformMealInfo = (mealInfo) => ({
@@ -68,15 +65,6 @@ const createMealDays = async (prismaTransaction, mealId, dayIds) => {
   });
 };
 
-const deleteByMealId = (table, id, transaction) => sequelize.models[table].destroy(
-  {
-    where: {
-      meal_id: id,
-    },
-  },
-  { transaction },
-);
-
 export const createMeal = (body) => {
   const {
     dayIds, mealName, mealTags, ingredients,
@@ -128,19 +116,22 @@ export const updateMeal = (body, mealId) => {
   });
 };
 
-export const deleteMeal = (id) => sequelize.transaction(async (transaction) => {
-  await Promise.all([
-    deleteByMealId('MealDay', id, transaction),
-    deleteByMealId('MealIngredient', id, transaction),
-    deleteByMealId('MealTag', id, transaction),
-  ]);
-
-  await Meal.destroy(
-    {
-      where: {
-        id,
+export const deleteMeal = async (id) => {
+  await prisma.meals.update({
+    where: { id },
+    data: {
+      meal_days: {
+        deleteMany: {},
+      },
+      meal_tags: {
+        deleteMany: {},
+      },
+      meal_ingredients: {
+        deleteMany: {},
       },
     },
-    { transaction },
-  );
-});
+  });
+  await prisma.meals.delete({
+    where: { id },
+  });
+};
