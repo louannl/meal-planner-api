@@ -1,29 +1,28 @@
 export const transformTagMeals = (meals) => {
-  const tagMeals = [];
+  const mealsWithTags = [];
 
   meals.forEach((meal) => {
-    tagMeals.push({
-      id: meal.id,
-      meal: meal.name,
-      tags: meal.Tags.map((tag) => tag.name),
+    mealsWithTags.push({
+      id: meal.meal_id,
+      meal: meal.meals.name,
+      tags: meal.meals.meal_tags.map((tag) => tag.tags.name),
     });
   });
 
-  return tagMeals;
+  return mealsWithTags;
 };
 
 export const transformDayMeals = (dayInfo) => {
-  const mappedDays = [];
+  const transformedDays = [];
 
   dayInfo.forEach((day) => {
-    const dayMeals = transformTagMeals(day.Meals);
-
-    mappedDays.push({
+    const meals = transformTagMeals(day.meal_days);
+    transformedDays.push({
       id: day.id,
       name: day.name,
-      meals: dayMeals,
+      meals,
     });
   });
 
-  return mappedDays;
+  return transformedDays;
 };

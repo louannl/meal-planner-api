@@ -17,25 +17,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-function makeHandlerAwareOfAsyncErrors(handler) {
-  return async function (req, res, next) {
-    try {
-      await handler(req, res);
-    } catch (error) {
-      next(error);
-    }
-  };
-}
-
-// define standard routes if applicable
-
-// for (const [routeName, routeController] of Object.entries(routes)) {
-// 	if (routeController.getAll) {
-// 		app.get(
-// 			`/api/${routeName}`,
-// 			makeHandlerAwareOfAsyncErrors(routeController.getAll)
-// 		);
-// 	}
-// }
-
 export default app;

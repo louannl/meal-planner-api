@@ -1,8 +1,6 @@
 import Router from 'express-promise-router';
 import { checkSchema } from 'express-validator';
-import pkg from 'sequelize';
 import validate from '../../utils/validate.js';
-import sequelize, { Meal, Day, MealDay } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
 import {
@@ -11,25 +9,21 @@ import {
   transformMealInfo,
   updateMeal,
 } from '../domain/domainMeal.js';
-
-const { QueryTypes } = pkg;
+import prisma from '../../prisma.js';
 
 const router = new Router();
 export default router;
 
 router.get('/meal-ingredients', async (req, res) => {
   try {
-    const results = await sequelize.query(
-      `
-      SELECT i.name AS ingredient, SUM(amount) AS total, ut.name AS unit 
+    const results = await prisma.$queryRaw`
+      SELECT i.name AS ingredient, (SUM(amount))::text AS total, ut.name AS unit 
       FROM meal_ingredients AS mi 
       INNER JOIN ingredients AS i ON mi.ingredient_id = i.id 
       INNER JOIN unit_types AS ut ON mi.unit_type_id = ut.id 
       INNER JOIN meal_days AS md ON mi.meal_id = md.meal_id 
       GROUP BY i.name, ut.name
-      `,
-      { type: QueryTypes.SELECT },
-    );
+    `;
 
     return res.status(200).json({
       status: 'success',
@@ -42,7 +36,23 @@ router.get('/meal-ingredients', async (req, res) => {
 
 router.get('/meals-with-days', async (req, res) => {
   try {
-    const result = await Day.scope('dayMeal').findAll();
+    const result = await prisma.days.findMany({
+      select: {
+        id: true,
+        name: true,
+        meal_days: {
+          select: {
+            meal_id: true,
+            meals: {
+              select: {
+                name: true,
+                meal_tags: { select: { tags: { select: { name: true } } } },
+              },
+            },
+          },
+        },
+      },
+    });
 
     return res.status(200).json({
       status: 'success',
@@ -69,11 +79,26 @@ router.get(
   async (req, res) => {
     const { id } = req.params;
     try {
-      const result = await Day.scope('dayMeal').findByPk(id);
+      const result = await prisma.days.findUnique({
+        where: { id },
+        select: {
+          meal_days: {
+            select: {
+              meal_id: true,
+              meals: {
+                select: {
+                  name: true,
+                  meal_tags: { select: { tags: { select: { name: true } } } },
+                },
+              },
+            },
+          },
+        },
+      });
 
       return res.status(200).json({
         status: 'success',
-        data: transformTagMeals(result.Meals),
+        data: transformTagMeals(result.meal_days),
       });
     } catch (error) {
       return getErrorType(error, 'Day');
@@ -98,7 +123,27 @@ router.get(
     try {
       const { id } = req.params;
 
-      const result = await Meal.scope('mealInfo').findByPk(id);
+      const result = await prisma.meals.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          meal_days: {
+            select: { day_id: true },
+          },
+          meal_tags: {
+            select: { tags: { select: { name: true } } },
+          },
+          meal_ingredients: {
+            select: {
+              ingredient_id: true,
+              ingredients: { select: { name: true } },
+              amount: true,
+              unit_types: { select: { name: true } },
+            },
+          },
+        },
+      });
 
       if (result === null) {
         return res
@@ -106,7 +151,7 @@ router.get(
           .send('Meal with the specified ID does not exist');
       }
 
-      const mealData = transformMealInfo(result, id);
+      const mealData = transformMealInfo(result);
 
       return res.status(200).json({
         status: 'success',
@@ -279,66 +324,3 @@ router.delete(
 );
 
 // TODO: DELETE / All meals
-
-// DELETE a DAY from the meal
-router.delete(
-  '/:mealId/:dayId',
-  validate(
-    checkSchema({
-      mealId: {
-        errorMessage: 'Meal ID is not valid',
-        notEmpty: true,
-        in: 'params',
-        isInt: true,
-        // sanitizer
-        toInt: true,
-      },
-      dayId: {
-        errorMessage: 'Day ID is not valid',
-        notEmpty: true,
-        in: 'params',
-        isInt: true,
-        // sanitizer
-        toInt: true,
-      },
-    }),
-  ),
-  async (req, res) => {
-    const { mealId, dayId } = req.params;
-    try {
-      const days = await MealDay.findAll({
-        where: { meal_id: mealId },
-      });
-
-      // If the dayId doesn't exist in the table -> do nothing
-      if (!days.some((entry) => entry.day_id === dayId)) {
-        return res.status(204).json({
-          status: 'success',
-        });
-      }
-
-      // If there are multiple days, only delete the specific day
-      if (days.length > 1) {
-        await MealDay.destroy({
-          where: {
-            meal_id: mealId,
-            day_id: dayId,
-          },
-        });
-
-        return res.status(204).json({
-          status: 'success',
-        });
-      }
-
-      // If the day is the last day in the table, delete the entire meal:
-      await deleteMeal(mealId);
-
-      return res.status(204).json({
-        status: 'success',
-      });
-    } catch (error) {
-      return getErrorType(error, 'Meal');
-    }
-  },
-);

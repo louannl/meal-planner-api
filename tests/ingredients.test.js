@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../express/app';
-import { createName } from '../express/domain/domainHelper';
+import { default as createName } from '../express/domain/domainHelper';
 import resetDb from './testSetup';
 
 beforeEach(() => {
@@ -20,7 +20,7 @@ describe('Post/Update Ingredient Routes', () => {
   });
 
   it('should update ingredient name', async () => {
-    await createName('Ingredient', 'testIng');
+    await createName('ingredients', 'testIng');
 
     const res = await request(app)
       .put('/ingredients/1')
@@ -41,8 +41,8 @@ describe('Post/Update Ingredient Routes', () => {
 
 describe('Get Ingredient Routes', () => {
   it('should show all Ingredients', async () => {
-    await createName('Ingredient', 'testIng');
-    await createName('Ingredient', 'testIng2');
+    await createName('ingredients', 'testIng');
+    await createName('ingredients', 'testIng2');
 
     const res = await request(app).get('/ingredients');
 
@@ -56,7 +56,7 @@ describe('Get Ingredient Routes', () => {
   });
 
   it('should return ingredient details', async () => {
-    await createName('Ingredient', 'testIng');
+    await createName('ingredients', 'testIng');
 
     const res = await request(app).get('/ingredients/1');
 
@@ -76,7 +76,7 @@ describe('Get Ingredient Routes', () => {
 
 describe('Delete Ingredient Routes', () => {
   it('should delete an ingredient by id', async () => {
-    await createName('Ingredient', 'testIng');
+    await createName('ingredients', 'testIng');
 
     const res = await request(app).del('/ingredients/1');
     expect(res.statusCode).toEqual(204);

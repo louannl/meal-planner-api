@@ -10,17 +10,7 @@ services:
     volumes:
       - .:/app
     environment:
-      - BABEL_DISABLE_CACHE=1
-      - DATABASE_HOST=meal_planner_db
-      - DATABASE_NAME=postgres
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres
-      - DATABASE_PORT=5432
-      - TEST_DATABASE_HOST=meal_planner_db_test
-      - TEST_DATABASE_NAME=postgres
-      - TEST_DATABASE_USER=postgres
-      - TEST_DATABASE_PASSWORD=postgres
-      - TEST_DATABASE_PORT=5432
+      - DATABASE_URL=postgresql://postgres:postgres@meal_planner_db:5432/postgres
     ports:
       - '5000:5000'
     expose:
