@@ -1,7 +1,6 @@
 import request from 'supertest';
 import app from '../express/app';
 import { createMeal } from '../express/domain/domainMeal';
-import { Meal, MealDay } from '../sequelize';
 
 import resetDb from './testSetup';
 
@@ -163,40 +162,6 @@ describe('Get meal routes', () => {
 });
 
 describe('Delete meal routes', () => {
-  it('should only delete the day from the meal', async () => {
-    await createMeal(validMealData);
-
-    // Check if we delete a non-existent day, it doesn't delete the meal
-    await request(app).del('/meals/1/7');
-
-    const dbMealData = await Meal.scope('mealInfo').findByPk(1);
-
-    expect(dbMealData.Days.map((day) => day.dataValues.id)).toEqual(validMealData.dayIds);
-    expect(dbMealData.dataValues.name).toEqual(validMealData.mealName);
-    expect(dbMealData.Tags.map((tag) => tag.dataValues.name)).toEqual(validMealData.mealTags);
-    expect(dbMealData.Ingredients.map((ing) => ing.dataValues.name)).toEqual(
-      validMealData.ingredients.map((ing) => ing.name),
-    );
-
-    const res = await request(app).del('/meals/1/3');
-    expect(res.statusCode).toEqual(204);
-
-    // Check if we delete a day the meal still exists with remaining days:
-    const days = await MealDay.findAll({
-      where: { meal_id: 1 },
-      attributes: ['day_id'],
-    });
-    expect(days.length).toEqual(1);
-    expect(days[0].day_id).toEqual(5);
-
-    // TODO: Separate these tests more, so it's cleaner
-    // Check if we delete the remaining day, it deletes the entire meal
-    const response = await request(app).del('/meals/1/5');
-    expect(response.statusCode).toEqual(204);
-    const mealData = await request(app).get('/meals/1');
-    expect(mealData.statusCode).toEqual(404);
-  });
-
   it('should delete an individual meal by id', async () => {
     // TODO: I'd rather run a beforeAll, tear down and re-implement
     await createMeal(validMealData);

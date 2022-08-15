@@ -1,7 +1,6 @@
 import Router from 'express-promise-router';
 import { checkSchema } from 'express-validator';
 import validate from '../../utils/validate.js';
-import { MealDay } from '../../sequelize/index.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
 import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
 import {
@@ -325,66 +324,3 @@ router.delete(
 );
 
 // TODO: DELETE / All meals
-
-// DELETE a DAY from the meal
-router.delete(
-  '/:mealId/:dayId',
-  validate(
-    checkSchema({
-      mealId: {
-        errorMessage: 'Meal ID is not valid',
-        notEmpty: true,
-        in: 'params',
-        isInt: true,
-        // sanitizer
-        toInt: true,
-      },
-      dayId: {
-        errorMessage: 'Day ID is not valid',
-        notEmpty: true,
-        in: 'params',
-        isInt: true,
-        // sanitizer
-        toInt: true,
-      },
-    }),
-  ),
-  async (req, res) => {
-    const { mealId, dayId } = req.params;
-    try {
-      const days = await MealDay.findAll({
-        where: { meal_id: mealId },
-      });
-
-      // If the dayId doesn't exist in the table -> do nothing
-      if (!days.some((entry) => entry.day_id === dayId)) {
-        return res.status(204).json({
-          status: 'success',
-        });
-      }
-
-      // If there are multiple days, only delete the specific day
-      if (days.length > 1) {
-        await MealDay.destroy({
-          where: {
-            meal_id: mealId,
-            day_id: dayId,
-          },
-        });
-
-        return res.status(204).json({
-          status: 'success',
-        });
-      }
-
-      // If the day is the last day in the table, delete the entire meal:
-      await deleteMeal(mealId);
-
-      return res.status(204).json({
-        status: 'success',
-      });
-    } catch (error) {
-      return getErrorType(error, 'Meal');
-    }
-  },
-);
