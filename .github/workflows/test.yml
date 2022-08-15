@@ -29,9 +29,4 @@ jobs:
       - name: Run tests
         run: npm run test
         env:
-          TEST_DATABASE_HOST: postgres
-          TEST_DATABASE_NAME: postgres
-          TEST_DATABASE_USER: postgres
-          TEST_DATABASE_PASSWORD: postgres
-          TEST_DATABASE_PORT: 5432
           DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
