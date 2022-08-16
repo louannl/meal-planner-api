@@ -1,4 +1,9 @@
+<p align="center">
+  <img height="250" src="https://user-images.githubusercontent.com/63197150/184966519-d5c398b0-86ae-4d91-99ec-55f53d8e7283.png">
+</p>
+
 # Meal Planner API
+
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
