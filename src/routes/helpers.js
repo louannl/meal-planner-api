@@ -1,19 +1,16 @@
 import { checkSchema } from 'express-validator';
 import validate from '../../utils/validate.js';
 import { getErrorType } from '../../utils/appError.js';
-import prisma from '../../prisma.js';
+import {
+  createName, deleteById, findById, findMany, updateName,
+} from '../db/generic.js';
 
 export const getAll = (router, table) => {
   router.get('/', async (req, res) => {
     try {
       return res.status(200).json({
         status: 'success',
-        data: await prisma[table].findMany({
-          select: {
-            id: true,
-            name: true,
-          },
-        }),
+        data: await findMany(table),
       });
     } catch (error) {
       return getErrorType(error, table);
@@ -39,13 +36,7 @@ export const getById = (router, table) => {
       try {
         const { id } = req.params;
 
-        const result = await prisma[table].findUnique({
-          where: { id },
-          select: {
-            id: true,
-            name: true,
-          },
-        });
+        const result = await findById(table, id);
 
         if (!result) {
           const tableText = (table[0].toUpperCase() + table.slice(1).toLowerCase()).slice(0, -1);
@@ -81,11 +72,7 @@ export const create = (router, table) => {
       try {
         const { name } = req.body;
 
-        await prisma[table].create({
-          data: {
-            name,
-          },
-        });
+        await createName(table, name);
 
         return res.status(201).json({
           status: 'success',
@@ -121,10 +108,7 @@ export const update = (router, table) => {
       const { id } = req.params;
 
       try {
-        await prisma[table].update({
-          where: { id },
-          data: { name },
-        });
+        await updateName(table, name, id);
 
         return res.status(200).json({
           status: 'success',
@@ -146,7 +130,6 @@ export const remove = (router, table) => {
           notEmpty: true,
           in: 'params',
           isInt: true,
-          // sanitizer
           toInt: true,
         },
       }),
@@ -154,9 +137,7 @@ export const remove = (router, table) => {
     async (req, res) => {
       const { id } = req.params;
       try {
-        await prisma[table].delete({
-          where: { id },
-        });
+        await deleteById(table, id);
 
         return res.status(204).json({
           status: 'success',
