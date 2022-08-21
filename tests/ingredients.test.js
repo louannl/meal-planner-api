@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../express/app';
-import { default as createName } from '../express/domain/domainHelper';
+import app from '../src/app.js';
+import { createName } from '../src/db/generic';
 import resetDb from './testSetup';
 
 beforeEach(() => {

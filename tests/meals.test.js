@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../express/app';
-import { createMeal } from '../express/domain/domainMeal';
+import app from '../src/app.js';
+import { createMeal } from '../src/db/meal.js';
 
 import resetDb from './testSetup';
 

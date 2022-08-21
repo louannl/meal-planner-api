@@ -2,28 +2,20 @@ import Router from 'express-promise-router';
 import { checkSchema } from 'express-validator';
 import validate from '../../utils/validate.js';
 import AppError, { getErrorType } from '../../utils/appError.js';
-import { transformDayMeals, transformTagMeals } from '../domain/domainDay.js';
+import { transformDayMeals, transformTagMeals } from '../domain/dayTransformers.js';
+import transformMealInfo from '../domain/mealTransformer.js';
 import {
-  createMeal,
-  deleteMeal,
-  transformMealInfo,
-  updateMeal,
-} from '../domain/domainMeal.js';
-import prisma from '../../prisma.js';
+  createMeal, updateMeal, deleteMeal, getMealById,
+} from '../db/meal.js';
+import { getSummarisedIngredients } from '../db/mealIngredients.js';
+import { getMealsByDay, getMealsWithDays } from '../db/mealDays.js';
 
 const router = new Router();
 export default router;
 
 router.get('/meal-ingredients', async (req, res) => {
   try {
-    const results = await prisma.$queryRaw`
-      SELECT i.name AS ingredient, (SUM(amount))::text AS total, ut.name AS unit 
-      FROM meal_ingredients AS mi 
-      INNER JOIN ingredients AS i ON mi.ingredient_id = i.id 
-      INNER JOIN unit_types AS ut ON mi.unit_type_id = ut.id 
-      INNER JOIN meal_days AS md ON mi.meal_id = md.meal_id 
-      GROUP BY i.name, ut.name
-    `;
+    const results = await getSummarisedIngredients();
 
     return res.status(200).json({
       status: 'success',
@@ -36,23 +28,7 @@ router.get('/meal-ingredients', async (req, res) => {
 
 router.get('/meals-with-days', async (req, res) => {
   try {
-    const result = await prisma.days.findMany({
-      select: {
-        id: true,
-        name: true,
-        meal_days: {
-          select: {
-            meal_id: true,
-            meals: {
-              select: {
-                name: true,
-                meal_tags: { select: { tags: { select: { name: true } } } },
-              },
-            },
-          },
-        },
-      },
-    });
+    const result = await getMealsWithDays();
 
     return res.status(200).json({
       status: 'success',
@@ -79,22 +55,7 @@ router.get(
   async (req, res) => {
     const { id } = req.params;
     try {
-      const result = await prisma.days.findUnique({
-        where: { id },
-        select: {
-          meal_days: {
-            select: {
-              meal_id: true,
-              meals: {
-                select: {
-                  name: true,
-                  meal_tags: { select: { tags: { select: { name: true } } } },
-                },
-              },
-            },
-          },
-        },
-      });
+      const result = await getMealsByDay(id);
 
       return res.status(200).json({
         status: 'success',
@@ -123,27 +84,7 @@ router.get(
     try {
       const { id } = req.params;
 
-      const result = await prisma.meals.findUnique({
-        where: { id },
-        select: {
-          id: true,
-          name: true,
-          meal_days: {
-            select: { day_id: true },
-          },
-          meal_tags: {
-            select: { tags: { select: { name: true } } },
-          },
-          meal_ingredients: {
-            select: {
-              ingredient_id: true,
-              ingredients: { select: { name: true } },
-              amount: true,
-              unit_types: { select: { name: true } },
-            },
-          },
-        },
-      });
+      const result = await getMealById(id);
 
       if (result === null) {
         return res

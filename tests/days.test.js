@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../express/app';
+import app from '../src/app.js';
 
 describe('Get Day route', () => {
   it('should show all days', async () => {

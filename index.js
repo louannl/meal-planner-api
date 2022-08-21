@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import app from './express/app.js';
+import app from './src/app.js';
 
 const PORT = process.env.PORT || 5000;
 
